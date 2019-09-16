@@ -5,7 +5,10 @@ exports.ships = {};
 exports.quests = {};
 exports.misc = {};
 exports.equips = {};
+
 exports.api_start2 = {};
+
+exports.mapInfoCache = {};
 
 exports.getMaxLevel = () => 175;
 exports.getServerIP = () => "http://203.104.209.23"
@@ -73,6 +76,14 @@ exports.getEquipByName = (name) => {
     const dists = equipList.map(equip => this.distance(equip.name.toLowerCase(), name.trim()))
     const minDist = Math.min(...dists);
     return equipList[dists.indexOf(minDist)];
+}
+
+exports.getMapInfo = async (map) => {
+    if(!this.mapInfoCache[map]) {
+        console.log(`Map data for ${map} not cached. Loading...`)
+        this.mapInfoCache[map] = await (await fetch(`http://kc.piro.moe/api/routing/maps/${map}`)).json()
+    }
+    return this.mapInfoCache[map];
 }
 
 exports.getShipById = (id) => {

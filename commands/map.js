@@ -14,8 +14,7 @@ exports.run = async (client, message, args) => {
     const [worldid, mapid] = map.split("-").map(a => parseInt(a));
     if(worldid < 0 || (worldid > 10 && worldid < 40) || worldid > 60 || mapid >= 10 || mapid < 0) return;
     
-    const api = await fetch('http://kc.piro.moe/api/routing/maps/' + map);
-    const apiParsed = await api.json();
+    const apiParsed = await client.data.getMapInfo(map);
     
     const canvas = createCanvas(1200, 720);
     const ctx = canvas.getContext('2d');
