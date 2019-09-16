@@ -1,5 +1,5 @@
 const fetch = require('node-fetch')
-const { Client } = require('pg')
+// const { Client } = require('pg')
 
 exports.ships = {};
 exports.quests = {};
@@ -206,12 +206,12 @@ exports.reloadShipData = async (client) => {
     this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
     console.log("Loaded api_start2!")
 
-    try {
+    /*try {
         const pgClient = new Client(client.config.tsunDB);
         await pgClient.connect();
         client.pgClient = pgClient;
         console.log("Connected to TsunDB! Loaded!")
     } catch (error) {
         console.log("Connection to TsunDB failed!")
-    }
+    }*/
 }

@@ -50,6 +50,7 @@ exports.run = async (client, message, args) => {
     return reply;
 }
 exports.queue = async (ship, rank, cached) => {
+    // TODO catch errors
     const api = await (await fetch(`http://kc.piro.moe/api/routing/droplocations/${ship.api_id}/${rank}`)).json()
 
     for(let entry of api.entries) {
