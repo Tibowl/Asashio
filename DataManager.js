@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const { Client } = require('pg')
 
 exports.ships = {};
 exports.quests = {};
@@ -155,7 +156,7 @@ exports.lenz = (a,b) => {
     return row[a.length];
 }
 
-exports.reloadShipData = async () => {
+exports.reloadShipData = async (client) => {
     const shipData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/ship.json")).json()
 
     this.ships = {};
@@ -192,7 +193,14 @@ exports.reloadShipData = async () => {
     console.log(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)//, this.equips[1])
 
     this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
-    console.log("Loaded api_start2! Loading done!")
-}
+    console.log("Loaded api_start2!")
 
-this.reloadShipData();
+    try {
+        const pgClient = new Client(client.config.tsunDB);
+        await pgClient.connect();
+        client.pgClient = pgClient;
+        console.log("Connected to TsunDB! Loaded!")
+    } catch (error) {
+        console.log("Connection to TsunDB failed!")
+    }
+}

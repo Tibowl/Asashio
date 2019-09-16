@@ -28,6 +28,10 @@ module.exports = async (client, message) => {
             ).catch(() =>
                 reply.reactions.forEach((reaction) => reaction.me ? reaction.remove() : 0)
             )
+        client.recentMessages.push(reply);
+        setTimeout(() => {
+            client.recentMessages.shift();
+        }, 35000);
     } catch (error) {
         console.error(error);
     }

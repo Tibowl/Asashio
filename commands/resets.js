@@ -8,6 +8,8 @@ exports.run = (client, message, args) => {
         quarterlyQuest: "**Quarterly** quest resets",
         pvp: "**PvP** resets",
         rank: "**Ranking** cutoff",
+        monthlyRank: "**Monthly ranking** cutoff",
+        eoReset: "**Extra Operations** reset",
         monthlyExped: "**Monthly exped** resets"
     }
     

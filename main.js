@@ -14,6 +14,7 @@ client.data = DataManager;
 client.linkManager = LinkManager;
 client.timerManager = TimerManager;
 client.tweetManager = TweetManager;
+client.recentMessages = [];
 
 fs.readdir("./events/", (err, files) => {
   if (err) return console.error(err);
@@ -38,3 +39,4 @@ fs.readdir("./commands/", (err, files) => {
 });
 
 client.login(config.token);
+DataManager.reloadShipData(client);

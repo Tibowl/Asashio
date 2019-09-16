@@ -31,22 +31,26 @@ ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]
         message = "PvP reset"
     else if (type == "rank")
         message = "Ranking cutoff"
+    else if (type == "monthlyRank")
+        message = "Monthly ranking cutoff"
+    else if (type == "eoReset")
+        message = "EO reset"
     else if (type == "monthlyExped")
         message = "Monthly expeditions reset"
 
     // console.log(nextTimeStamp - Date.now() - 30 * 60000)
-    if(type !== "monthlyExped") {
+    if(type !== "monthlyExped" && type !== "rank") {
         for (let k of [60, 30, 15, 5]) {
             let diff = nextTimeStamp - Date.now() - k * 60000;
-            if (diff > 0)
-                setTimeout(() => this.update(`${message} in ${k} minutes.`), diff);
+            if (diff > 0 && !(k == 60 && type == "pvp"))
+                setTimeout(() => this.update(`${message} in ${k} minutes.`), diff + this.client.config.timerOffsetms);
         }
     }
     
     setTimeout(() => {
         this.update(`${message}.`);
         this.sheduleNextMessages();
-    }, nextTimeStamp - Date.now());
+    }, nextTimeStamp - Date.now() + this.client.config.timerOffsetms);
 }
 
 Date.prototype.shiftDate = function(time) {
@@ -104,18 +108,21 @@ exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
     // Next Rank points cut-off time (-1 hour from PvP reset time)
     //   extra cut-off monthly on JST 2200, the last day of every month,
     //   but points from quest Z cannon not counted after JST 1400.
-    let nextPtCutoff = new Date(nextPvPstamp);
+    const nextPtCutoff = new Date(nextPvPstamp);
     nextPtCutoff.shiftHour(-1);
     if(nextPtCutoff.getTime() < now) nextPtCutoff.shiftHour(13);
-    if(nextPtCutoff.getMonth() > new Date(now).getMonth()
-        || nextPtCutoff.getFullYear() > new Date(now).getFullYear()) {
-        nextPtCutoff.setUTCHours(13, 0, 0, 0);
-        if(nextPtCutoff.getTime() < now) {
-            nextPtCutoff = new Date(utc6pm.getTime());
-            nextPtCutoff.shiftHour(-1);
-        }
-    }
     timeStamps.rank = nextPtCutoff.getTime();
+
+    const nextMonthlyPointReset = new Date(nextPtCutoff);
+    nextMonthlyPointReset.setUTCHours(13, 0, 0, 0);
+    while(nextMonthlyPointReset.getUTCDate() !== 1)
+        nextMonthlyPointReset.shiftDate(1);
+    nextMonthlyPointReset.shiftDate(-1);
+    timeStamps.monthlyRank = nextMonthlyPointReset.getTime();
+
+    const nextEOReset = new Date(nextMonthlyPointReset);
+    nextEOReset.shiftHour(2);
+    timeStamps.eoReset = nextEOReset.getTime();
 
     // Next monthly expedition reset time (15th JST 1200)
     const utc3am15th = new Date(now);

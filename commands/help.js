@@ -1,5 +1,5 @@
 exports.run = (client, message, args) => {
-    if(message.channel.type !== "dm") return;
+    //if(message.channel.type !== "dm") return;
     if(!args || args.length < 1) {
         let commands = client.commands.keyArray();
         let categorized = {

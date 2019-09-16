@@ -12,6 +12,7 @@ exports.run = (client, message, args) => {
     if(commandName === 'data') {
         delete require.cache[require.resolve(`./../DataManager.js`)];
         client.data = require("./../DataManager.js")
+        client.data.reloadShipData(client);
         return message.reply(`The DataManager is now being reloaded!`);
     }
     if(commandName === 'links') {
