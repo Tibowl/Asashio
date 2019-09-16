@@ -1,0 +1,18 @@
+{
+    "token": "DISCORD TOKEN",
+    "prefix": ".",
+    "admins": ["YOUR USER ID HERE"],
+    "timerChannels": ["CHANNEL ID HERE"],
+    "tweetChannels": ["CHANNEL ID HERE"],
+    "toTweet": ["294025417", "105035479"],
+    "timerOffsetms": 1000,
+    "twitter": {
+        "consumer_key":        "CONSUMER KEY",
+        "consumer_secret":     "CONSUMER SECRET",
+        "access_token":        "ACCESS TOKEN",
+        "access_token_secret": "ACCESS TOKEN SECRET"
+    },
+    "emoji": {
+        "EMOJI NAME": "<:EMOJI NAME:EMOJI ID>"
+    }
+}

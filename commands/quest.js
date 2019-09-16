@@ -26,22 +26,23 @@ exports.run = (client, message, args) => {
         .setURL(`https://kancolle.fandom.com/wiki/Quests#${questId}`)
         .setThumbnail(this.getImage(type[0]))
         .setColor(type[1])
-        .setDescription(this.parseText(quest.detail_en));
+        .setDescription(this.parseText(quest.detail_en, client));
     let rewards = "";
     if(quest.reward_fuel > 0 || quest.reward_ammo > 0 || quest.reward_bauxite > 0 || quest.reward_steel > 0)
         rewards = `${quest.reward_fuel}×${client.config.emoji.fuel} ${quest.reward_ammo}×${client.config.emoji.ammo} ${quest.reward_bauxite}×${client.config.emoji.bauxite} ${quest.reward_steel}×${client.config.emoji.steel}
 `
     if(quest.reward_other)
-        rewards += this.parseText(quest.reward_other)
+        rewards += this.parseText(quest.reward_other, client)
 
     embed.addField("Rewards", rewards);
     if(quest.note)
-        embed.addField("Notes", this.parseText(quest.note))
+        embed.addField("Notes", this.parseText(quest.note, client))
     
     return message.channel.send(embed);
 }
 
-exports.parseText = (text) => {
+exports.parseText = (text, client) => {
+    console.log(text)
     let links = text.match(/\[\[.*?\]\]/g);
 
     if(links)
@@ -56,7 +57,7 @@ exports.parseText = (text) => {
                 title = clean.split("|").find(a => a.startsWith("link=")).replace("link=", "").replace(/_/g, " ") || title;
 
                 const fileName = target.replace(/ /g, "_").trim();
-                text = text.replace(fileName, this.getEmoji(fileName))
+                text = text.replace(match, this.getEmoji(fileName, client))
             }
             
             if(target.startsWith("#"))
@@ -71,9 +72,15 @@ exports.parseText = (text) => {
         for (let match of links) {
             let clean = match.replace(/\{\{/, "").replace(/\}\}/, "")
 
-            let [_, title] = clean.split("|");
-            if(_ == "color")    
+            let title = clean.split("|")[1];
+            if(clean.split("|")[0] == "color")    
                 text = text.replace(match, clean.split("|")[2])
+
+            for(let arg of clean.split("|").slice(1))
+                if(!arg.includes("=")) {
+                    title = arg;
+                    break;
+                }
             
             text = text.replace(match, `[${title.replace(/\//g, " ")}](https://kancolle.fandom.com/wiki/${title.replace(/ /g, "_")})`)
         }
@@ -81,7 +88,7 @@ exports.parseText = (text) => {
     return text.replace(/<br>/g, "\n").replace(/<br\/>/g, "\n").replace(/<br \/>/g, "\n").replace(/'''/g, "**");
 }
 
-exports.getEmoji = (fileName) => {
+exports.getEmoji = (fileName, client) => {
     switch(fileName) {
         case "File:Furniture_box_large.jpg":
         case "File:Furniture_box_large.png":
