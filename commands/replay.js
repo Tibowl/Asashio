@@ -11,10 +11,10 @@ exports.run = (client, message, args) => {
 
 exports.category = "Links";
 exports.help = () => {
-    return "Get link to replayer site"
+    return "Get link to replayer site. Will use either given URL or attached image."
 }
 exports.usage = () => {
-    return "replay <url>"
+    return "replay [url]"
 }
 exports.prefix = (client) => {
     return client.config.prefix;
