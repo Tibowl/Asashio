@@ -39,4 +39,3 @@ fs.readdir("./commands/", (err, files) => {
 });
 
 client.login(config.token);
-DataManager.reloadShipData(client);

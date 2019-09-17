@@ -6,6 +6,7 @@ exports.quests = {};
 exports.misc = {};
 exports.equips = {};
 
+exports.birthdays = [];
 exports.api_start2 = {};
 
 exports.mapInfoCache = {};
@@ -60,6 +61,39 @@ exports.getShipByName = (name) => {
     const minDist = Math.min(...dists);
     return shipList[dists.indexOf(minDist)];
 }
+
+exports.getBirthdayByName = (name) => {
+    name = name.toLowerCase();
+
+    const findShip = (toSearch) => {
+        toSearch = toSearch.toLowerCase().trim();
+        return this.birthdays.find(ship => {
+            return (ship.Name ||'').toLowerCase() == toSearch;
+        })
+    }
+
+    const aliases = [
+        [/^abruzzi/, "duca degli abruzzi"],
+        [/^ktkm/, "kitakami"]
+    ]
+    for(let alias of aliases)
+        name = name.replace(alias[0], alias[1]);
+
+    let result = this.birthdays.find(ship => ship.Id == name);
+    if(result != undefined) return result;
+    
+    result = findShip(name);
+    if(result != undefined) return result;
+    
+    let shipList = this.birthdays.filter(k => k.Name.toLowerCase().includes(name))
+    if(shipList.length == 0)
+        shipList = this.birthdays;
+
+    const dists = shipList.map(ship => this.lenz(ship.Name.toLowerCase(), name.trim()))
+    const minDist = Math.min(...dists);
+    return shipList[dists.indexOf(minDist)];
+}
+
 
 exports.getEquipByName = (name) => {
     name = name.toLowerCase();
@@ -206,6 +240,9 @@ exports.reloadShipData = async (client) => {
     this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
     console.log("Loaded api_start2!")
 
+    this.birthdays = require("./kcbirthday.json");
+    console.log(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
+    client.timerManager.sheduleNextBirthday();
     /*try {
         const pgClient = new Client(client.config.tsunDB);
         await pgClient.connect();

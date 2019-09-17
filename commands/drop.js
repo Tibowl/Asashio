@@ -68,6 +68,8 @@ exports.queue = async (ship, rank, cached) => {
             "samples0": `[${entry.countZero}/${entry.totalZero}]`,
             "rate1": this.percentage(entry.countOne, entry.totalOne),
             "samples1": `[${entry.countOne}/${entry.totalOne}]`,
+            "rateTotal": this.percentage(entry.count, entry.total),
+            "samplesTotal": `[${entry.count}/${entry.total}]`,
             "totalDrops": count
         };
     }
@@ -92,19 +94,25 @@ exports.getDisplayDataString = (cached, message) => {
     if(drops.length == 0) 
         return `No ${cached.ship.full_name} drops found`;
 
-
     const totalCount = drops.length;
     drops = message.channel.type == "dm" ? drops.slice(0, 35) : drops.slice(0, 10)
 
     const rate0Len = Math.max(...drops.map(drop => drop.rate0.length));
     const samples0Len = Math.max(...drops.map(drop => drop.samples0.length));
+    
+    const rateTotalLen = Math.max(...drops.map(drop => drop.rateTotal.length));
 
     const rate1Len = Math.max(...drops.map(drop => drop.rate1.length));
     const longestMap = Math.max(...drops.map(drop => (drop.map+drop.node).length));
 
-
-    const dropTable = `${"Map".padEnd(longestMap + 7)}${"Rate first".padEnd(samples0Len + rate0Len + 3)} Rate first dupe
+    let dropTable = `${"Map".padEnd(longestMap + 7)}${"Rate first".padEnd(samples0Len + rate0Len + 3)} Rate first dupe
 ${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rate0.padStart(rate0Len)} ${drop.samples0.padEnd(samples0Len)} | ${drop.rate1.padStart(rate1Len)} ${drop.samples1}`).join("\n")}`
+
+
+    if(drops.map(drop => drop.samples0).filter(k => k != "[0/0]").length == 0 && drops.map(drop => drop.samples1).filter(k => k != "[0/0]").length == 0)
+        dropTable = `${"Map".padEnd(longestMap + 7)}Rate
+${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rateTotal.padStart(rateTotalLen)} ${drop.samplesTotal}`).join("\n")}`
+
     return `Found following drops for ${cached.ship.full_name} (${cached.rank} rank): \`\`\`
 ${dropTable}
 \`\`\`*Please note that some smaller sample size results may be inaccurate.* 

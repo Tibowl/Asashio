@@ -53,16 +53,40 @@ ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]
     }, nextTimeStamp - Date.now() + this.client.config.timerOffsetms);
 }
 
-Date.prototype.shiftDate = function(time) {
-    this.setUTCDate(this.getUTCDate() + time)
-}
-Date.prototype.shiftMonth = function(time) {
-    this.setUTCMonth(this.getUTCMonth() + time)
-}
-Date.prototype.shiftHour = function(time) {
-    this.setUTCHours(this.getUTCHours() + time)
-}
+exports.getNextBirthdayDate = (now = Date.now()) => {
+    const midnight = new Date(now);
+    midnight.setUTCHours(15, 0, 0, 0);
+    if(midnight.getTime() < now) midnight.shiftDate(1);
 
+    for(let i = 0; i < 370; i++) {
+        if(this.client.data.birthdays
+            .some(s => s.Day == midnight.getUTCDate() + 1 && s.Month == midnight.getUTCMonth() + 1))
+            return midnight;
+        midnight.shiftDate(1);
+    }
+    return midnight;
+}
+exports.getShipsOnBirthday = (date) => {
+    return this.client.data.birthdays
+        .filter(s => s.Day == date.getUTCDate() + 1 && s.Month == date.getUTCMonth() + 1)
+        .map(s => s.Name)
+        .sort((a,b) => a-b)
+}
+exports.nextBirthday = undefined;
+exports.sheduleNextBirthday = () => {
+    if(exports.nextBirthday) clearTimeout(this.nextBirthday);
+
+    const midnight = this.getNextBirthdayDate();
+    const shipList = this.getShipsOnBirthday(midnight);
+
+    console.log("Announcing birthday of " + shipList.join(", ").replace(/,([^,]*)$/, " and$1") + " on " + midnight.toISOString())
+    this.nextBirthday = setTimeout(() => {
+        const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
+        for(let channel of this.client.config.birthdayChannels) 
+            this.client.channels.get(channel).send(newMessage);
+        this.sheduleNextBirthday(Date.now() + 5000);
+    }, midnight.getTime() - Date.now() + this.client.config.timerOffsetms);
+}
 // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443 
 exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
     const timeStamps = {};
@@ -151,4 +175,14 @@ exports.update = async (newMessage) => {
     console.log(`Send ${newMessage}`)
 
     return Promise.all(deletion);
+}
+
+Date.prototype.shiftDate = function(time) {
+    this.setUTCDate(this.getUTCDate() + time)
+}
+Date.prototype.shiftMonth = function(time) {
+    this.setUTCMonth(this.getUTCMonth() + time)
+}
+Date.prototype.shiftHour = function(time) {
+    this.setUTCHours(this.getUTCHours() + time)
 }

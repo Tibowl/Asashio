@@ -5,4 +5,5 @@ module.exports = (client) => {
     client.linkManager.loadLinks(client);
     client.timerManager.init(client);
     client.tweetManager.init(client);
+    client.data.reloadShipData(client);
 }

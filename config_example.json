@@ -4,6 +4,7 @@
     "admins": ["YOUR USER ID HERE"],
     "timerChannels": ["CHANNEL ID HERE"],
     "tweetChannels": ["CHANNEL ID HERE"],
+    "birthdayChannels": ["CHANNEL ID HERE"],
     "toTweet": ["294025417", "105035479"],
     "timerOffsetms": 1000,
     "twitter": {
