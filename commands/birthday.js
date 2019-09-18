@@ -8,7 +8,7 @@ exports.run = async (client, message, args) => {
 
         const next = new Date(now);
         next.setUTCHours(15, 0, 0, 0);
-        if(next.getTime() > now.getTime()) next.shiftDate(1);
+        if(now.getTime() > next.getTime()) next.shiftDate(1);
 
         while(!(ship.Day == next.getUTCDate() + 1 && ship.Month == next.getUTCMonth() + 1))
             next.shiftDate(1);
