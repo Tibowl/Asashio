@@ -58,17 +58,22 @@ exports.getNextBirthdayDate = (now = Date.now()) => {
     midnight.setUTCHours(15, 0, 0, 0);
     if(midnight.getTime() < now) midnight.shiftDate(1);
 
+    midnight.shiftDate(1);
     for(let i = 0; i < 370; i++) {
         if(this.client.data.birthdays
-            .some(s => s.Day == midnight.getUTCDate() + 1 && s.Month == midnight.getUTCMonth() + 1))
+            .some(s => s.Day == midnight.getUTCDate() && s.Month == midnight.getUTCMonth() + 1)) {
+            midnight.shiftDate(-1);
             return midnight;
+        }
         midnight.shiftDate(1);
     }
     return midnight;
 }
 exports.getShipsOnBirthday = (date) => {
+    const dateJapan = new Date(date);
+    dateJapan.shiftDate(1);
     return this.client.data.birthdays
-        .filter(s => s.Day == date.getUTCDate() + 1 && s.Month == date.getUTCMonth() + 1)
+        .filter(s => s.Day == dateJapan.getUTCDate() && s.Month == dateJapan.getUTCMonth() + 1)
         .map(s => s.Name)
         .sort((a,b) => a-b)
 }

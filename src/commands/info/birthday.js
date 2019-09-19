@@ -10,8 +10,10 @@ exports.run = async (client, message, args) => {
         next.setUTCHours(15, 0, 0, 0);
         if(now.getTime() > next.getTime()) next.shiftDate(1);
 
-        while(!(ship.Day == next.getUTCDate() + 1 && ship.Month == next.getUTCMonth() + 1))
+        next.shiftDate(1);
+        while(!(ship.Day == next.getUTCDate() && ship.Month == next.getUTCMonth() + 1))
             next.shiftDate(1);
+        next.shiftDate(-1);
         return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now)}`)
     }
     
