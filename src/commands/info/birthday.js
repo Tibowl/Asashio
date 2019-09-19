@@ -19,7 +19,7 @@ exports.run = async (client, message, args) => {
     
     const birthdays = []
     let lastDate = now.getTime();
-    for(let i = 0; i < 5; i++) {
+    for(let i = 0; i < (message.channel.type == 'dm' ? 20 : 5); i++) {
         const next = client.timerManager.getNextBirthdayDate(lastDate);
 
         birthdays.push(`${client.timerManager.getShipsOnBirthday(next)

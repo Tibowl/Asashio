@@ -1,3 +1,5 @@
+const fs = require("fs");
+
 exports.run = (client, message, args) => {
     if(!client.config.admins.includes(message.author.id)) return;
     if(!args || args.length < 1) return message.reply("Must provide a command name to reload.");
@@ -5,17 +7,15 @@ exports.run = (client, message, args) => {
     let commandName = args[0];
 
     if(commandName === 'config') {
-        delete require.cache[require.resolve(`./../config.json`)];
-        client.config = require("./../config.json")
+        delete require.cache[require.resolve(`../../config.json`)];
+        client.config = require("../../config.json")
         return message.reply(`The config has been reloaded`);
-    }
-    if(commandName === 'data') {
-        delete require.cache[require.resolve(`./../DataManager.js`)];
-        client.data = require("./../DataManager.js")
+    } else if(commandName === 'data') {
+        delete require.cache[require.resolve(`../../utils/DataManager.js`)];
+        client.data = require("../../utils/DataManager.js")
         client.data.reloadShipData(client);
         return message.reply(`The DataManager is now being reloaded!`);
-    }
-    if(commandName === 'links') {
+    } else if(commandName === 'links') {
         client.linkManager.loadLinks(client);
         return message.reply(`Links are now being reloaded!`);
     }
@@ -32,11 +32,25 @@ exports.run = (client, message, args) => {
             }
     }
 
-    delete require.cache[require.resolve(`./${commandName}.js`)];
-
-    client.commands.delete(commandName);
-    client.commands.set(commandName, require(`./${commandName}.js`));
-    return message.reply(`The command \`${commandName}\` has been reloaded`);
+    const readDir = (dir) => {
+        fs.readdir(dir, (err, files) => {
+            if (err) return console.error(err);
+            files.forEach(file => {
+                if (!file.endsWith(".js")) return readDir(dir + file + "/");
+                let name = file.split(".")[0];
+                if(name == commandName) {
+                    delete require.cache[require.resolve(`../../${dir}/${commandName}.js`)];
+                    let props = require(`../../${dir}/${commandName}.js`);
+                    console.log(`Loading ${commandName}`);
+                    client.commands.delete(commandName);
+                    client.commands.set(commandName, props);
+                }
+            });
+        });
+    }
+    readDir("./commands/");
+    
+    return message.reply(`The command \`${commandName}\` will be reloaded`);
 };
 
 exports.category = "Admin";
