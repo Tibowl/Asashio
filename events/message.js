@@ -18,6 +18,7 @@ module.exports = async (client, message) => {
         const msg = cmd.run(client, message, args, command);
         if(!msg || message.channel.type !== "text") return;
         const reply = await msg;
+        if(!reply) return;
 
         await reply.react('❌')
         reply.awaitReactions(
