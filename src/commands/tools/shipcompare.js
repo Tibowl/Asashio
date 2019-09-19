@@ -1,4 +1,5 @@
-const Ship = require("./ship.js");
+const Utils = require("../../utils/Utils.js");
+
 exports.run = (client, message, args) => {
     if(!args || args.length < 1 || args.join(" ").split(",").length != 2) return message.reply("Must provide two ship names.");
     const data = client.data;
@@ -68,11 +69,8 @@ ${shipB.equipment_text}`;
     ship.remodel_text = `${shipA.remodel_text}
 ↓
 ${shipB.remodel_text}`;
-
-    console.log(ship)
-    const embed = Ship.displayShip(ship)
     
-    return message.channel.send(embed);
+    return message.channel.send(Utils.displayShip(ship));
 }
 
 

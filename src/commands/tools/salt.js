@@ -13,7 +13,7 @@ exports.run = (client, message, args) => {
     return message.channel.send(`**~${(rate*100).toLocaleString(undefined, {
         "minimumFractionDigits": 1,
         "maximumSignificantDigits": 4
-    })}%** to get a ${dropRate.toLocaleString()}% drop in ${runs.toLocaleString()} runs)`);
+    })}%** to get a ${dropRate.toLocaleString()}% drop in ${runs.toLocaleString()} runs`);
 }
 
 exports.category = "Tools";

@@ -211,7 +211,9 @@ exports.help = () => {
     - When no attack given, gives an attack suffering chart.
     - When given a ship, assumes unmarried and full hp.
     - When given maxhp > 200, assuming abyssal (no overkill).
-    - Attacks are assumed post-cap.`
+    - Attacks are assumed post-cap.
+
+For more features, use the web version at <https://flatisjustice.moe/dmgsuffer>`
 }
 exports.usage = () => {
     return "suffering <hp(/maxhp)> [armor] [attack] OR .suffering <ship> [attack]"
