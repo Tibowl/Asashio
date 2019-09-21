@@ -4,7 +4,8 @@
   "description": "KC oriented Discord bot",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd src && node main"
   },
   "author": "Tibi",
   "license": "ISC",
@@ -13,7 +14,6 @@
     "discord.js": "^11.5.1",
     "enmap": "^5.1.2",
     "node-fetch": "^2.6.0",
-    "pg": "^7.12.1",
     "twit": "^2.2.11"
   }
 }
