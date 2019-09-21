@@ -8,7 +8,7 @@ exports.run = (client, message, args) => {
     const equip = data.getEquipByName(equipName);
 
     if(equip == undefined) return message.reply("Unknown equip");
-    console.log(equip)
+    // console.log(equip)
 
     const embed = this.displayEquip(equip, data)
     return message.channel.send(embed);

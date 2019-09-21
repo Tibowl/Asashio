@@ -19,14 +19,16 @@ exports.run = (client, message, args) => {
 
     if(quest == undefined) return message.reply("Unknown quest");
 
-    const type = questTypes[questId.substring(0,1)];
-    
     const embed = new Discord.RichEmbed()
         .setTitle([quest.label || questId, quest.title_en, quest.title].filter(a => a).join(" | "))
         .setURL(`https://kancolle.fandom.com/wiki/Quests#${questId}`)
-        .setThumbnail(this.getImage(type[0]))
-        .setColor(type[1])
         .setDescription(this.parseText(quest.detail_en, client));
+
+    const type = questTypes[questId.substring(0,1)] || questTypes[quest.letter];
+    if(type)
+        embed.setThumbnail(this.getImage(type[0]))
+            .setColor(type[1])
+
     let rewards = "";
     if(quest.reward_fuel > 0 || quest.reward_ammo > 0 || quest.reward_bauxite > 0 || quest.reward_steel > 0)
         rewards = `${quest.reward_fuel}×${client.config.emoji.fuel} ${quest.reward_ammo}×${client.config.emoji.ammo} ${quest.reward_bauxite}×${client.config.emoji.bauxite} ${quest.reward_steel}×${client.config.emoji.steel}
@@ -42,7 +44,7 @@ exports.run = (client, message, args) => {
 }
 
 exports.parseText = (text, client) => {
-    console.log(text)
+    // console.log(text)
     let links = text.match(/\[\[.*?\]\]/g);
 
     if(links)

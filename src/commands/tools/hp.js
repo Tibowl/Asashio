@@ -1,3 +1,5 @@
+const Utils = require("../../utils/Utils.js")
+
 exports.run = (client, message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a ship name.");
 
@@ -5,16 +7,16 @@ exports.run = (client, message, args) => {
     const ship = client.data.getShipByName(shipName);
 
     if(ship == undefined) return message.reply("Unknown ship");
-    console.log(ship)
+    // console.log(ship)
 
     return message.channel.send(`\`\`\`
-unmaried: ${this.generateLine(ship, false)}
-married: ${this.generateLine(ship, true)}
+unmaried: ${this.generateLine(ship, false, client)}
+married: ${this.generateLine(ship, true, client)}
 \`\`\``);
 }
 
-exports.generateLine = (ship, married) => {
-    const f = (hp) => `${hp%12?`4N+${hp%4}`:`12N+0`}`
+exports.generateLine = (ship, married, client) => {
+    const f = (hp) => `${hp%12?`4N+${hp%4}`:`12N+0`} (Overkill: ${(Utils.calculatePostCap(9999, hp, hp, 1).taiha * 100).toFixed(1)}% Taiha)`
     let {hp, hp_max} = ship;
     if(married) 
         hp = Math.min(hp_max, hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(hp/10)])

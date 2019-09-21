@@ -1,5 +1,5 @@
 exports.run = (client, message, args) => {
-    return message.channel.send(`This bot is created by @Tibo#8271 - contact him in case there are any problems.
+    return message.channel.send(`This bot is created by @Tibo#8271 - contact him in case there are any problems or if you want to donate slots/asashio rings.
 
 Ship/Quest data provided by wikia.
 Birthday data provided by swdn.

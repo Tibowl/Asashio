@@ -1,8 +1,9 @@
 const { createCanvas } = require('canvas')
 const { Attachment } = require('discord.js');
+const Utils = require("../../utils/Utils.js")
 
 exports.run = async (client, message, args) => {
-    if(!args || args.length < 1) return message.reply("Must provide at least HP or ship name");
+    if(!args || args.length < 1) return message.channel.send("Overkill HP chart: https://i.imgur.com/hVwdRbo.png");
 
     let [hp, armor, attack] = args;
     let maxhp = hp;
@@ -24,8 +25,8 @@ exports.run = async (client, message, args) => {
 
     // Create overkill bar
     if(armor == undefined) {
-        const calculated = calculatePostCap(9999, hp, maxhp, 1);
-        return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}Taiha: ${(calculated.taiha * 100).toFixed(2)}% / Chuuha: ${(calculated.chuuha * 100).toFixed(2)}% / Shouha: ${(calculated.shouha * 100).toFixed(2)}%
+        const calculated = Utils.calculatePostCap(9999, hp, maxhp, 1);
+        return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${client.config.emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${client.config.emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${client.config.emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, createBar(calculated));
     }
 
@@ -38,9 +39,9 @@ HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, createBar(cal
     if(isNaN(attack = parseInt(attack)) || attack < 0 || attack > 10000) return message.reply("Invalid/unrealistic attack.");
 
     // Create attack bar
-    const calculated = calculatePostCap(attack, hp, maxhp, armor);
+    const calculated = Utils.calculatePostCap(attack, hp, maxhp, armor);
     return message.channel.send(`${maxhp >= 200 ? "**Assuming abyssal**\n" : `${ship ? `Suffering bar for **${ship.full_name}** (unmarried) against an attack with post-cap power of **${attack}**
-` : ""}`}${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}Taiha: ${(calculated.taiha * 100).toFixed(2)}% / Chuuha: ${(calculated.chuuha * 100).toFixed(2)}% / Shouha: ${(calculated.shouha * 100).toFixed(2)}% / Green: ${(calculated.ok * 100).toFixed(2)}%
+` : ""}`}${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${client.config.emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${client.config.emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${client.config.emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}% / Green: ${(calculated.ok * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp} (${calculated.mindmg}~${calculated.maxdmg} dmg)
 ${calculated.overkill || calculated.scratch ? `
 ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
@@ -79,7 +80,7 @@ function createGraph(hp, maxhp, armor) {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     for(let val = graphmin; val < graphmax; val++) {
-        const stages = calculatePostCap(val, hp, maxhp, armor);
+        const stages = Utils.calculatePostCap(val, hp, maxhp, armor);
         
         // console.log(stages);
         let prev = 0;
@@ -115,93 +116,6 @@ function createGraph(hp, maxhp, armor) {
         context.fillText(percentage * 100 + "%", width + 3, (1-percentage) * height);
     }
     return new Attachment(canvas.toBuffer(), `Suffering chart ${hp} of ${maxhp} with ${armor} armor.png`);
-}
-function calculatePostCap(atk, currenthp, maxhp, armor, calculatedDamage = calculateDamagesDone(atk, currenthp, armor, maxhp)) {
-    let sum = 0;
-    let dmgsDealth = calculatedDamage.damages;
-    for(let posdmg in dmgsDealth)
-        sum += dmgsDealth[posdmg];
-    let stages = {
-        "sunk" : 0,
-        "taiha" : 0,
-        "chuuha" : 0,
-        "shouha" : 0,
-        "ok" : 0,
-        "overkill" : 0,
-        "normal" : 0,
-        "scratch" : 0,
-        "hps" : []
-    };
-    for(let posdmg in dmgsDealth) {
-        let ch = dmgsDealth[posdmg], afterhp = currenthp - posdmg;
-        if(ch == 0) continue;
-        stages.hps[afterhp] = ch/sum;
-        if(afterhp <= 0)
-            stages.sunk += ch/sum;
-        else if(afterhp <= .25 * maxhp)
-            stages.taiha += ch/sum;
-        else if(afterhp <= .50 * maxhp)
-            stages.chuuha += ch/sum;
-        else if(afterhp <= .75 * maxhp)
-            stages.shouha += ch/sum;
-        else
-            stages.ok += ch/sum;
-
-        stages.minhp = compare.min(stages.minhp, afterhp < 0 ? 0 : afterhp);
-        stages.mindmg = compare.min(stages.mindmg, posdmg);
-        stages.maxhp = compare.max(stages.maxhp, afterhp < 0 ? 0 : afterhp);
-        stages.maxdmg = compare.max(stages.maxdmg, posdmg);
-    }
-    stages.overkill += calculatedDamage.overkill / sum;
-    stages.normal += calculatedDamage.normal / sum;
-    stages.scratch += calculatedDamage.scratch / sum;
-    return stages;
-}
-function calculateDamagesDone(atk, currenthp, armor, maxhp, overkillprot = currenthp > 0.25 * maxhp && maxhp < 200) {
-    let dmgtype = {
-        "scratch" : 0,
-        "normal" : 0,
-        "overkill" : 0
-    };
-    let damages = {};
-    for(let arm = 0; arm < armor; arm++) {
-        let dmg = Math.floor((atk - (0.7 * armor + arm * 0.6)));
-
-        if(dmg >= currenthp && overkillprot) { // Overkill protection
-            let possibledmg = [];
-            for(let hpRoll = 0; hpRoll < currenthp; hpRoll++)
-                possibledmg.push(Math.floor(0.5 * currenthp + 0.3 * hpRoll));
-            for(let posdmg of possibledmg)
-                damages[posdmg] = (damages[posdmg] || 0) + (1.0 / possibledmg.length);
-            dmgtype.overkill = (dmgtype.overkill || 0) + 1.0;
-        } else if(dmg < 1) { // Scratch
-            let possibledmg = [];
-            for(let hpRoll = 0; hpRoll < currenthp; hpRoll++)
-                possibledmg.push(Math.floor(0.06 * currenthp + 0.08 * hpRoll));
-            for(let posdmg of possibledmg)
-                damages[posdmg] = (damages[posdmg] || 0) + (1.0 / possibledmg.length);
-            dmgtype.scratch = (dmgtype.scratch || 0) + 1.0;
-        } else {
-            damages[dmg] = (damages[dmg] || 0) + 1.0;
-            dmgtype.normal = (dmgtype.normal || 0) + 1.0;
-        }
-    }
-    dmgtype.damages = damages;
-    return dmgtype;
-}
-const compare = {
-    min: function(a, b) {
-        if(isNaN(a)) return b;
-        if(isNaN(b)) return a;
-        if(a == 0 || b == 0)
-            return 0;
-        return Math.min(a||b, b||a);
-    },
-    max: function(a, b) {
-        if(isNaN(a)) return b;
-        if(isNaN(b)) return a;
-        return Math.max(a||b, b||a);
-    }
 }
 
 exports.category = "Tools";
