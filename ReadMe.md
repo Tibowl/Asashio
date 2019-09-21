@@ -1,7 +1,6 @@
 TODO:
 
 Bono:
-    ++nb
     ++submitinfo
 
 asashio:
