@@ -18,18 +18,26 @@ exports.run = async (client, message, args) => {
     }
     
     const birthdays = []
-    let lastDate = now.getTime();
+    let today = ""
+
+    let lastDate = now.getTime() - 24*60*60*1000;
     for(let i = 0; i < (message.channel.type == 'dm' ? 20 : 5); i++) {
         const next = client.timerManager.getNextBirthdayDate(lastDate);
 
-        birthdays.push(`${client.timerManager.getShipsOnBirthday(next)
-            .map(s => `**${s}**`)
-            .join(", ")
-            .replace(/,([^,]*)$/, " and$1")} in ${this.getDateLine(next, now)}`)
+        if(next < now.getTime())
+            today = (`**Today** it's ${client.timerManager.getShipsOnBirthday(next)
+                .map(s => `**${s}**`)
+                .join(", ")
+                .replace(/,([^,]*)$/, " and$1")}'s birthday.\n`)
+        else
+            birthdays.push(`${client.timerManager.getShipsOnBirthday(next)
+                .map(s => `**${s}**`)
+                .join(", ")
+                .replace(/,([^,]*)$/, " and$1")} in ${this.getDateLine(next, now)}`)
         lastDate = next.getTime() + 10000;
     }
     
-    return message.channel.send(`Upcoming birthdays:\n` + birthdays.join("\n"));
+    return message.channel.send(`${today}Upcoming birthdays:\n` + birthdays.join("\n"));
 }
 exports.getDateLine = (next, now) => `**${this.timeLeft(next.getTime() - now)}** @ ${next.toLocaleString("en-UK", {
     timeZone: "Asia/Tokyo", 
@@ -54,14 +62,8 @@ exports.timeLeft = (diff) => {
         diff -= Math.floor(diff / 60 / 60) * 60 * 60;
     }
 
-    if(diff >= 60 && originalTime < 24*60*60) {
-        result.push(Math.floor(diff / 60) + "m")
-        diff -= Math.floor(diff / 60) * 60;
-    }
-
-    if(diff > 0  && originalTime < 60*60) {
-        result.push(Math.floor(diff) + "s")
-    }
+    if(originalTime < 24*60*60)
+        result.push(Math.ceil(diff / 60) + "m")
 
     return result.join(", ");
 }
