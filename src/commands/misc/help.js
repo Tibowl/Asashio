@@ -6,6 +6,7 @@ exports.run = (client, message, args) => {
             "Information": [],
             "Tools": [],
             "Links": [],
+            "Links+": [],
             "Admin": []
         };
         commands.forEach(cmd => {
@@ -23,8 +24,8 @@ ${Object.keys(categorized)
             (!client.config.admins.includes(message.author.id) && category.toLowerCase() == "admin")
         )
     ).map(category => `**${category}**
-${categorized[category].sort((a,b) => a.localeCompare(b)).map(cmd => `${client.commands.get(cmd).prefix(client)}${cmd}`).join(", ")}`)
-    .join("\n\n")}
+    ${categorized[category].sort((a,b) => a.localeCompare(b)).map(cmd => `${client.commands.get(cmd).prefix(client)}${cmd}`).join(", ")}`)
+    .join("\n")}
 
 See \`${exports.prefix(client)}help <command name>\` for more information`)
     }

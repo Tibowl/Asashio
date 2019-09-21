@@ -7,4 +7,3 @@ Bono:
 asashio:
     ?nb
     ?exped
-    ?wikia

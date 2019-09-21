@@ -9,7 +9,7 @@ exports.run = (client, message, args) => {
     return message.channel.send(`<${link}>`);
 }
 
-exports.category = "Links";
+exports.category = "Links+";
 exports.help = () => {
     return "Get link to replayer site. Will use either given URL or attached image."
 }
