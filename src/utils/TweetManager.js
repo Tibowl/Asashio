@@ -13,6 +13,20 @@ exports.init = (client) => {
     this.stream.on('tweet', (tweet) => {
         if(!toFollow.includes(tweet.user.id_str)) return;
 
+        // @KCServerWatcher
+        if(tweet.user.id_str == "980204936687489025") {
+            let text = tweet.text;
+        
+            if(tweet.extended_tweet)
+                text = tweet.extended_tweet.full_text
+
+            if(text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
+                for(let channel of client.config.tweetChannels)
+                    this.client.channels.get(channel).send(text)
+    
+            return;
+        }
+
         const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`;
         console.log(`Sending tweet to channels: ${tweetLink}`)
 
