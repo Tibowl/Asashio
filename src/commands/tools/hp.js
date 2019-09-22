@@ -9,7 +9,7 @@ exports.run = (client, message, args) => {
     if(ship == undefined) return message.reply("Unknown ship");
     // console.log(ship)
 
-    return message.channel.send(`\`\`\`
+    return message.channel.send(`HP values of **${ship.full_name}**:\`\`\`
 unmaried: ${this.generateLine(ship, false, client)}
 married: ${this.generateLine(ship, true, client)}
 \`\`\``);
