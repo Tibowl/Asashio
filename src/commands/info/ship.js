@@ -31,7 +31,7 @@ exports.run = (client, message, args) => {
     ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${client.config.emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}`).join("\n")
 
     if(ship.remodel_level) {
-        ship.remodel_text = "Remodel requires:"
+        ship.remodel_text = "Remodel requires: "
         let requirements = [`Lv.${ship.remodel_level}.`]
         const k = (remodel) => remodel == true ? 1 : remodel
 
