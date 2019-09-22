@@ -1,53 +1,53 @@
-const Twit = require('twit')
-const Discord = require('discord.js');
+const Twit = require("twit")
+const Discord = require("discord.js")
 
-exports.client = undefined;
-exports.stream = undefined;
+exports.client = undefined
+exports.stream = undefined
 
 exports.init = (client) => {
-    this.client = client;
-    const T = new Twit(client.config.twitter);
+    this.client = client
+    const T = new Twit(client.config.twitter)
 
-    const toFollow = client.config.toTweet;
+    const toFollow = client.config.toTweet
     this.stream = T.stream("statuses/filter", { follow: toFollow})
-    this.stream.on('tweet', (tweet) => {
-        if(!toFollow.includes(tweet.user.id_str)) return;
+    this.stream.on("tweet", (tweet) => {
+        if(!toFollow.includes(tweet.user.id_str)) return
 
         // @KCServerWatcher
         if(tweet.user.id_str == "980204936687489025") {
-            let text = tweet.text;
-        
+            let text = tweet.text
+
             if(tweet.extended_tweet)
                 text = tweet.extended_tweet.full_text
 
             if(text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
                 for(let channel of client.config.tweetChannels)
                     this.client.channels.get(channel).send(text)
-    
-            return;
+
+            return
         }
 
-        const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`;
+        const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
         console.log(`Sending tweet to channels: ${tweetLink}`)
 
         if(tweet.retweeted_status)
             tweet = tweet.retweeted_status
-            
+
         // Tweet has media, don't embed it
         if(tweet.extended_entities || (tweet.extended_tweet && tweet.extended_tweet.extended_entities)) {
             for(let channel of client.config.tweetChannels)
                 this.client.channels.get(channel).send(tweetLink)
-            return;
+            return
         }
 
-        let text = tweet.text;
-        
+        let text = tweet.text
+
         if(tweet.extended_tweet) {
             text = tweet.extended_tweet.full_text
-            for(const url of tweet.extended_tweet.entities.urls) 
+            for(const url of tweet.extended_tweet.entities.urls)
                 text = text.replace(url.url, url.expanded_url)
         } else {
-            for(const url of tweet.entities.urls) 
+            for(const url of tweet.entities.urls)
                 text = text.replace(url.url, url.expanded_url)
         }
 
@@ -63,6 +63,6 @@ exports.init = (client) => {
 }
 
 exports.shutdown = () => {
-    if(this.stream !== undefined) 
-        this.stream.stop();
+    if(this.stream !== undefined)
+        this.stream.stop()
 }

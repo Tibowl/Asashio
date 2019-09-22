@@ -1,14 +1,14 @@
-const Utils = require("../../utils/Utils.js");
+const Utils = require("../../utils/Utils.js")
 
 exports.run = (client, message, args) => {
-    if(!args || args.length < 1) return message.reply("Must provide a ship name.");
-    const data = client.data;
+    if(!args || args.length < 1) return message.reply("Must provide a ship name.")
+    const data = client.data
 
-    const shipName = args.join(" ");
-    const ship = data.getShipByName(shipName);
+    const shipName = args.join(" ")
+    const ship = data.getShipByName(shipName)
 
-    if(ship == undefined) return message.reply("Unknown ship");
-    ship.hp_married = Math.min(ship.hp_max, ship.hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(ship.hp/10)]);
+    if(ship == undefined) return message.reply("Unknown ship")
+    ship.hp_married = Math.min(ship.hp_max, ship.hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(ship.hp/10)])
     ship.ship_type = `${data.misc.ShipTypes[ship.type]} (${data.misc.ShipCodes[ship.type]})`
 
     for(let key of ["asw", "evasion", "los"]) {
@@ -27,13 +27,13 @@ exports.run = (client, message, args) => {
     ship.mods = [ship.firepower_mod || 0, ship.torpedo_mod || 0, ship.aa_mod || 0, ship.armor_mod || 0].join("/")
     ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
 
-    ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0);
+    ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)
     ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${client.config.emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}`).join("\n")
-    
+
     if(ship.remodel_level) {
-        ship.remodel_text = `Remodel requires:`
+        ship.remodel_text = "Remodel requires:"
         let requirements = [`Lv.${ship.remodel_level}.`]
-        const k = (remodel) => remodel == true ? 1 : remodel;
+        const k = (remodel) => remodel == true ? 1 : remodel
 
         if(ship.remodel_ammo) requirements.push(`${ship.remodel_ammo}×${client.config.emoji.ammo}`)
         if(ship.remodel_steel) requirements.push(`${ship.remodel_steel}×${client.config.emoji.steel}`)
@@ -46,11 +46,11 @@ exports.run = (client, message, args) => {
         ship.remodel_text += requirements.join(", ")
     }
     ship.class_description = `${ship.class} Class #${ship.class_number}`
-    
-    return message.channel.send(Utils.displayShip(ship));
+
+    return message.channel.send(Utils.displayShip(ship))
 }
 
-exports.category = "Information";
+exports.category = "Information"
 exports.help = () => {
     return "Get ship information."
 }
@@ -58,5 +58,5 @@ exports.usage = () => {
     return "ship <ship>"
 }
 exports.prefix = (client) => {
-    return client.config.prefix;
+    return client.config.prefix
 }

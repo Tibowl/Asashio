@@ -1,4 +1,4 @@
-const Discord = require('discord.js');
+const Discord = require("discord.js")
 const questTypes = {
     "A": ["Quest_composition.png", "#419058"],
     "B": ["Quest_sortie.png", "#D95556"],
@@ -12,82 +12,82 @@ const questTypes = {
 }
 
 exports.run = (client, message, args) => {
-    if(!args || args.length !== 1) return message.reply("Must provide a quest.");
+    if(!args || args.length !== 1) return message.reply("Must provide a quest.")
 
-    const questId = args[0].toUpperCase();
-    const quest = client.data.getQuestByName(questId);
+    const questId = args[0].toUpperCase()
+    const quest = client.data.getQuestByName(questId)
 
-    if(quest == undefined) return message.reply("Unknown quest");
+    if(quest == undefined) return message.reply("Unknown quest")
 
     const embed = new Discord.RichEmbed()
         .setTitle([quest.label || questId, quest.title_en, quest.title].filter(a => a).join(" | "))
         .setURL(`https://kancolle.fandom.com/wiki/Quests#${questId}`)
-        .setDescription(this.parseText(quest.detail_en, client));
+        .setDescription(this.parseText(quest.detail_en, client))
 
-    const type = questTypes[questId.substring(0,1)] || questTypes[quest.letter];
+    const type = questTypes[questId.substring(0,1)] || questTypes[quest.letter]
     if(type)
         embed.setThumbnail(this.getImage(type[0]))
             .setColor(type[1])
 
-    let rewards = "";
+    let rewards = ""
     if(quest.reward_fuel > 0 || quest.reward_ammo > 0 || quest.reward_bauxite > 0 || quest.reward_steel > 0)
         rewards = `${quest.reward_fuel}×${client.config.emoji.fuel} ${quest.reward_ammo}×${client.config.emoji.ammo} ${quest.reward_bauxite}×${client.config.emoji.bauxite} ${quest.reward_steel}×${client.config.emoji.steel}
 `
     if(quest.reward_other)
         rewards += this.parseText(quest.reward_other, client)
 
-    embed.addField("Rewards", rewards);
+    embed.addField("Rewards", rewards)
     if(quest.note)
         embed.addField("Notes", this.parseText(quest.note, client))
-    
-    return message.channel.send(embed);
+
+    return message.channel.send(embed)
 }
 
 exports.parseText = (text, client) => {
     // console.log(text)
-    let links = text.match(/\[\[.*?\]\]/g);
+    let links = text.match(/\[\[.*?\]\]/g)
 
     if(links)
         for (let match of links) {
             let clean = match.replace(/\[\[/, "").replace(/\]\]/, "")
 
-            let title = clean, target = clean;
+            let title = clean, target = clean
             if(clean.includes("|"))
-                [target, title] = clean.split("|").map(a => a.trim());
+                [target, title] = clean.split("|").map(a => a.trim())
 
             if(target.startsWith("File:")) {
-                title = clean.split("|").find(a => a.startsWith("link=")).replace("link=", "").replace(/_/g, " ") || title;
+                title = clean.split("|").find(a => a.startsWith("link=")).replace("link=", "").replace(/_/g, " ") || title
 
-                const fileName = target.replace(/ /g, "_").trim();
+                const fileName = target.replace(/ /g, "_").trim()
                 text = text.replace(match, this.getEmoji(fileName, client))
             }
-            
+
             if(target.startsWith("#"))
-                target = "Quests#" + target;
+                target = "Quests#" + target
 
             text = text.replace(match, `[${title}](https://kancolle.fandom.com/wiki/${target.replace(/ /g, "_")})`)
         }
 
-    
-    links = text.match(/\{\{.*?\}\}/g);
+
+    links = text.match(/\{\{.*?\}\}/g)
     if(links)
         for (let match of links) {
             let clean = match.replace(/\{\{/, "").replace(/\}\}/, "")
 
-            let title = clean.split("|")[1];
-            if(clean.split("|")[0] == "color")    
+            let title = clean.split("|")[1]
+            if(clean.split("|")[0] == "color")
                 text = text.replace(match, clean.split("|")[2])
 
             for(let arg of clean.split("|").slice(1))
                 if(!arg.includes("=")) {
-                    title = arg;
-                    break;
+                    title = arg
+                    break
                 }
-            
+
             text = text.replace(match, `[${title.replace(/\//g, " ")}](https://kancolle.fandom.com/wiki/${title.replace(/ /g, "_")})`)
         }
 
-    return text.replace(/<br>/g, "\n").replace(/<br\/>/g, "\n").replace(/<br \/>/g, "\n").replace(/'''/g, "**");
+    return text.replace(/<br>/g, "\n").replace(/<br\/>/g, "\n").replace(/<br \/>/g, "\n").replace(/'''/g, "**")
 }
 
 exports.getEmoji = (fileName, client) => {
@@ -99,7 +99,7 @@ exports.getEmoji = (fileName, client) => {
         case "File:Furniture_box_medium.png":
             return client.config.emoji.furniture_box_m
         case "File:Furniture_box_small.jpg":
-        case "File:Furniture_box_small.jpg":
+        case "File:Furniture_box_small.png":
             return client.config.emoji.furniture_box_s
 
         case "File:Development_material.png":
@@ -139,13 +139,13 @@ exports.getEmoji = (fileName, client) => {
         case "File:Ranking_point_reward.png":
             return client.config.emoji.ranking_points
         default:
-            return ``
+            return ""
     }
 }
 exports.getImage = (file) => {
     return `https://kancolle.fandom.com/wiki/Special:FilePath/${file.replace(/ /g, "_")}`
 }
-exports.category = "Information";
+exports.category = "Information"
 exports.help = () => {
     return "Get quest information."
 }
@@ -153,5 +153,5 @@ exports.usage = () => {
     return "quest <quest id>"
 }
 exports.prefix = (client) => {
-    return client.config.prefix;
+    return client.config.prefix
 }
