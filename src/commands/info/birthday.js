@@ -14,7 +14,7 @@ exports.run = async (client, message, args) => {
         while(!(ship.Day == next.getUTCDate() && ship.Month == next.getUTCMonth() + 1))
             next.shiftDate(1)
         next.shiftDate(-1)
-        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now)}`)
+        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now, ship.Year)}`)
     }
 
     const birthdays = []
@@ -39,15 +39,20 @@ exports.run = async (client, message, args) => {
 
     return message.channel.send(`${today}Upcoming birthdays:\n` + birthdays.join("\n"))
 }
-exports.getDateLine = (next, now) => `**${this.timeLeft(next.getTime() - now)}** @ ${next.toLocaleString("en-UK", {
-    timeZone: "Asia/Tokyo",
-    hour12: false,
-    hourCycle: "h24",
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-})}`
+exports.getDateLine = (next, now, year) => {
+    const timeLeft = this.timeLeft(next.getTime() - now)
+    if(year)
+        next.setUTCFullYear(year)
+    return `**${timeLeft}** @ ${next.toLocaleString("en-UK", {
+        timeZone: "Asia/Tokyo",
+        hour12: false,
+        hourCycle: "h24",
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+    })}`
+}
 exports.timeLeft = (diff) => {
     let result = [], originalTime = diff / 1000
 
