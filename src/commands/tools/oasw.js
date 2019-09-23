@@ -102,6 +102,13 @@ exports.aswEquip = (ship, aswOffset) => {
             }
             allLinesT3 = equipAsw.filter(val => val == 12).length == 0
         }
+
+        if(slots > 2) {
+            string += this.generateLine(equipAsw, ship, aswRequired, aswOffset, maxSlots)
+            equipAsw[equipAsw.length - 1] = 7
+            equipAsw[equipAsw.length - 2] = 8
+        }
+
         string += this.generateLine(equipAsw, ship, aswRequired, aswOffset, maxSlots, true)
     }
     return string + "```"
@@ -118,6 +125,7 @@ exports.generateLine = (equipAsw, ship, aswRequired, aswOffset, maxSlots, force 
             case 12: return "T4"
             case 10: return "T3"
             case  8: return "DC"
+            case  7: return "T2"
             case 15: return "HFDF"
             case 13: return "T144"
             default: return val
