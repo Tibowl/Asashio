@@ -5,9 +5,9 @@ exports.init = (client) => {
     this.sheduleNextMessages()
 }
 
-exports.sheduleNextMessages = () => {
-    const nextTimeStamps = this.nextResetsTimestamp(Date.now() + 5000)
-    const nextTimeStampsFull = this.nextResetsTimestamp(Date.now() + 5000, true)
+exports.sheduleNextMessages = (now = Date.now() + 60000) => {
+    const nextTimeStamps = this.nextResetsTimestamp(now)
+    const nextTimeStampsFull = this.nextResetsTimestamp(now, true)
     const nextTimeStamp = Math.min(...Object.values(nextTimeStamps))
 
     /*console.log(`Next timestamps:
@@ -78,18 +78,19 @@ exports.getShipsOnBirthday = (date) => {
         .sort((a,b) => a-b)
 }
 exports.nextBirthday = undefined
-exports.sheduleNextBirthday = () => {
+exports.sheduleNextBirthday = (now = Date.now()) => {
     if(exports.nextBirthday) clearTimeout(this.nextBirthday)
 
-    const midnight = this.getNextBirthdayDate()
+    const midnight = this.getNextBirthdayDate(now)
     const shipList = this.getShipsOnBirthday(midnight)
 
     console.log("Announcing birthday of " + shipList.join(", ").replace(/,([^,]*)$/, " and$1") + " on " + midnight.toISOString())
     this.nextBirthday = setTimeout(() => {
+        this.sheduleNextBirthday(Date.now() + 60 * 60000)
+
         const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
         for(let channel of this.client.config.birthdayChannels)
             this.client.channels.get(channel).send(newMessage)
-        this.sheduleNextBirthday(Date.now() + 5000)
     }, midnight.getTime() - Date.now() + this.client.config.timerOffsetms)
 }
 // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443

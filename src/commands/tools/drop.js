@@ -1,6 +1,6 @@
 const Utils = require("./../../utils/Utils.js")
 
-exports.run = async (client, message, args) => await Utils.dropTable(client, message, args, "tsundb")
+exports.run = (client, message, args) => Utils.dropTable(client, message, args, "tsundb")
 
 exports.category = "Tools"
 exports.help = () => {
