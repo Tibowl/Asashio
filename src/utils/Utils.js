@@ -1,3 +1,4 @@
+const fetch = require("node-fetch")
 const Discord = require("discord.js")
 
 exports.displayShip = (ship) => {
@@ -124,4 +125,168 @@ const compare = {
         if(isNaN(b)) return a
         return Math.max(a||b, b||a)
     }
+}
+
+const shipDropCache = {}
+exports.dropTable = async (client, message, args, db = "tsundb") => {
+    if(!args || args.length < 1) return message.reply("Must provide a ship.")
+
+    let rank = "S"
+    if(args[args.length - 1].toUpperCase() == "A") {
+        args.pop()
+        rank = "A"
+    } else if(args[args.length - 1].toUpperCase() == "S") {
+        args.pop()
+        rank = "S"
+    }
+
+    const shipName = args.join(" ")
+    let ship = client.data.getShipByName(shipName)
+
+    if(ship == undefined) return message.reply("Unknown ship")
+
+    if(ship.remodel_from)
+        ship = client.data.getShipByName(ship.remodel_from.replace("/", "")) || ship
+    ship = client.data.getShipByName(ship.name)
+
+    // Check if cached, if so show cached reply.
+    const cached = shipDropCache[db + ship.api_id + rank]
+    if(cached && cached.time + 6 * 60 * 60 * 1000 > new Date().getTime()) {
+        const reply = await message.channel.send(this.getDisplayDataString(cached, message, db))
+        if(cached.callback)
+            cached.callback.push(() => this.displayData(cached, reply, db))
+        return reply
+    }
+
+    const startTime = new Date()
+    const dropData = {}
+
+    // Not cached, add it
+    const newcached = shipDropCache[db + ship.api_id + rank] = {
+        "time": startTime.getTime(),
+        dropData,
+        ship,
+        rank,
+        "loading": true
+    }
+    const reply = await message.channel.send(this.getDisplayDataString({ship}, message, db))
+    newcached.callback = [() => this.displayData(newcached, reply, db)]
+
+    this.queue(ship, rank, newcached, db)
+
+    return reply
+}
+function getDropBaseLink(ship, rank, db) {
+    switch (db) {
+        case "tsundb":
+            return `http://kc.piro.moe/api/routing/droplocations/${ship.api_id}/${rank}`
+
+        case "poi":
+        default:
+            return `https://db.kcwiki.org/drop/ship/${ship.api_id}/${rank}.json`
+    }
+}
+exports.queue = async (ship, rank, cached, db = "tsundb") => {
+    const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
+
+    if(db == "tsundb") {
+        for(let entry of api.entries) {
+            let {map, node, difficulty, count} = entry
+
+            if(parseInt(map.split("-")[0]) > 20)
+                map = "E-" + map.split("-")[1]
+
+            cached.dropData[entry.map + node + difficulty] = {
+                map,
+                difficulty,
+                node,
+                rank,
+                "rate0": this.percentage(entry.countZero, entry.totalZero),
+                "samples0": `[${entry.countZero}/${entry.totalZero}]`,
+                "rate1": this.percentage(entry.countOne, entry.totalOne),
+                "samples1": `[${entry.countOne}/${entry.totalOne}]`,
+                "rateTotal": this.percentage(entry.count, entry.total),
+                "samplesTotal": `[${entry.count}/${entry.total}]`,
+                "totalDrops": count
+            }
+        }
+    } else if(db == "poi") {
+        for(let location in api.data) {
+            const entry = api.data[location]
+
+            let [world, map, node, difficulty] = location.split("-")
+
+            node = node.replace("(Boss)", "").trim()
+            if(parseInt(world) > 20)
+                map = `E-${map}`
+
+            cached.dropData[entry.map + node + difficulty] = {
+                map,
+                difficulty: ["", "丁", "丙", "乙", "甲"].indexOf(difficulty),
+                node,
+                rank,
+                "rateTotal": `${parseFloat(entry.rate).toFixed(3)}%`,
+                "samplesTotal": `[${entry.totalCount} dropped]`,
+                "totalDrops": entry.totalCount
+            }
+        }
+    }
+    delete cached.loading
+    cached.generateTime = api.generateTime
+    cached.callback.forEach(k => k())
+    delete cached.callback
+}
+exports.percentage = (count, total) => {
+    if(total == 0) return "?.???%"
+    return (count / total * 100).toFixed(3) + "%"
+}
+exports.displayData = (cached, reply, db) => {
+    try {
+        reply.edit(this.getDisplayDataString(cached, reply, db))
+    } catch (error) {
+        console.error(error)
+    }
+}
+exports.getDisplayDataString = (cached, message, db) => {
+    if(cached == undefined || cached.dropData == undefined || cached.loading)
+        return `Loading ${cached.ship.full_name} drop data...`
+
+    let drops = Object.values(cached.dropData).sort((a,b) => b.totalDrops - a.totalDrops)
+    if(drops.length == 0)
+        return `No ${cached.ship.full_name} drops found`
+
+    const totalCount = drops.length
+    drops = message.channel.type == "dm" ? drops.slice(0, 35) : drops.slice(0, 10)
+
+    const rateTotalLen = Math.max(...drops.map(drop => drop.rateTotal.length))
+    const longestMap = Math.max(...drops.map(drop => (drop.map+drop.node).length))
+
+    let dropTable = `${"Map".padEnd(longestMap + 7)}Rate
+${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rateTotal.padStart(rateTotalLen)} ${drop.samplesTotal}`).join("\n")}`
+
+    if(db == "tsundb") {
+        const rate0Len = Math.max(...drops.map(drop => drop.rate0.length))
+        const samples0Len = Math.max(...drops.map(drop => drop.samples0.length))
+
+
+        const rate1Len = Math.max(...drops.map(drop => drop.rate1.length))
+        if(!(drops.map(drop => drop.samples0).filter(k => k != "[0/0]").length == 0 && drops.map(drop => drop.samples1).filter(k => k != "[0/0]").length == 0))
+            dropTable = `${"Map".padEnd(longestMap + 7)}${"Rate first".padEnd(samples0Len + rate0Len + 3)} Rate first dupe
+${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rate0.padStart(rate0Len)} ${drop.samples0.padEnd(samples0Len)} | ${drop.rate1.padStart(rate1Len)} ${drop.samples1}`).join("\n")}`
+    }
+
+    return `Found following drops for ${cached.ship.full_name} (${cached.rank} rank): \`\`\`
+${dropTable}
+\`\`\`*Please note that some smaller sample size results may be inaccurate.* 
+${drops.length < totalCount ? (message.channel.type == "dm" ? `Shown top ${drops.length}/${totalCount} rows. `:`Shown top ${drops.length}/${totalCount} rows. Redo command in DM for more. `) : ""}Data from ${db == "tsundb" ? `TsunDB on ${new Date(cached.time).toLocaleString("en-UK", {
+    timeZone: "GMT",
+    timeZoneName: "short",
+    hour12: false,
+    hourCycle: "h24",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+})}` : `poi-statistics on ${cached.generateTime}`}`
 }
