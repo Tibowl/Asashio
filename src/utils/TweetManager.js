@@ -12,6 +12,8 @@ exports.init = (client) => {
     this.stream = T.stream("statuses/filter", { follow: toFollow})
     this.stream.on("tweet", (tweet) => {
         if(!toFollow.includes(tweet.user.id_str)) return
+        const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
+        if(tweet.retweeted_status) return console.log(`Skipping RT ${tweetLink}`)
 
         // @KCServerWatcher
         if(tweet.user.id_str == "980204936687489025") {
@@ -27,7 +29,6 @@ exports.init = (client) => {
             return
         }
 
-        const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
         console.log(`Sending tweet to channels: ${tweetLink}`)
 
         if(tweet.retweeted_status)
