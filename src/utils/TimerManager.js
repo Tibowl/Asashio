@@ -1,3 +1,4 @@
+const Utils = require("./Utils.js")
 exports.client = undefined
 exports.init = (client) => {
     this.client = client
@@ -89,8 +90,7 @@ exports.sheduleNextBirthday = (now = Date.now()) => {
         this.sheduleNextBirthday(Date.now() + 60 * 60000)
 
         const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
-        for(let channel of this.client.config.birthdayChannels)
-            this.client.channels.get(channel).send(newMessage)
+        Utils.sendToChannels(this.client, this.client.config.birthdayChannels, newMessage)
     }, midnight.getTime() - Date.now() + this.client.config.timerOffsetms)
 }
 // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443
@@ -176,10 +176,7 @@ exports.update = async (newMessage) => {
     this.toDeleteMessages = []
     if(!newMessage) return Promise.all(deletion)
 
-    for(let channel of this.client.config.timerChannels)
-        this.toDeleteMessages.push(this.client.channels.get(channel).send(newMessage))
-
-    this.toDeleteMessages = await Promise.all(this.toDeleteMessages)
+    this.toDeleteMessages = await Utils.sendToChannels(this.client, this.client.config.timerChannels, newMessage)
     console.log(`Send ${newMessage}`)
 
     return Promise.all(deletion)

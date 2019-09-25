@@ -1,5 +1,6 @@
 const Twit = require("twit")
 const Discord = require("discord.js")
+const Utils = require("./Utils.js")
 
 exports.client = undefined
 exports.stream = undefined
@@ -23,8 +24,7 @@ exports.init = (client) => {
                 text = tweet.extended_tweet.full_text
 
             if(text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
-                for(let channel of client.config.tweetChannels)
-                    this.client.channels.get(channel).send(text)
+                Utils.sendToChannels(client, client.config.tweetChannels, text)
 
             return
         }
@@ -36,8 +36,7 @@ exports.init = (client) => {
 
         // Tweet has media, don't embed it
         if(tweet.extended_entities || (tweet.extended_tweet && tweet.extended_tweet.extended_entities)) {
-            for(let channel of client.config.tweetChannels)
-                this.client.channels.get(channel).send(tweetLink)
+            Utils.sendToChannels(client, client.config.tweetChannels, tweetLink)
             return
         }
 
@@ -57,8 +56,7 @@ exports.init = (client) => {
             .setDescription(text)
             .setColor(`#${tweet.user.profile_background_color}`)
 
-        for(let channel of client.config.tweetChannels)
-            this.client.channels.get(channel).send(`<${tweetLink}>`, embed)
+        Utils.sendToChannels(client, client.config.tweetChannels, `<${tweetLink}>`, embed)
     })
     console.log(`Following ${toFollow.length} twitter account(s)!`)
 }

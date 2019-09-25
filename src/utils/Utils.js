@@ -290,3 +290,13 @@ ${drops.length < totalCount ? (message.channel.type == "dm" ? `Shown top ${drops
     minute: "2-digit"
 })}` : `poi-statistics on ${cached.generateTime}`}`
 }
+exports.sendToChannels = (client, channels, ...args) => {
+    const messages = []
+    for(const channel of channels) {
+        const chanObj = client.channels.get(channel)
+        if(chanObj)
+            messages.push(chanObj.send(...args))
+    }
+
+    return Promise.all(messages)
+}
