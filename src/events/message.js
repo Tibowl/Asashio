@@ -22,7 +22,7 @@ module.exports = async (client, message) => {
 
         await reply.react("❌")
         reply.awaitReactions(
-            (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id),
+            (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || client.config.admins.includes(user.id)),
             {max: 1, time: 30000, errors: ["time"]}
         ).then(() =>
             reply.delete()

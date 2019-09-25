@@ -21,7 +21,7 @@ exports.run = async (client, message, args) => {
     let today = ""
 
     let lastDate = now.getTime() - 24*60*60*1000
-    for(let i = 0; i < (message.channel.type == "dm" ? 20 : 5); i++) {
+    for(let i = 0; i < (message.channel.type == "dm" ? 15 : 5); i++) {
         const next = client.timerManager.getNextBirthdayDate(lastDate)
 
         if(next < now.getTime())
