@@ -219,10 +219,12 @@ exports.queue = async (ship, rank, cached, db = "tsundb") => {
             node = node.replace("(Boss)", "").trim()
             if(parseInt(world) > 20)
                 map = `E-${map}`
+            else
+                map = `${world}-${map}`
 
             cached.dropData[entry.map + node + difficulty] = {
                 map,
-                difficulty: ["", "丁", "丙", "乙", "甲"].indexOf(difficulty),
+                difficulty: [" ", "丁", "丙", "乙", "甲"].indexOf(difficulty || " "),
                 node,
                 rank,
                 "rateTotal": `${parseFloat(entry.rate).toFixed(3)}%`,
@@ -262,7 +264,7 @@ exports.getDisplayDataString = (cached, message, db) => {
     const longestMap = Math.max(...drops.map(drop => (drop.map+drop.node).length))
 
     let dropTable = `${"Map".padEnd(longestMap + 7)}Rate
-${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rateTotal.padStart(rateTotalLen)} ${drop.samplesTotal}`).join("\n")}`
+${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${["/", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rateTotal.padStart(rateTotalLen)} ${drop.samplesTotal}`).join("\n")}`
 
     if(db == "tsundb") {
         const rate0Len = Math.max(...drops.map(drop => drop.rate0.length))
@@ -272,7 +274,7 @@ ${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "
         const rate1Len = Math.max(...drops.map(drop => drop.rate1.length))
         if(!(drops.map(drop => drop.samples0).filter(k => k != "[0/0]").length == 0 && drops.map(drop => drop.samples1).filter(k => k != "[0/0]").length == 0))
             dropTable = `${"Map".padEnd(longestMap + 7)}${"Rate first".padEnd(samples0Len + rate0Len + 3)} Rate first dupe
-${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${[" ", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rate0.padStart(rate0Len)} ${drop.samples0.padEnd(samples0Len)} | ${drop.rate1.padStart(rate1Len)} ${drop.samples1}`).join("\n")}`
+${drops.map(drop => `${(drop.map+drop.node).padEnd(longestMap)} | ${["/", "C", "E", "M", "H"][drop.difficulty]} | ${drop.rate0.padStart(rate0Len)} ${drop.samples0.padEnd(samples0Len)} | ${drop.rate1.padStart(rate1Len)} ${drop.samples1}`).join("\n")}`
     }
 
     return `Found following drops for ${cached.ship.full_name} (${cached.rank} rank): \`\`\`
