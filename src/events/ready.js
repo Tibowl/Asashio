@@ -4,5 +4,4 @@ module.exports = (client) => {
     client.timerManager.init(client)
     client.tweetManager.init(client)
     client.data.reloadShipData(client)
-    client.user.setActivity(".help")
 }

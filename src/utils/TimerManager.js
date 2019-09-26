@@ -1,9 +1,19 @@
 const Utils = require("./Utils.js")
 exports.client = undefined
+exports.activityTimer = undefined
+
 exports.init = (client) => {
     this.client = client
 
     this.sheduleNextMessages()
+
+    const updateActivity = () => {
+        client.user.setActivity(client.config.activity)
+    }
+
+    updateActivity()
+    if(this.activityTimer == undefined)
+        this.activityTimer = setInterval(updateActivity, 5*60*1000)
 }
 
 exports.sheduleNextMessages = (now = Date.now() + 60000) => {

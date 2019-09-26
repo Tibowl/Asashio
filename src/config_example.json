@@ -1,6 +1,7 @@
 {
     "token": "DISCORD TOKEN",
     "prefix": ".",
+    "activity": ".help",
     "admins": ["YOUR USER ID HERE"],
     "timerChannels": ["CHANNEL ID HERE"],
     "tweetChannels": ["CHANNEL ID HERE"],
