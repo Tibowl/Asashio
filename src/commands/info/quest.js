@@ -153,7 +153,7 @@ exports.help = () => {
     return "Get quest information."
 }
 exports.usage = () => {
-    return "quest <quest id>"
+    return "quest <quest id> OR .quest <reward/title/description>"
 }
 exports.prefix = (client) => {
     return client.config.prefix
