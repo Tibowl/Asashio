@@ -1,15 +1,20 @@
+const Logger = require("log4js").getLogger("LinkManager")
+
 exports.links = {}
 exports.loadLinks = async (client) => {
     let linkDB = await client.channels.get("621460804541087744").fetchMessage("621461360705798164")
     let contents = linkDB.content
     contents.replace(/```/g, "")
     let lines = contents.split("\n").filter(line => line.includes(" = ")).map(line => line.trim().split(" = "))
-    console.log("Registered links:")
+
+    const printLines = []
     for(let line of lines) {
         this.links[line[0]] = line[1]
         client.commands.set(line[0], this)
-        console.log(line.join(" -> "))
+        printLines.push(line.join(" -> "))
     }
+    Logger.info(`Registered links:
+${printLines.join("\n")}`)
 }
 
 exports.setLink = async (client, message, args) => {
@@ -20,6 +25,7 @@ exports.setLink = async (client, message, args) => {
             return await message.reply("That is not a link!")
 
         client.commands.delete(command)
+        Logger.info(`${message.author.id} removed link ${command} (was ${this.links[command]})`)
         delete this.links[command]
         await this.updateDb(client)
 
@@ -34,6 +40,7 @@ exports.setLink = async (client, message, args) => {
         return await message.reply("This is another command OhNo")
 
 
+    Logger.info(`${message.author.id} changed ${command} from ${this.links[command]} to ${link}`)
     this.links[command] = link
 
     await this.updateDb(client)

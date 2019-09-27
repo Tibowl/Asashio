@@ -1,4 +1,5 @@
 const fs = require("fs")
+const Logger = require("log4js").getLogger("avatar")
 
 exports.run = (client, message, args) => {
     if(!client.config.admins.includes(message.author.id)) return
@@ -20,28 +21,19 @@ exports.run = (client, message, args) => {
         return message.reply("Links are now being reloaded!")
     }
 
-    if(!client.commands.has(commandName)) {
-        if(client.commands.has(commandName.slice(1)))
-            commandName = commandName.slice(1)
-        else
-            try {
-                client.commands.set(commandName, require(`./${commandName}.js`))
-                return message.reply(`Loaded \`${commandName}\``)
-            } catch (error) {
-                return message.reply(`\`${commandName}\` does not exist`)
-            }
-    }
+    if(!client.commands.has(commandName) && client.commands.has(commandName.slice(1)))
+        commandName = commandName.slice(1)
 
     const readDir = (dir) => {
         fs.readdir(dir, (err, files) => {
-            if (err) return console.error(err)
+            if (err) return Logger.error(err)
             files.forEach(file => {
                 if (!file.endsWith(".js")) return readDir(dir + file + "/")
                 let name = file.split(".")[0]
                 if(name == commandName) {
                     delete require.cache[require.resolve(`../../${dir}/${commandName}.js`)]
                     let props = require(`../../${dir}/${commandName}.js`)
-                    console.log(`Loading ${commandName}`)
+                    Logger.info(`Loading ${commandName}`)
                     client.commands.delete(commandName)
                     client.commands.set(commandName, props)
                 }

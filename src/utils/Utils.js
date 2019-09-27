@@ -1,5 +1,6 @@
 const fetch = require("node-fetch")
 const Discord = require("discord.js")
+const Logger = require("log4js").getLogger("Utils")
 
 exports.displayShip = (ship) => {
     const embed = new Discord.RichEmbed()
@@ -246,7 +247,7 @@ exports.displayData = (cached, reply, db) => {
     try {
         reply.edit(this.getDisplayDataString(cached, reply, db))
     } catch (error) {
-        console.error(error)
+        Logger.error(error)
     }
 }
 exports.getDisplayDataString = (cached, message, db) => {

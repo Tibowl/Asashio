@@ -1,3 +1,5 @@
+const Logger = require("log4js").getLogger("DataManager")
+
 const fetch = require("node-fetch")
 // const { Client } = require('pg')
 
@@ -114,7 +116,7 @@ exports.getEquipByName = (name) => {
 
 exports.getMapInfo = async (map) => {
     if(!this.mapInfoCache[map]) {
-        console.log(`Map data for ${map} not cached. Loading...`)
+        Logger.info(`Map data for ${map} not cached. Loading...`)
         this.mapInfoCache[map] = await (await fetch(`http://kc.piro.moe/api/routing/maps/${map}`)).json()
     }
     return this.mapInfoCache[map]
@@ -226,7 +228,7 @@ exports.reloadShipData = async (client) => {
         Object.keys(ship).map(key => shipNew[key.replace("_", "")] = ship[key])
         this.ships[shipNew.api_id] = shipNew
     })
-    console.log(`Loaded ship data! ${Object.keys(this.ships).length} ships loaded`)//, this.ships[95])
+    Logger.info(`Loaded ship data! ${Object.keys(this.ships).length} ships loaded`)//, this.ships[95])
 
     const questData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/quest.json")).json()
 
@@ -234,12 +236,12 @@ exports.reloadShipData = async (client) => {
     Object.keys(questData).forEach(questId => {
         this.quests[questId.toUpperCase()] = questData[questId]
     })
-    console.log(`Loaded quest data! ${Object.keys(this.quests).length} quests loaded`)//, this.quests["B100"])
+    Logger.info(`Loaded quest data! ${Object.keys(this.quests).length} quests loaded`)//, this.quests["B100"])
 
     const miscData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/misc.json")).json()
     this.misc = miscData
 
-    console.log(`Loaded misc ${Object.keys(miscData).join(", ")} data`)
+    Logger.info(`Loaded misc ${Object.keys(miscData).join(", ")} data`)
 
     const equipmentData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/equipment.json")).json()
 
@@ -250,20 +252,20 @@ exports.reloadShipData = async (client) => {
         Object.keys(equip).map(key => equipNew[key.replace("_", "")] = equip[key])
         this.equips[equipNew.id] = equipNew
     })
-    console.log(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)//, this.equips[1])
+    Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)//, this.equips[1])
 
     this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
-    console.log("Loaded api_start2!")
+    Logger.info("Loaded api_start2!")
 
     this.birthdays = require("../kcbirthday.json")
-    console.log(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
+    Logger.info(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
     client.timerManager.sheduleNextBirthday()
     /*try {
         const pgClient = new Client(client.config.tsunDB);
         await pgClient.connect();
         client.pgClient = pgClient;
-        console.log("Connected to TsunDB! Loaded!")
+        console.info("Connected to TsunDB! Loaded!")
     } catch (error) {
-        console.log("Connection to TsunDB failed!")
+        console.info("Connection to TsunDB failed!")
     }*/
 }

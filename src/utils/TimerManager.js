@@ -1,4 +1,6 @@
 const Utils = require("./Utils.js")
+const Logger = require("log4js").getLogger("TimerManager")
+
 exports.client = undefined
 exports.activityTimer = undefined
 
@@ -21,12 +23,12 @@ exports.sheduleNextMessages = (now = Date.now() + 60000) => {
     const nextTimeStampsFull = this.nextResetsTimestamp(now, true)
     const nextTimeStamp = Math.min(...Object.values(nextTimeStamps))
 
-    /*console.log(`Next timestamps:
+    /*console.info(`Next timestamps:
 ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]).toISOString()}`).join("\n")}`)*/
 
     const type = Object.keys(nextTimeStamps).find(key => nextTimeStamps[key] == nextTimeStamp)
 
-    console.log(`Next time: ${type} @ ${new Date(nextTimeStamp).toISOString()}`)
+    Logger.debug(`Next time: ${type} @ ${new Date(nextTimeStamp).toISOString()}`)
 
     let message = "?"
     if(type == "quest") {
@@ -49,7 +51,7 @@ ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]
     else if (type == "monthlyExped")
         message = "Monthly expeditions reset"
 
-    // console.log(nextTimeStamp - Date.now() - 30 * 60000)
+    // console.info(nextTimeStamp - Date.now() - 30 * 60000)
     if(type !== "monthlyExped" && type !== "rank") {
         for (let k of [60, 30, 15, 5]) {
             let diff = nextTimeStamp - Date.now() - k * 60000
@@ -95,7 +97,7 @@ exports.sheduleNextBirthday = (now = Date.now()) => {
     const midnight = this.getNextBirthdayDate(now)
     const shipList = this.getShipsOnBirthday(midnight)
 
-    console.log("Announcing birthday of " + shipList.join(", ").replace(/,([^,]*)$/, " and$1") + " on " + midnight.toISOString())
+    Logger.info("Announcing birthday of " + shipList.join(", ").replace(/,([^,]*)$/, " and$1") + " on " + midnight.toISOString())
     this.nextBirthday = setTimeout(() => {
         this.sheduleNextBirthday(Date.now() + 60 * 60000)
 
@@ -180,14 +182,14 @@ exports.update = async (newMessage) => {
     let deletion = this.toDeleteMessages.map(td => {try {
         return td.delete()
     } catch (error) {
-        console.log(error)
+        Logger.info(error)
     }}).filter(k => k)
 
     this.toDeleteMessages = []
     if(!newMessage) return Promise.all(deletion)
 
     this.toDeleteMessages = await Utils.sendToChannels(this.client, this.client.config.timerChannels, newMessage)
-    console.log(`Send ${newMessage}`)
+    Logger.info(`Send ${newMessage}`)
 
     return Promise.all(deletion)
 }

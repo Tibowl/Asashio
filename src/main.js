@@ -1,13 +1,24 @@
-const Discord = require("discord.js")
-const Enmap = require("enmap")
-const fs = require("fs")
-const DataManager = require("./utils/DataManager.js")
-const LinkManager = require("./utils/LinkManager.js")
-const TimerManager = require("./utils/TimerManager.js")
-const TweetManager = require("./utils/TweetManager.js")
+const Discord = require("discord.js"),
+      Enmap = require("enmap"),
+      fs = require("fs"),
+      DataManager = require("./utils/DataManager.js"),
+      LinkManager = require("./utils/LinkManager.js"),
+      TimerManager = require("./utils/TimerManager.js"),
+      TweetManager = require("./utils/TweetManager.js"),
+      log4js = require("log4js")
 
 const config = require("./config.json")
 const client = new Discord.Client()
+const Logger = log4js.getLogger("main")
+
+log4js.configure({
+    appenders: {
+        file: { type: "dateFile", filename: "../logs/asashio.log", alwaysIncludePattern: true, backups: 31, compress: true },
+        out: { type: "stdout" },
+    }, categories: {
+        default: { appenders: ["file", "out"], level: "info" }
+    }
+})
 
 client.config = config
 client.data = DataManager
@@ -17,7 +28,7 @@ client.tweetManager = TweetManager
 client.recentMessages = []
 
 fs.readdir("./events/", (err, files) => {
-    if (err) return console.error(err)
+    if (err) return Logger.error(err)
     files.forEach(file => {
         const event = require(`./events/${file}`)
         let eventName = file.split(".")[0]
@@ -29,12 +40,12 @@ client.commands = new Enmap()
 
 const readDir = (dir) => {
     fs.readdir(dir, (err, files) => {
-        if (err) return console.error(err)
+        if (err) return Logger.error(err)
         files.forEach(file => {
             if (!file.endsWith(".js")) return readDir(dir + file + "/")
             let props = require(`${dir}${file}`)
             let commandName = file.split(".")[0]
-            console.log(`Loading ${commandName}`)
+            Logger.info(`Loading ${commandName}`)
             client.commands.set(commandName, props)
         })
     })

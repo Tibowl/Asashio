@@ -1,6 +1,7 @@
 const Twit = require("twit")
 const Discord = require("discord.js")
 const Utils = require("./Utils.js")
+const Logger = require("log4js").getLogger("TweetManager")
 
 exports.client = undefined
 exports.stream = undefined
@@ -13,13 +14,13 @@ exports.init = (client) => {
     this.stream = T.stream("statuses/filter", { follow: this.toFollow })
     this.stream.on("tweet", this.handleTweet)
 
-    console.log(`Following ${this.toFollow.length} twitter account(s)!`)
+    Logger.info(`Following ${this.toFollow.length} twitter account(s)!`)
 }
 
 exports.handleTweet = (tweet) => {
     if(!this.toFollow.includes(tweet.user.id_str)) return
     const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-    if(tweet.retweeted_status && this.toFollow.includes(tweet.retweeted_status.user.id_str)) return console.log(`Skipping RT ${tweetLink}`)
+    if(tweet.retweeted_status && this.toFollow.includes(tweet.retweeted_status.user.id_str)) return Logger.debug(`Skipping RT ${tweetLink}`)
 
     // @KCServerWatcher
     if(tweet.user.id_str == "980204936687489025") {
@@ -34,7 +35,7 @@ exports.handleTweet = (tweet) => {
         return
     }
 
-    console.log(`Sending tweet to channels: ${tweetLink}`)
+    Logger.info(`Sending tweet to channels: ${tweetLink}`)
 
     if(tweet.retweeted_status)
         tweet = tweet.retweeted_status
