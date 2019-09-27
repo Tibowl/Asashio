@@ -23,7 +23,7 @@ module.exports = async (client, message) => {
         await reply.react("❌")
         reply.awaitReactions(
             (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || client.config.admins.includes(user.id)),
-            {max: 1, time: 30000, errors: ["time"]}
+            {max: 1, time: 60000, errors: ["time"]}
         ).then(() =>
             reply.delete()
         ).catch(() =>
@@ -32,7 +32,7 @@ module.exports = async (client, message) => {
         client.recentMessages.push(reply)
         setTimeout(() => {
             client.recentMessages.shift()
-        }, 35000)
+        }, 65000)
     } catch (error) {
         console.error(error)
     }

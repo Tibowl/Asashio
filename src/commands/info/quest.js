@@ -16,7 +16,15 @@ exports.run = (client, message, args) => {
 
     const questId = args[0].toUpperCase()
     let quest = client.data.getQuestByName(questId)
-    if(quest == undefined) quest = client.data.getQuestByDescription(args.join(" "))
+    if(quest == undefined) {
+        const quests = client.data.getQuestsByDescription(args.join(" "))
+        if(quests.length == 1)
+            quest = quests[0]
+        else if(quests.length > 1 && quests.length < 30)
+            return message.reply(`Which quest do you mean: ${quests.map(q => `**${q.label}**`).join(", ").replace(/,([^,]*)$/, " or$1")}`)
+        else
+            return message.reply("Too many matches")
+    }
 
     if(quest == undefined) return message.reply("Unknown quest")
 
