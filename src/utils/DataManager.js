@@ -128,6 +128,21 @@ exports.getQuestByName = (id) => {
     id = id.toUpperCase()
     return this.quests[id]
 }
+exports.getQuestByDescription = (desc) => {
+    desc = desc.toLowerCase().trim()
+    const filters = [
+        q => q.title_en.toLowerCase().includes(desc),
+        q => q.title.toLowerCase().includes(desc),
+        q => q.detail_en.toLowerCase().includes(desc),
+        q => q.reward_other.toLowerCase().includes(desc),
+        q => q.note.toLowerCase().includes(desc)
+    ]
+    for(const filter of filters) {
+        let quest = Object.values(this.quests).find(filter)
+        if(quest)
+            return quest
+    }
+}
 exports.getEquipById = (id) => {
     return this.equips[id]
 }
