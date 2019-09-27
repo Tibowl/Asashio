@@ -20,10 +20,12 @@ exports.run = (client, message, args) => {
         const quests = client.data.getQuestsByDescription(args.join(" "))
         if(quests.length == 1)
             quest = quests[0]
-        else if(quests.length > 1 && quests.length < 30)
-            return message.reply(`Which quest do you mean: ${quests.map(q => `**${q.label}**`).join(", ").replace(/,([^,]*)$/, " or$1")}`)
-        else
+        else if (quests.length == 0)
+            return message.reply("Unknown quest")
+        else if(quests.length > 30)
             return message.reply("Too many matches")
+        else
+            return message.reply(`Which quest do you mean: ${quests.map(q => `**${q.label}**`).join(", ").replace(/,([^,]*)$/, " or$1")}`)
     }
 
     if(quest == undefined) return message.reply("Unknown quest")
