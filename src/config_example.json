@@ -13,8 +13,5 @@
         "consumer_secret":     "CONSUMER SECRET",
         "access_token":        "ACCESS TOKEN",
         "access_token_secret": "ACCESS TOKEN SECRET"
-    },
-    "emoji": {
-        "EMOJI NAME": "<:EMOJI NAME:EMOJI ID>"
     }
 }

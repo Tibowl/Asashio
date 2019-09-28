@@ -6,7 +6,12 @@ Installation
 ------------
 0. This bot requires [Node](https://nodejs.org/en/)
 1. Install dependencies with `npm i`
-2. Set up config in `src/config.json`. An example can be found in `src/config-example.json`.
+2. Set up config in `src/config.json`. An example can be found in `src/config-example.json`. See [Configuration](#Configuration) for more information
+3. Start bot with `npm start`.
+
+Configuration
+-------------
+- `config.json`
     - `token` is the discord client secret that can be acquired in the [Discord Developer Portal](https://discordapp.com/developers/applications/)
     - `activity` is the `Playing ...` shown in discord.
     - `admins` is a list of user ids which have higher privileges. They can update links, change avatar, shutdown the bot, etc...
@@ -17,5 +22,7 @@ Installation
     - `toTweet` List of twitter ids to follow and post about
     - `timerOffsetms` Offset for timer/birthday messages in ms
     - `twitter` Twitter API keys. See [Twitter Developers Apps](https://developer.twitter.com/en/apps)
-    - `emoji` emoji ids can be acquired by typing a \\ before an emote. Like `\:wooper:` will result in `<:wooper:617004982440427606>` which can be used in the config.
-3. Start bot with `npm start`.
+- `emoji.json`
+    - K,V pairs of emoji that can be used by, for example, the quest command.
+- `kcbirthday.json`
+    - List of birthdays. Data provided by swdn.
