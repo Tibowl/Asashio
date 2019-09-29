@@ -2,7 +2,7 @@ exports.run = (client, message) => {
     const now = new Date()
     const timeZones = [
         "Asia/Tokyo",
-        "Europe/London",
+        "Europe/Brussels",
         "GMT",
         "America/New_York",
         "America/Los_Angeles"
