@@ -172,13 +172,19 @@ exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
 
     const nextMonthlyPointReset = new Date(nextPtCutoff)
     nextMonthlyPointReset.setUTCHours(13, 0, 0, 0)
+    if(nextMonthlyPointReset < now) nextMonthlyPointReset.shiftDate(10)
     while(nextMonthlyPointReset.getUTCDate() !== 1)
         nextMonthlyPointReset.shiftDate(1)
     nextMonthlyPointReset.shiftDate(-1)
     timeStamps.monthlyRank = nextMonthlyPointReset.getTime()
 
-    const nextEOReset = new Date(nextMonthlyPointReset)
-    nextEOReset.shiftHour(2)
+    const nextEOReset = new Date(nextPtCutoff)
+    nextEOReset.setUTCHours(15, 0, 0, 0)
+    if(nextEOReset < now) nextEOReset.shiftDate(10)
+    while(nextEOReset.getUTCDate() !== 1)
+        nextEOReset.shiftDate(1)
+    nextEOReset.shiftDate(-1)
+
     timeStamps.eoReset = nextEOReset.getTime()
 
     // Next monthly expedition reset time (15th JST 1200)

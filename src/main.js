@@ -17,7 +17,7 @@ log4js.configure({
         file: { type: "dateFile", filename: "../logs/asashio.log", alwaysIncludePattern: true, backups: 31, compress: true },
         out: { type: "stdout" },
     }, categories: {
-        default: { appenders: ["file", "out"], level: "info" }
+        default: { appenders: ["file", "out"], level: "debug" }
     }
 })
 
