@@ -1,0 +1,357 @@
+[
+    {
+        "id": "01",
+        "rsc": [0, 30, 0, 0],
+        "fleet": "2XX",
+        "fs_lvl": 1
+    },  {
+        "id": "02",
+        "rsc": [0, 100, 30, 0],
+        "fleet": "4XX",
+        "fs_lvl": 2
+    },  {
+        "id": "03",
+        "rsc": [30, 30, 40, 0],
+        "fleet": "3XX",
+        "fs_lvl": 3
+    },  {
+        "id": "04",
+        "rsc": [0, 70, 0, 0],
+        "fleet": "1CL 2DD 1XX / 1DD 3DE",
+        "fs_lvl": 3
+    },  {
+        "id": "05",
+        "rsc": [200, 200, 20, 20],
+        "fleet": "1CL 2DD 1XX / 1DD 3DE",
+        "fs_lvl": 3
+    },  {
+        "id": "06",
+        "rsc": [0, 0, 0, 80],
+        "fleet": "4XX",
+        "fs_lvl": 4,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "07",
+        "rsc": [0, 0, 50, 30],
+        "fleet": "6XX",
+        "fs_lvl": 5,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "08",
+        "rsc": [50, 100, 50, 50],
+        "fleet": "6XX",
+        "fs_lvl": 6,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "09",
+        "rsc": [350, 0, 0, 0],
+        "fleet": "1CL 2DD 1XX / 1DD 3DE",
+        "fs_lvl": 3,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "10",
+        "rsc": [0, 50, 0, 30],
+        "fleet": "2CL 1XX",
+        "fs_lvl": 3,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "11",
+        "rsc": [0, 0, 0, 250],
+        "fleet": "2DD 2XX",
+        "fs_lvl": 6,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "12",
+        "rsc": [50, 250, 200, 50],
+        "fleet": "2DD 2XX",
+        "fs_lvl": 4,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "13",
+        "rsc": [240, 300, 0, 0],
+        "fleet": "1CL 4DD 1XX",
+        "fs_lvl": 5,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "14",
+        "rsc": [0, 280, 200, 30],
+        "fleet": "1CL 3DD 2XX",
+        "fs_lvl": 6,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "15",
+        "rsc": [0, 0, 300, 400],
+        "fleet": "2CV 2DD 2XX",
+        "fs_lvl": 9,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "16",
+        "rsc": [500, 500, 200, 200],
+        "fleet": "1CL 2DD 3XX",
+        "fs_lvl": 0,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "17",
+        "rsc": [70, 70, 50, 0],
+        "fleet": "1CL 3DD 2XX",
+        "fs_lvl": 20,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "18",
+        "rsc": [0, 0, 300, 100],
+        "fleet": "3(CV(L)/AV) 2DD 1XX",
+        "fs_lvl": 15,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "19",
+        "rsc": [400, 50, 50, 30],
+        "fleet": "2BBV 2DD 2XX",
+        "fs_lvl": 20,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "20",
+        "rsc": [0, 0, 150, 0],
+        "fleet": "1SS(V) 1CL",
+        "fs_lvl": 1,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "21",
+        "rsc": [320, 270, 0, 0],
+        "fleet": "1CL 4DD",
+        "fs_lvl": 15,
+        "fleet_lvl": 30,
+        "misc_req": "3 ships carrying drums"
+    },  {
+        "id": "22",
+        "rsc": [0, 10, 0, 0],
+        "fleet": "1CA 1CL 2DD 2XX",
+        "fs_lvl": 30,
+        "fleet_lvl": 45,
+        "misc_req": ""
+    },  {
+        "id": "23",
+        "rsc": [0, 20, 0, 100],
+        "fleet": "2BBV 2DD 2XX",
+        "fs_lvl": 50,
+        "fleet_lvl": 200,
+        "misc_req": ""
+    },  {
+        "id": "24",
+        "rsc": [500, 0, 0, 150],
+        "fleet": "1CL(FS) 4DD 1XX",
+        "fs_lvl": 0,
+        "fleet_lvl": 0,
+        "misc_req": "Drums affect GS"
+    },  {
+        "id": "25",
+        "rsc": [900, 0, 500, 0],
+        "fleet": "2CA 2DD",
+        "fs_lvl": 25,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "26",
+        "rsc": [0, 0, 0, 900],
+        "fleet": "1(CV(L)/AV) 1CL 2DD",
+        "fs_lvl": 30,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "27",
+        "rsc": [0, 0, 800, 0],
+        "fleet": "2SS(V)",
+        "fs_lvl": 1,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "28",
+        "rsc": [0, 0, 900, 350],
+        "fleet": "3SS(V)",
+        "fs_lvl": 30,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "29",
+        "rsc": [0, 50, 0, 100],
+        "fleet": "3SS(V)",
+        "fs_lvl": 50,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "30",
+        "rsc": [0, 50, 0, 100],
+        "fleet": "4SS(V)",
+        "fs_lvl": 55,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "31",
+        "rsc": [0, 30, 0, 0],
+        "fleet": "4SS(V)",
+        "fs_lvl": 60,
+        "fleet_lvl": 200,
+        "misc_req": ""
+    },  {
+        "id": "32",
+        "rsc": [50, 50, 50, 50],
+        "fleet": "CT(FS) 2DD 3XX",
+        "fs_lvl": 5,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "33",
+        "rsc": [0, 0, 0, 0],
+        "fleet": "2DD",
+        "fs_lvl": 0,
+        "fleet_lvl": 0,
+        "misc_req": "This is a support expedition"
+    },  {
+        "id": "34",
+        "rsc": [0, 0, 0, 0],
+        "fleet": "2DD",
+        "fs_lvl": 0,
+        "fleet_lvl": 0,
+        "misc_req": "This is a support expedition"
+    },  {
+        "id": "35",
+        "rsc": [0, 0, 240, 280],
+        "fleet": "2(CV(L)/AV) 1CA 1DD 2XX",
+        "fs_lvl": 40,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "36",
+        "rsc": [480, 0, 200, 200],
+        "fleet": "2AV 1CL 1DD 2XX",
+        "fs_lvl": 30,
+        "fleet_lvl": 0,
+        "misc_req": ""
+    },  {
+        "id": "37",
+        "rsc": [0, 380, 270, 0],
+        "fleet": "1CL 5DD",
+        "fs_lvl": 50,
+        "fleet_lvl": 200,
+        "misc_req": "3 ships carrying at least 4 drums total"
+    },  {
+        "id": "38",
+        "rsc": [420, 0, 200, 0],
+        "fleet": "5DD 1XX",
+        "fs_lvl": 65,
+        "fleet_lvl": 240,
+        "misc_req": "4 ships carrying at least 8 drums total"
+    },  {
+        "id": "39",
+        "rsc": [0, "<250", "300?", 0],
+        "fleet": "1AS 4SS(V)",
+        "fs_lvl": 3,
+        "fleet_lvl": 180,
+        "misc_req": ""
+    },  {
+        "id": "40",
+        "rsc": [300, 300, 0, 100],
+        "fleet": "CL(FS) 2AV 2DD 1XX",
+        "fs_lvl": 25,
+        "fleet_lvl": 150,
+        "misc_req": "Drums affect GS"
+    },  {
+        "id": "41",
+        "rsc": [100, 0, 0, 20],
+        "fleet": "3DD / 3DE",
+        "fs_lvl": 30,
+        "fleet_lvl": 115,
+        "misc_req": "210+ ASW, 80+ AA"
+    },  {
+        "id": "42",
+        "rsc": [800, 0, 0, 200],
+        "fleet": "1(CVE/CT/CL) 3(DD/DE)",
+        "fs_lvl": 45,
+        "fleet_lvl": 200,
+        "misc_req": ""
+    },  {
+        "id": "43",
+        "rsc": [2000, 0, 0, 400],
+        "fleet": "1CVE 2(DD/DE) 3XX",
+        "fs_lvl": 55,
+        "fleet_lvl": 300,
+        "misc_req": "500+ FP, 280+ ASW"
+    },  {
+        "id": "44",
+        "rsc": [0, 200, 0, 800],
+        "fleet": "2CVL 1AV 1CL 2XX",
+        "fs_lvl": 45,
+        "fleet_lvl": "?",
+        "misc_req": "3 ships carrying at least 6 drums total"
+    },  {
+        "id": "A1",
+        "rsc": [45, 45, 0, 0],
+        "fleet": "3(DD/DE) 1XX",
+        "fs_lvl": 5,
+        "fleet_lvl": 10,
+        "misc_req": ""
+    },  {
+        "id": "A2",
+        "rsc": [70, 40, 0, 10],
+        "fleet": "4(DD/DE)",
+        "fs_lvl": 20,
+        "fleet_lvl": 0,
+        "misc_req": "180+ ASW, 70+ AA, 73+ LoS"
+    },  {
+        "id": "A3",
+        "rsc": [120, 0, 60, 60],
+        "fleet": "1CL 4(DD/DE) / 1-2DD 4-3DE",
+        "fs_lvl": 35,
+        "fleet_lvl": 185,
+        "misc_req": "280+ ASW"
+    },  {
+        "id": "A4",
+        "rsc": [80, 120, 0, 100],
+        "fleet": "1(CVE/CL) 4(DD/DE)",
+        "fs_lvl": 40,
+        "fleet_lvl": 250,
+        "misc_req": "300+ FP, 200+ ASW"
+    },  {
+        "id": "B1",
+        "rsc": [0, 0, 10, 30],
+        "fleet": "1AV 1CL 2(DD/DE) 2 XX",
+        "fs_lvl": 40,
+        "fleet_lvl": 150,
+        "misc_req": "200+ ASW, 200+ AA, 140+ LoS"
+    },  {
+        "id": "B2",
+        "rsc": [300, 200, 100, 0],
+        "fleet": "1CA 1CL 3DD 1XX",
+        "fs_lvl": 45,
+        "fleet_lvl": 290,
+        "misc_req": "360+ FP"
+    },  {
+        "id": "B3",
+        "rsc": [0, 100, 100, 180],
+        "fleet": "1AV 1CL 2(DD/DE) 2DD",
+        "fs_lvl": 50,
+        "fleet_lvl": 350,
+        "misc_req": "400+ FP, 220+ ASW"
+    },  {
+        "id": "B4",
+        "rsc": [0, 0, 1200, 650],
+        "fleet": "2CA 1CL 2DD 1SS(V)",
+        "fs_lvl": 55,
+        "fleet_lvl": "??",
+        "misc_req": "500+ FP, 280+ ASW"
+    }
+]
