@@ -23,7 +23,7 @@ exports.run = async (client, message, args) => {
 
 exports.formatData = (api, args) => {
     const longestENName = Math.max(...en_names.map(k => k.length))
-    let rankingData = `\`\`\`\nID ${"Server".padEnd(11, " ")}   T1 |   T5 |  T20 | T100 | T500 | Last updated\n`
+    let rankingData = `\`\`\`\nID ${"Server".padEnd(12, " ")}   T1 |   T5 |  T20 | T100 | T500 | Last updated\n`
     let found = false
 
     for(let serverID in en_names) {
@@ -34,7 +34,7 @@ exports.formatData = (api, args) => {
             found = true
 
             const cutoffs = ranks.map(rank => (data.cutoff[rank].toString()).padStart(5)).join(" |")
-            rankingData += `${(serverID.toString()).padStart(2)} ${en_names[serverID].padEnd(longestENName)}${cutoffs} | ${new Date(data.lastmodifided).toLocaleString("en-UK", {
+            rankingData += `${(serverID.toString()).padStart(2)} ${en_names[serverID].padEnd(longestENName)} ${cutoffs} | ${new Date(data.lastmodifided).toLocaleString("en-UK", {
                 timeZone: "Asia/Tokyo",
                 hour12: false,
                 hourCycle: "h24",
