@@ -13,26 +13,29 @@ exports.run = (client, message, args) => {
 
     const embed = new Discord.RichEmbed()
         .setURL("https://kancolle.fandom.com/wiki/Expedition#/Expedition_Tables")
-        .setTitle(`${exped.api_disp_no} ${exped.api_name} ${this.getTime(exped.api_time)}`)
+        .setTitle(`${exped.api_disp_no} ${exped.api_reset_type == 1 ? "[M] " : ""}${exped.api_damage_type == 1 ? "[D] " : ""}- ${exped.api_name} - ${this.getTime(exped.api_time)}`)
 
     let req = (extraExpedData && extraExpedData.fleet) || `${exped.api_deck_num} ships required, details unknown`
     if(extraExpedData && extraExpedData.fs_lvl) req += `\n${extraExpedData.fs_lvl} Lv. FS`
     if(extraExpedData && extraExpedData.fleet_lvl) req += `\n${extraExpedData.fleet_lvl} total Lv.`
     if(extraExpedData && extraExpedData.misc_req) req += `\n${extraExpedData.misc_req}`
     embed.addField("Fleet requirements", req)
+
+    let rewards = `${fuel}×${client.config.emoji.fuel} ${ammo}×${client.config.emoji.ammo} ${bauxite}×${client.config.emoji.bauxite} ${steel}×${client.config.emoji.steel}\n`
     if(exped.api_win_item1[0] != 0)
-        embed.addField("Left Reward (RNG)", `${exped.api_win_item1[1]}×${this.getItem(exped.api_win_item1[0], client)}`, true)
+        rewards +=  `Left Reward (RNG): ${exped.api_win_item1[1]}×${this.getItem(exped.api_win_item1[0], client)}\n`
     if(exped.api_win_item2[0] != 0)
-        embed.addField("Right Reward (GS)", `${exped.api_win_item2[1]}×${this.getItem(exped.api_win_item2[0], client)}`, true)
+        rewards += `Right Reward (GS): ${exped.api_win_item2[1]}×${this.getItem(exped.api_win_item2[0], client)}\n`
 
     embed
-        .addField("Resources", `${fuel}×${client.config.emoji.fuel} ${ammo}×${client.config.emoji.ammo} ${bauxite}×${client.config.emoji.bauxite} ${steel}×${client.config.emoji.steel}`,true)
+        .addField("Rewards", rewards, true)
         .addField("Usage", `${exped.api_use_fuel*100}% fuel - ${exped.api_use_bull*100}% ammo`, true)
 
     let notes = ""
 
     if(exped.api_sample_fleet)
         notes += `Sample fleet: ${exped.api_sample_fleet.filter(k => k > 0).map(k => client.data.misc.ShipCodes[k]).join(", ")}\n`
+
     if(exped.api_reset_type == 1)
         notes += "Monthly expedition\n"
     else if(exped.api_reset_type != 0)
