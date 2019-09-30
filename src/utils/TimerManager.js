@@ -172,18 +172,28 @@ exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
 
     const nextMonthlyPointReset = new Date(nextPtCutoff)
     nextMonthlyPointReset.setUTCHours(13, 0, 0, 0)
-    if(nextMonthlyPointReset < now) nextMonthlyPointReset.shiftDate(10)
     while(nextMonthlyPointReset.getUTCDate() !== 1)
         nextMonthlyPointReset.shiftDate(1)
     nextMonthlyPointReset.shiftDate(-1)
+    if(nextMonthlyPointReset.getTime() < now){
+        nextMonthlyPointReset.shiftDate(20)
+        while(nextMonthlyPointReset.getUTCDate() !== 1)
+            nextMonthlyPointReset.shiftDate(1)
+        nextMonthlyPointReset.shiftDate(-1)
+    }
     timeStamps.monthlyRank = nextMonthlyPointReset.getTime()
 
     const nextEOReset = new Date(nextPtCutoff)
     nextEOReset.setUTCHours(15, 0, 0, 0)
-    if(nextEOReset < now) nextEOReset.shiftDate(10)
     while(nextEOReset.getUTCDate() !== 1)
         nextEOReset.shiftDate(1)
     nextEOReset.shiftDate(-1)
+    if(nextEOReset.getTime() < now) {
+        nextEOReset.shiftDate(20)
+        while(nextEOReset.getUTCDate() !== 1)
+            nextEOReset.shiftDate(1)
+        nextEOReset.shiftDate(-1)
+    }
 
     timeStamps.eoReset = nextEOReset.getTime()
 
