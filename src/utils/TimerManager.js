@@ -7,18 +7,33 @@ exports.activityTimer = undefined
 exports.init = (client) => {
     this.client = client
 
-    this.sheduleNextMessages()
+    this.scheduleNextMessages()
 
     const updateActivity = () => {
-        client.user.setActivity(client.config.activity)
+        const now = new Date()
+        client.user.setActivity(client.config.activity.replace("%t", now.toLocaleString("en-UK", {
+            timeZone: "Asia/Tokyo",
+            hour12: false,
+            hourCycle: "h24",
+            hour: "2-digit",
+            minute: "2-digit"
+        })))
+
+        const nextMinute = new Date()
+        nextMinute.setUTCSeconds(0, 0)
+        nextMinute.shiftMinute(1)
+
+        let delay = nextMinute.getTime() - now.getTime()
+        if(delay < 15000)
+            delay += 60000
+        this.activityTimer = setTimeout(updateActivity, delay + 500)
     }
 
-    updateActivity()
     if(this.activityTimer == undefined)
-        this.activityTimer = setInterval(updateActivity, 5*60*1000)
+        updateActivity()
 }
 
-exports.sheduleNextMessages = (now = Date.now() + 60000) => {
+exports.scheduleNextMessages = (now = Date.now() + 60000) => {
     const nextTimeStamps = this.nextResetsTimestamp(now)
     const nextTimeStampsFull = this.nextResetsTimestamp(now, true)
     const nextTimeStamp = Math.min(...Object.values(nextTimeStamps))
@@ -62,7 +77,7 @@ ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]
 
     setTimeout(() => {
         this.update(`${message}.`)
-        this.sheduleNextMessages()
+        this.scheduleNextMessages()
     }, nextTimeStamp - Date.now() + this.client.config.timerOffsetms)
 }
 
@@ -91,7 +106,7 @@ exports.getShipsOnBirthday = (date) => {
         .sort((a,b) => a-b)
 }
 exports.nextBirthday = undefined
-exports.sheduleNextBirthday = (now = Date.now()) => {
+exports.scheduleNextBirthday = (now = Date.now()) => {
     if(exports.nextBirthday) clearTimeout(this.nextBirthday)
 
     const midnight = this.getNextBirthdayDate(now)
@@ -99,7 +114,7 @@ exports.sheduleNextBirthday = (now = Date.now()) => {
 
     Logger.info("Announcing birthday of " + shipList.join(", ").replace(/,([^,]*)$/, " and$1") + " on " + midnight.toISOString())
     this.nextBirthday = setTimeout(() => {
-        this.sheduleNextBirthday(Date.now() + 60 * 60000)
+        this.scheduleNextBirthday(Date.now() + 60 * 60000)
 
         const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
         Utils.sendToChannels(this.client, this.client.config.birthdayChannels, newMessage)
@@ -202,4 +217,7 @@ Date.prototype.shiftMonth = function(time) {
 }
 Date.prototype.shiftHour = function(time) {
     this.setUTCHours(this.getUTCHours() + time)
+}
+Date.prototype.shiftMinute = function(time) {
+    this.setUTCMinutes(this.getUTCMinutes() + time)
 }
