@@ -7,19 +7,12 @@ const Discord = require("discord.js"),
       TweetManager = require("./utils/TweetManager.js"),
       log4js = require("log4js")
 
+require("./logger")
+
 const config = require("./config.json")
 config.emoji = require("./emoji.json")
 const client = new Discord.Client()
 const Logger = log4js.getLogger("main")
-
-log4js.configure({
-    appenders: {
-        file: { type: "dateFile", filename: "../logs/asashio.log", alwaysIncludePattern: true, backups: 31, compress: true },
-        out: { type: "stdout" },
-    }, categories: {
-        default: { appenders: ["file", "out"], level: "debug" }
-    }
-})
 
 client.config = config
 client.data = DataManager
