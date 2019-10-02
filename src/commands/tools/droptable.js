@@ -34,10 +34,10 @@ exports.run = async (client, message, args) => {
 
 exports.category = "tools"
 exports.help = () => {
-    return "Gets drop table of a map. Uses <http://kc.piro.moe> API"
+    return "Gets drop table of a map. Replies only in DM. Uses <http://kc.piro.moe> API"
 }
 exports.usage = () => {
-    return "droptable <world-map>"
+    return "droptable <map>"
 }
 exports.prefix = (client) => {
     return client.config.prefix

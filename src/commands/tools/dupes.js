@@ -86,7 +86,7 @@ exports.help = () => {
     return "Gets dupes list of a drop. Uses <http://kc.piro.moe> API"
 }
 exports.usage = () => {
-    return "dupes <ship> <world-map> <node> [difficulty: H/M/E/C] [rank: S/A]"
+    return "dupes <ship> <map> <node> [difficulty: H/M/E/C] [rank: S/A]"
 }
 exports.prefix = (client) => {
     return client.config.prefix
