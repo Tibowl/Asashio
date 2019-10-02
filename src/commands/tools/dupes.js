@@ -7,9 +7,11 @@ exports.run = async (client, message, args) => {
 
     let map, node, difficulty = "H", rank = "S"
     for(let i = args.length - 1; i > 0; i--) {
+        args[i] = args[i].replace(/^E(\d[a-zA-Z0-9]+)$/,"E-$1")
+
         if(args[i].includes("-")) {
-            if (!args[i].match(/\d$/)) {
-                args[i] = args[i].replace(/-\d/,"$& ")
+            if (!args[i].match(/-\d$/)) {
+                args[i] = args[i].replace(/\d/,"$& ")
                 args = args.join(" ").split(" ")
             }
 
@@ -42,7 +44,7 @@ exports.run = async (client, message, args) => {
 
     let difficultyID = ["/", "C", "E", "M", "H"].indexOf(difficulty)
     if(difficultyID <= 0 && isEvent) return message.reply("Invalid difficulty!")
-    if(isEvent) difficultyID = 0
+    if(!isEvent) difficultyID = 0
 
     if(!["S", "A", "B"].includes(rank)) return message.reply("Invalid rank!")
 
