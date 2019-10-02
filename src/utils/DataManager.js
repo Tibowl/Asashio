@@ -16,6 +16,7 @@ exports.mapInfoCache = {}
 
 exports.getMaxLevel = () => 175
 exports.getServerIP = () => "http://203.104.209.23"
+exports.eventID = () => 45
 
 exports.getShipByName = (name) => {
     name = name.toLowerCase()
