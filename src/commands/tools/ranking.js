@@ -1,4 +1,5 @@
 const fetch = require("node-fetch")
+const Utils = require("../../utils/Utils")
 
 this.cachedData = {}
 
@@ -23,18 +24,15 @@ exports.run = async (client, message, args) => {
 
 exports.formatData = (api, args) => {
     const longestENName = Math.max(...en_names.map(k => k.length))
-    let rankingData = `\`\`\`\nID ${"Server".padEnd(12, " ")}   T1 |   T5 |  T20 | T100 | T500 | Last updated\n`
-    let found = false
+    const serverData = []
 
     for(let serverID in en_names) {
         let data = api.data.find(k => serverID == k.servernum)
         if(data && data.cutoff) {
             if(args && args.length > 0 && !(serverID == args[0] || en_names[serverID].toLowerCase().includes(args[0].toLowerCase())))
                 continue
-            found = true
 
-            const cutoffs = ranks.map(rank => (data.cutoff[rank].toString()).padStart(5)).join(" |")
-            rankingData += `${(serverID.toString()).padStart(2)} ${en_names[serverID].padEnd(longestENName)} ${cutoffs} | ${new Date(data.lastmodifided).toLocaleString("en-UK", {
+            serverData.push([serverID, en_names[serverID], ...ranks.map(rank => data.cutoff[rank].toString() + " |"), new Date(data.lastmodifided).toLocaleString("en-UK", {
                 timeZone: "Asia/Tokyo",
                 hour12: false,
                 hourCycle: "h24",
@@ -43,14 +41,21 @@ exports.formatData = (api, args) => {
                 hour: "2-digit",
                 minute: "2-digit",
                 second: "2-digit"
-            }).replace(",", "")}\n`
+            }).replace(",", "")])
         }
     }
-    rankingData += "```\nData provided by <https://senka.com.ru>"
 
-    if(!found)
+    if(serverData.length == 0)
         return "Couldn't find a matching server!"
-    return rankingData
+
+    return `\`\`\`\n${Utils.createTable(
+        undefined,
+        [
+            ["ID", "Server", "T1 |", "T5 |", "T20 |", "T100 |", "T500 |", "Last updated"],
+            ...serverData
+        ],
+        [Utils.PAD_START, Utils.PAD_END, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_END]
+    )}\`\`\`\n\nData provided by <https://senka.com.ru>`
 }
 exports.returnCached = (message, args) => {
     if(this.cachedData && this.cachedData.time + 15 * 60 * 1000 > Date.now())
