@@ -30,7 +30,7 @@ exports.handleTweet = (tweet) => {
             text = tweet.extended_tweet.full_text
 
         if(text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
-            Utils.sendToChannels(this.client, this.client.config.tweetChannels, text)
+            Utils.sendToChannels(this.client, this.client.config.tweetChannels, text.replace("&gt;", ">"))
 
         return
     }
