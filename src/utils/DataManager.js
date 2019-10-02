@@ -262,7 +262,7 @@ exports.reloadShipData = async (client) => {
     this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
     Logger.info("Loaded api_start2!")
 
-    this.birthdays = require("../kcbirthday.json")
+    this.birthdays = require("../data/kcbirthday.json")
     Logger.info(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
     client.timerManager.scheduleNextBirthday()
 

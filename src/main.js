@@ -9,8 +9,8 @@ const Discord = require("discord.js"),
 
 require("./logger")
 
-const config = require("./config.json")
-config.emoji = require("./emoji.json")
+const config = require("./data/config.json")
+config.emoji = require("./data/emoji.json")
 const client = new Discord.Client()
 const Logger = log4js.getLogger("main")
 

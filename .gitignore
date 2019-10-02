@@ -86,4 +86,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
-*/config.json
+
+.vscode
+**/config.json
