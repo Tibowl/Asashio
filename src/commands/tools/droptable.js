@@ -32,7 +32,7 @@ exports.run = async (client, message, args) => {
     return message.author.send(`Drop table of ${map}\`\`\`\n${table}\n\`\`\`\nData provided by TsunDB.`)
 }
 
-exports.category = "tools"
+exports.category = "Tools"
 exports.help = () => {
     return "Gets drop table of a map. Replies only in DM. Uses <http://kc.piro.moe> API"
 }
