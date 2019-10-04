@@ -59,6 +59,16 @@ exports.handleTweet = (tweet) => {
         text = tweet.extended_tweet.full_text
         for(const url of tweet.extended_tweet.entities.urls)
             text = text.replace(url.url, url.expanded_url)
+
+        // Tweet has media, don't embed it
+        if(tweet.extended_tweet.entities && tweet.extended_tweet.entities.media) {
+            if(tweet.extended_tweet.entities.media[0].type != "photo")  {
+                Utils.sendToChannels(this.client, this.client.config.tweetChannels, tweetLink)
+                return
+            } else
+                embed.setImage(tweet.extended_tweet.entities.media[0].media_url_https)
+        }
+
     } else {
         for(const url of tweet.entities.urls)
             text = text.replace(url.url, url.expanded_url)
