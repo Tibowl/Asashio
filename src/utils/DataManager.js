@@ -266,7 +266,7 @@ exports.reloadShipData = async (client) => {
     Logger.info(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
     client.timerManager.scheduleNextBirthday()
 
-    this.expeds = require("../exped.json")
+    this.expeds = require("../data/exped.json")
     Logger.info(`Loading expeds! ${this.expeds.length} expeds!`)
     /*try {
         const pgClient = new Client(client.config.tsunDB);
