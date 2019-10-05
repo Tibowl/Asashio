@@ -1,5 +1,5 @@
 const fs = require("fs")
-const Logger = require("log4js").getLogger("avatar")
+const Logger = require("log4js").getLogger("reload")
 
 exports.run = (client, message, args) => {
     if(!client.config.admins.includes(message.author.id)) return

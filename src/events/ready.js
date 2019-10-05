@@ -7,6 +7,7 @@ module.exports = (client) => {
     if(alreadyLoaded) return
     alreadyLoaded = true
 
+    client.user.setStatus("online")
     client.linkManager.loadLinks(client)
     client.timerManager.init(client)
     client.tweetManager.init(client)
