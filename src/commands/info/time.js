@@ -27,3 +27,4 @@ exports.category = "Information"
 exports.help = "Get current time in a couple time zones"
 exports.usage = "time"
 exports.prefix = global.config.prefix
+exports.aliases = ["timezones"]

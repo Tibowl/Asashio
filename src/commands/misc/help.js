@@ -45,7 +45,8 @@ See \`${exports.prefix}help <command name>\` for more information`)
 
     return message.channel.send(`${commandName} - ${command.help}
 
-Usage: \`${command.prefix}${command.usage()}\``)
+Usage: \`${command.prefix}${command.usage}\`${command.aliases?`
+Aliases: ${command.aliases.map(k => `\`${k}\``).join(", ")}`:""}`)
 }
 
 exports.category = "Hidden"

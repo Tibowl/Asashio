@@ -1,11 +1,11 @@
 exports.run = (message, args) => {
-    if(!args || args.length !== 2) return message.reply(`Usage: ${this.usage()}`)
+    if(!args || args.length !== 2) return message.reply(`Usage: ${this.usage}`)
 
     let [dropRate, runs] = args
     dropRate = dropRate.replace(/%$/, "")
 
-    if(!dropRate.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage()}`)
-    if(!runs.match(/^[0-9]{0,6}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage()}`)
+    if(!dropRate.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage}`)
+    if(!runs.match(/^[0-9]{0,6}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage}`)
 
     dropRate = parseFloat(dropRate)
     runs = parseFloat(runs)

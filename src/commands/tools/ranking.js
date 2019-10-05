@@ -54,7 +54,7 @@ exports.formatData = (api, args) => {
             ...serverData
         ],
         [Utils.PAD_START, Utils.PAD_END, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_END]
-    )}\`\`\`\n\nData provided by <https://senka.com.ru>`
+    )}\`\`\`\nData provided by <https://senka.com.ru>`
 }
 exports.returnCached = (message, args) => {
     if(this.cachedData && this.cachedData.time + 15 * 60 * 1000 > Date.now())

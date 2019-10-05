@@ -11,3 +11,4 @@ exports.category = "hidden"
 exports.help = "Random TADNE pic. Admins only."
 exports.usage = "tadne"
 exports.prefix = global.config.prefix
+exports.aliases = ["prpr"]

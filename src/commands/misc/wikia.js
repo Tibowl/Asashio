@@ -12,3 +12,4 @@ exports.category = "Links+"
 exports.help = "Search a term on wikia"
 exports.usage = "wikia [search term]"
 exports.prefix = global.config.prefix
+exports.aliases = ["wiki"]

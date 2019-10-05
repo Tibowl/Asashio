@@ -2,7 +2,7 @@ const Utils = require("../../utils/Utils.js")
 const fetch = require("node-fetch")
 
 exports.run = async (message, args) => {
-    if(!args || args.length < 2) return message.reply(`Invalid amount of arguments! Usage: \`${this.usage()}\``)
+    if(!args || args.length < 2) return message.reply(`Invalid amount of arguments! Usage: \`${this.usage}\``)
     const { data } = global
 
     let map, node, difficulty = "H", rank = "S"
@@ -87,3 +87,4 @@ exports.category = "Tools"
 exports.help = "Gets dupes list of a drop. Uses <http://kc.piro.moe> API"
 exports.usage = "dupes <ship> <map> <node> [difficulty: H/M/E/C] [rank: S/A]"
 exports.prefix = global.config.prefix
+exports.aliases = ["dupe"]

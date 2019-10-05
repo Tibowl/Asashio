@@ -1,7 +1,7 @@
 const fetch = require("node-fetch")
 
 exports.run = async (message, args) => {
-    if(!args || args.length != 1) return message.reply(`Usage: \`${this.usage()}\``)
+    if(!args || args.length != 1) return message.reply(`Usage: \`${this.usage}\``)
     const { data } = global
 
     let map = args[0].toUpperCase()
@@ -36,3 +36,4 @@ exports.category = "Tools"
 exports.help = "Gets drop table of a map. Replies only in DM. Uses <http://kc.piro.moe> API"
 exports.usage = "droptable <map>"
 exports.prefix = global.config.prefix
+exports.aliases = ["drops"]

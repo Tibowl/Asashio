@@ -27,7 +27,7 @@ const cutins = {
 Object.keys(cutins).forEach(key => cutins[key].short = key)
 
 exports.run = async (message, args) => {
-    if(!args || args.length < 1) return message.reply(`Usage: \`${this.usage()}\`
+    if(!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\`
 Available types: ${Object.keys(cutins).map(k => `\`${k}\``).join(", ")}`)
     const { data } = global
 
