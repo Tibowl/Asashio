@@ -1,4 +1,4 @@
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length !== 2) return message.reply(`Usage: ${this.usage()}`)
 
     let [dropRate, runs] = args
@@ -17,12 +17,6 @@ exports.run = (client, message, args) => {
 }
 
 exports.category = "Tools"
-exports.help = () => {
-    return "What's the chance to not get a X% drop in Y runs"
-}
-exports.usage = () => {
-    return "salt <drop rate> <runs>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "What's the chance to not get a X% drop in Y runs"
+exports.usage = "salt <drop rate> <runs>"
+exports.prefix = global.config.prefix

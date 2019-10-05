@@ -1,7 +1,6 @@
 const Logger = require("log4js").getLogger("DataManager")
 
 const fetch = require("node-fetch")
-// const { Client } = require('pg')
 
 exports.ships = {}
 exports.quests = {}
@@ -223,7 +222,7 @@ exports.lenz = (a,b) => {
     return row[a.length]
 }
 
-exports.reloadShipData = async (client) => {
+exports.reloadShipData = async () => {
     const shipData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/ship.json")).json()
 
     this.ships = {}
@@ -264,16 +263,8 @@ exports.reloadShipData = async (client) => {
 
     this.birthdays = require("../data/kcbirthday.json")
     Logger.info(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
-    client.timerManager.scheduleNextBirthday()
+    global.timerManager.scheduleNextBirthday()
 
     this.expeds = require("../data/exped.json")
     Logger.info(`Loading expeds! ${this.expeds.length} expeds!`)
-    /*try {
-        const pgClient = new Client(client.config.tsunDB);
-        await pgClient.connect();
-        client.pgClient = pgClient;
-        console.info("Connected to TsunDB! Loaded!")
-    } catch (error) {
-        console.info("Connection to TsunDB failed!")
-    }*/
 }

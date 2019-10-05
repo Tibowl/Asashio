@@ -129,8 +129,9 @@ const compare = {
 }
 
 const shipDropCache = {}
-exports.dropTable = async (client, message, args, db = "tsundb") => {
+exports.dropTable = async (message, args, db = "tsundb") => {
     if(!args || args.length < 1) return message.reply("Must provide a ship.")
+    const { data } = global
 
     let rank = "S"
     if(args[args.length - 1].toUpperCase() == "A") {
@@ -142,13 +143,13 @@ exports.dropTable = async (client, message, args, db = "tsundb") => {
     }
 
     const shipName = args.join(" ")
-    let ship = client.data.getShipByName(shipName)
+    let ship = data.getShipByName(shipName)
 
     if(ship == undefined) return message.reply("Unknown ship")
 
     if(ship.remodel_from)
-        ship = client.data.getShipByName(ship.remodel_from.replace("/", "")) || ship
-    ship = client.data.getShipByName(ship.name)
+        ship = data.getShipByName(ship.remodel_from.replace("/", "")) || ship
+    ship = data.getShipByName(ship.name)
 
     // Check if cached, if so show cached reply.
     const cached = shipDropCache[db + ship.api_id + rank]
@@ -325,10 +326,10 @@ exports.createTable = (names, rows, pads = [PAD_END]) => {
     else
         return table.join("\n")
 }
-exports.sendToChannels = (client, channels, ...args) => {
+exports.sendToChannels = (channels, ...args) => {
     const messages = []
     for(const channel of channels) {
-        const chanObj = client.channels.get(channel)
+        const chanObj = global.client.channels.get(channel)
         if(chanObj)
             messages.push(chanObj.send(...args))
     }

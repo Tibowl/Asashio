@@ -3,14 +3,12 @@ const Discord = require("discord.js")
 const Utils = require("./Utils.js")
 const Logger = require("log4js").getLogger("TweetManager")
 
-exports.client = undefined
 exports.stream = undefined
 
-exports.init = (client) => {
-    this.client = client
-    const T = new Twit(client.config.twitter)
+exports.init = () => {
+    const T = new Twit(global.config.twitter)
 
-    this.toFollow = client.config.toTweet
+    this.toFollow = global.config.toTweet
     this.stream = T.stream("statuses/filter", { follow: this.toFollow })
     this.stream.on("tweet", this.handleTweet)
 
@@ -30,7 +28,7 @@ exports.handleTweet = (tweet) => {
             text = tweet.extended_tweet.full_text
 
         if(text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
-            Utils.sendToChannels(this.client, this.client.config.tweetChannels, text.replace("&gt;", ">"))
+            Utils.sendToChannels(global.config.tweetChannels, text.replace("&gt;", ">"))
 
         return
     }
@@ -47,7 +45,7 @@ exports.handleTweet = (tweet) => {
     // Tweet has media, don't embed it
     if(tweet.extended_entities && tweet.extended_entities.media) {
         if(tweet.extended_entities.media[0].type != "photo")  {
-            Utils.sendToChannels(this.client, this.client.config.tweetChannels, tweetLink)
+            Utils.sendToChannels(global.config.tweetChannels, tweetLink)
             return
         } else
             embed.setImage(tweet.extended_entities.media[0].media_url_https)
@@ -63,7 +61,7 @@ exports.handleTweet = (tweet) => {
         // Tweet has media, don't embed it
         if(tweet.extended_tweet.entities && tweet.extended_tweet.entities.media) {
             if(tweet.extended_tweet.entities.media[0].type != "photo")  {
-                Utils.sendToChannels(this.client, this.client.config.tweetChannels, tweetLink)
+                Utils.sendToChannels(global.config.tweetChannels, tweetLink)
                 return
             } else
                 embed.setImage(tweet.extended_tweet.entities.media[0].media_url_https)
@@ -76,7 +74,7 @@ exports.handleTweet = (tweet) => {
 
     embed.setDescription(text)
 
-    Utils.sendToChannels(this.client, this.client.config.tweetChannels, `<${tweetLink}>`, embed)
+    Utils.sendToChannels(global.config.tweetChannels, `<${tweetLink}>`, embed)
 }
 
 exports.shutdown = () => {

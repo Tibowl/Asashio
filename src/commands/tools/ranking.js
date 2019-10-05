@@ -6,7 +6,7 @@ this.cachedData = {}
 const en_names = ["?", "Yokosuka", "Kure", "Sasebo", "Maizuru", "Ominato", "Truk", "Lingga", "Rabaul", "Shortland", "Buin", "Tawi-Tawi", "Palau", "Brunei", "Hitokappu", "Paramushir", "Sukumo", "Kanoya", "Iwagawa", "Saiki Bay", "Hashirajima"]
 const ranks = [1, 5, 20, 100, 500]
 
-exports.run = async (client, message, args) => {
+exports.run = async (message, args) => {
     const cached = this.returnCached(message, args)
     if(cached) return cached
     const reply = message.reply("Loading...")
@@ -23,7 +23,6 @@ exports.run = async (client, message, args) => {
 }
 
 exports.formatData = (api, args) => {
-    const longestENName = Math.max(...en_names.map(k => k.length))
     const serverData = []
 
     for(let serverID in en_names) {
@@ -63,12 +62,6 @@ exports.returnCached = (message, args) => {
 }
 
 exports.category = "Tools"
-exports.help = () => {
-    return "Gets ranking data from https://senka.com.ru"
-}
-exports.usage = () => {
-    return "ranking [server name/id]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets ranking data from https://senka.com.ru"
+exports.usage = "ranking [server name/id]"
+exports.prefix = global.config.prefix

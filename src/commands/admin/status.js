@@ -1,7 +1,8 @@
 const child_process = require("child_process")
 
-exports.run = async (client, message, args) => {
-    if(!client.config.admins.includes(message.author.id)) return
+exports.run = async (message, args) => {
+    if(!global.config.admins.includes(message.author.id)) return
+    const { client } = global
 
     const formatTime = (sec) => {
         const p = (t) => t.toString().padStart(2, "0")
@@ -22,7 +23,7 @@ exports.run = async (client, message, args) => {
     }
     const getUptime = () => formatTime(process.uptime())
     const getAdmins = async () => {
-        const users = client.config.admins.map(id => client.fetchUser(id))
+        const users = global.config.admins.map(id => client.fetchUser(id))
         return (await Promise.all(users)).map(user => user.tag).join(", ")
     }
 
@@ -30,29 +31,24 @@ exports.run = async (client, message, args) => {
 Memory heap usage: ${getMemoryUsage()}
 Current uptime: ${getUptime()}
 ${args && args.length > 0 ? `
-Loaded ${Object.keys(client.data.ships).length} ships, ${Object.keys(client.data.quests).length} quests, ${client.data.expeds.length} expeds, ${client.data.birthdays.length} birthdays, ${Object.keys(client.config.emoji).length} emoji
-Cached ${Object.keys(client.data.mapInfoCache).length} maps
+Loaded ${Object.keys(global.data.ships).length} ships, ${Object.keys(global.data.quests).length} quests, ${global.data.expeds.length} expeds, ${global.data.birthdays.length} birthdays, ${Object.keys(global.config.emoji).length} emoji
+Cached ${Object.keys(global.data.mapInfoCache).length} maps
 
-Max ship level: ${client.data.getMaxLevel()}
-Image server: <${client.data.getServerIP()}>
-Event ID: ${client.data.eventID()}
+Max ship level: ${global.data.getMaxLevel()}
+Image server: <${global.data.getServerIP()}>
+Event ID: ${global.data.eventID()}
 
-Timer offset: ${client.config.timerOffsetms}ms
-Timer channels: ${client.config.timerChannels.map(id => `<#${id}>`).join(", ")}
-Birthday channels: ${client.config.birthdayChannels.map(id => `<#${id}>`).join(", ")}
-Tweet channels: ${client.config.tweetChannels.map(id => `<#${id}>`).join(", ")}
-Tweeting: ${client.config.toTweet.length} users
+Timer offset: ${global.config.timerOffsetms}ms
+Timer channels: ${global.config.timerChannels.map(id => `<#${id}>`).join(", ")}
+Birthday channels: ${global.config.birthdayChannels.map(id => `<#${id}>`).join(", ")}
+Tweet channels: ${global.config.tweetChannels.map(id => `<#${id}>`).join(", ")}
+Tweeting: ${global.config.toTweet.length} users
 Admins: ${await getAdmins()}
 `:""}`)
 }
 
 exports.category = "Admin"
-exports.help = () => {
-    return "Get bot status. Admins only."
-}
-exports.usage = () => {
-    return "status [more]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get bot status. Admins only."
+exports.usage = "status [more]"
+exports.prefix = global.config.prefix
+exports.aliases = ["version"]

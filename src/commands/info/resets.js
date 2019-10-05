@@ -1,6 +1,6 @@
-exports.run = (client, message) => {
+exports.run = (message) => {
     const now = new Date()
-    const resets = client.timerManager.nextResetsTimestamp(now.getTime(), true)
+    const resets = global.timerManager.nextResetsTimestamp(now.getTime(), true)
     const longNames = {
         quest: "**Daily** quest resets",
         weeklyQuest: "**Weekly** quest resets",
@@ -53,12 +53,6 @@ exports.timeLeft = (diff) => {
 }
 
 exports.category = "Information"
-exports.help = () => {
-    return "Get times when stuff resets"
-}
-exports.usage = () => {
-    return "resets"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get times when stuff resets"
+exports.usage = "resets"
+exports.prefix = global.config.prefix

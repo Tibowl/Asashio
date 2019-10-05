@@ -2,8 +2,9 @@ const { createCanvas } = require("canvas")
 const { Attachment } = require("discord.js")
 const Utils = require("../../utils/Utils.js")
 
-exports.run = async (client, message, args) => {
+exports.run = async (message, args) => {
     if(!args || args.length < 1) return message.channel.send("Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
+    const { data, config } = global
 
     let [hp, armor, attack] = args
     let maxhp = hp
@@ -15,7 +16,7 @@ exports.run = async (client, message, args) => {
         if(!isNaN(args[args.length - 1]))
             attack = args.pop()
 
-        ship = client.data.getShipByName(args.join(" "))
+        ship = data.getShipByName(args.join(" "))
         hp = maxhp = ship.hp
         armor = ship.armor_max
     }
@@ -26,7 +27,7 @@ exports.run = async (client, message, args) => {
     // Create overkill bar
     if(armor == undefined) {
         const calculated = Utils.calculatePostCap(9999, hp, maxhp, 1)
-        return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${client.config.emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${client.config.emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${client.config.emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
+        return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${config.emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${config.emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${config.emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, createBar(calculated))
     }
 
@@ -41,7 +42,7 @@ HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, createBar(cal
     // Create attack bar
     const calculated = Utils.calculatePostCap(attack, hp, maxhp, armor)
     return message.channel.send(`${maxhp >= 200 ? "**Assuming abyssal**\n" : `${ship ? `Suffering bar for **${ship.full_name}** (unmarried) against an attack with post-cap power of **${attack}**
-` : ""}`}${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${client.config.emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${client.config.emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${client.config.emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}% / Green: ${(calculated.ok * 100).toFixed(2)}%
+` : ""}`}${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${config.emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${config.emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${config.emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}% / Green: ${(calculated.ok * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp} (${calculated.mindmg}~${calculated.maxdmg} dmg)
 ${calculated.overkill || calculated.scratch ? `
 ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
@@ -119,8 +120,7 @@ function createGraph(hp, maxhp, armor) {
 }
 
 exports.category = "Tools"
-exports.help = () => {
-    return `Show suffering stats for a ship/attack or given HP/armor/attack combination.
+exports.help = `Show suffering stats for a ship/attack or given HP/armor/attack combination.
     - When only hp given, assuming overkill.
     - When no attack given, gives an attack suffering chart.
     - When given a ship, assumes unmarried and full hp.
@@ -128,10 +128,5 @@ exports.help = () => {
     - Attacks are assumed post-cap.
 
 For more features, use the web version at <https://flatisjustice.moe/dmgsuffer>`
-}
-exports.usage = () => {
-    return "suffering <hp(/maxhp)> [armor] [attack] OR .suffering <ship> [attack]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.usage = "suffering <hp(/maxhp)> [armor] [attack] OR .suffering <ship> [attack]"
+exports.prefix = global.config.prefix

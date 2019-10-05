@@ -26,16 +26,17 @@ const cutins = {
 }
 Object.keys(cutins).forEach(key => cutins[key].short = key)
 
-exports.run = async (client, message, args) => {
+exports.run = async (message, args) => {
     if(!args || args.length < 1) return message.reply(`Usage: \`${this.usage()}\`
 Available types: ${Object.keys(cutins).map(k => `\`${k}\``).join(", ")}`)
+    const { data } = global
 
     let [cutin, level, luck] = args
     if((cutin = cutins[cutin]) == undefined) return message.reply("Unknown cutin")
 
     if(level == undefined) {
         const format = (base) => (base / cutin.value * 100).toFixed(2).padStart(5)
-        return message.channel.send(`For level/luck specific stats use \`${this.prefix(client)}nb ${cutin.short} <level> <luck>\`
+        return message.channel.send(`For level/luck specific stats use \`${this.prefix}nb ${cutin.short} <level> <luck>\`
 
 **${cutin.name}** (base value: ${cutin.value})
 \`\`\`diff
@@ -52,9 +53,9 @@ Penalties:
 -${format(10)}% | Enemy Star Shell \`\`\``)
     }
 
-    if(args.length < 3) return message.reply(`Usage: \`${this.prefix(client)}nb ${cutin.short} <level> <luck>\``)
+    if(args.length < 3) return message.reply(`Usage: \`${this.prefix}nb ${cutin.short} <level> <luck>\``)
 
-    if(isNaN(level = parseInt(level)) || level < 0 || level > client.data.getMaxLevel() + 50) return message.reply("Invalid/unrealistic level.")
+    if(isNaN(level = parseInt(level)) || level < 0 || level > data.getMaxLevel() + 50) return message.reply("Invalid/unrealistic level.")
     if(isNaN(luck = parseInt(luck)) || luck < 0 || luck > 200) return message.reply("Invalid/unrealistic luck.")
 
     let base = 0
@@ -63,16 +64,10 @@ Penalties:
     else
         base = Math.floor(65 + Math.sqrt(luck - 50) + 0.8 * Math.sqrt(level))
 
-    return message.channel.send(`The base cut-in rate is **${(base/cutin.value*100).toFixed(2)}%** for a level **${level}** ship with **${luck}** luck. See \`${this.prefix(client)}nb ${cutin.short}\` for bonus information.`)
+    return message.channel.send(`The base cut-in rate is **${(base/cutin.value*100).toFixed(2)}%** for a level **${level}** ship with **${luck}** luck. See \`${this.prefix}nb ${cutin.short}\` for bonus information.`)
 }
 exports.category = "Tools"
-exports.help = () => {
-    return `Show night battle cutin rates.
+exports.help = `Show night battle cutin rates.
 - When only cut-in type provided, shows list of bonuses.`
-}
-exports.usage = () => {
-    return "nb <cutin> [level] [luck]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.usage = "nb <cutin> [level] [luck]"
+exports.prefix = global.config.prefix

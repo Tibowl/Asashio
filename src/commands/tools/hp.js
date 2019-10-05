@@ -1,10 +1,10 @@
 const Utils = require("../../utils/Utils.js")
 
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a ship name.")
 
     const shipName = args.join(" ")
-    const ship = client.data.getShipByName(shipName)
+    const ship = global.data.getShipByName(shipName)
 
     if(ship == undefined) return message.reply("Unknown ship")
     // console.log(ship)
@@ -32,12 +32,6 @@ modernized: ${hp + maxMod} ${f(hp + maxMod)}`
 }
 
 exports.category = "Tools"
-exports.help = () => {
-    return "Gets HP values of a ship, before and after marriage, with and without modding."
-}
-exports.usage = () => {
-    return "hp <ship>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets HP values of a ship, before and after marriage, with and without modding."
+exports.usage = "hp <ship>"
+exports.prefix = global.config.prefix

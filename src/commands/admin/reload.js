@@ -1,27 +1,27 @@
 const fs = require("fs")
 const Logger = require("log4js").getLogger("reload")
 
-exports.run = (client, message, args) => {
-    if(!client.config.admins.includes(message.author.id)) return
+exports.run = (message, args) => {
+    if(!global.config.admins.includes(message.author.id)) return
     if(!args || args.length < 1) return message.reply("Must provide a command name to reload.")
 
     let commandName = args[0]
 
     if(commandName === "config") {
         delete require.cache[require.resolve("../../config.json")]
-        client.config = require("../../config.json")
+        global.config = require("../../config.json")
         return message.reply("The config has been reloaded")
     } else if(commandName === "data") {
         delete require.cache[require.resolve("../../utils/DataManager.js")]
-        client.data = require("../../utils/DataManager.js")
-        client.data.reloadShipData(client)
+        global.data = require("../../utils/DataManager.js")
+        global.data.reloadShipData()
         return message.reply("The DataManager is now being reloaded!")
     } else if(commandName === "links") {
-        client.linkManager.loadLinks(client)
+        global.linkManager.loadLinks()
         return message.reply("Links are now being reloaded!")
     }
 
-    if(!client.commands.has(commandName) && client.commands.has(commandName.slice(1)))
+    if(!global.commands.has(commandName) && global.commands.has(commandName.slice(1)))
         commandName = commandName.slice(1)
 
     const readDir = (dir) => {
@@ -34,8 +34,8 @@ exports.run = (client, message, args) => {
                     delete require.cache[require.resolve(`../../${dir}/${commandName}.js`)]
                     let props = require(`../../${dir}/${commandName}.js`)
                     Logger.info(`Loading ${commandName}`)
-                    client.commands.delete(commandName)
-                    client.commands.set(commandName, props)
+                    global.commands.delete(commandName)
+                    global.commands.set(commandName, props)
                 }
             })
         })
@@ -46,12 +46,6 @@ exports.run = (client, message, args) => {
 }
 
 exports.category = "Admin"
-exports.help = () => {
-    return "Reload config/command. Admins only."
-}
-exports.usage = () => {
-    return "reload <command name>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Reload config/command. Admins only."
+exports.usage = "reload <command name>"
+exports.prefix = global.config.prefix

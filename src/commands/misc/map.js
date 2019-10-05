@@ -2,8 +2,8 @@ const { createCanvas } = require("canvas")
 const { Attachment } = require("discord.js")
 const cachedMaps = {}
 
-exports.run = async (client, message, args) => {
-    if(!client.config.admins.includes(message.author.id)) return
+exports.run = async (message, args) => {
+    if(!global.config.admins.includes(message.author.id)) return
     if(!args || args.length < 1) return message.reply("Must provide a map.")
 
     const map = args[0]
@@ -13,12 +13,12 @@ exports.run = async (client, message, args) => {
     const [worldid, mapid] = map.split("-").map(a => parseInt(a))
     if(worldid < 0 || (worldid > 10 && worldid < 40) || worldid > 60 || mapid >= 10 || mapid < 0) return
 
-    const attachment = await this.genMap(map, client)
+    const attachment = await this.genMap(map)
     return message.channel.send(attachment)
 }
 
-exports.genMap = async (map, client) => {
-    const apiParsed = await client.data.getMapInfo(map)
+exports.genMap = async (map) => {
+    const apiParsed = await global.data.getMapInfo(map)
 
     const canvas = createCanvas(1200, 720)
     const ctx = canvas.getContext("2d")
@@ -63,12 +63,6 @@ exports.genMap = async (map, client) => {
 }
 
 exports.category = "hidden"
-exports.help = () => {
-    return "Renders a map. WIP"
-}
-exports.usage = () => {
-    return "map <world-map>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Renders a map. WIP"
+exports.usage = "map <world-map>"
+exports.prefix = global.config.prefix

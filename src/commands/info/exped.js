@@ -1,12 +1,13 @@
 const Discord = require("discord.js")
 
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide an expedition.")
+    const { data, config } = global
 
     const expedID = args[0].toUpperCase()
 
-    const exped = client.data.api_start2.api_mst_mission.find(k => k.api_disp_no == expedID || k.api_id == expedID)
-    const extraExpedData = client.data.getExpedByID(exped.api_disp_no)
+    const exped = data.api_start2.api_mst_mission.find(k => k.api_disp_no == expedID || k.api_id == expedID)
+    const extraExpedData = data.getExpedByID(exped.api_disp_no)
 
     if(exped == undefined) return message.reply("Unknown expedition.")
     const [fuel, ammo, bauxite, steel] = (extraExpedData && extraExpedData.rsc) || (exped.api_win_mat_level.map(this.winmatlevel))
@@ -21,11 +22,11 @@ exports.run = (client, message, args) => {
     if(extraExpedData && extraExpedData.misc_req) req += `\n${extraExpedData.misc_req}`
     embed.addField("Fleet requirements", req)
 
-    let rewards = `${fuel}×${client.config.emoji.fuel} ${ammo}×${client.config.emoji.ammo} ${bauxite}×${client.config.emoji.bauxite} ${steel}×${client.config.emoji.steel}\n`
+    let rewards = `${fuel}×${config.emoji.fuel} ${ammo}×${config.emoji.ammo} ${bauxite}×${config.emoji.bauxite} ${steel}×${config.emoji.steel}\n`
     if(exped.api_win_item1[0] != 0)
-        rewards +=  `Left Reward (RNG): ${exped.api_win_item1[1]}×${this.getItem(exped.api_win_item1[0], client)}\n`
+        rewards +=  `Left Reward (RNG): ${exped.api_win_item1[1]}×${this.getItem(exped.api_win_item1[0])}\n`
     if(exped.api_win_item2[0] != 0)
-        rewards += `Right Reward (GS): ${exped.api_win_item2[1]}×${this.getItem(exped.api_win_item2[0], client)}\n`
+        rewards += `Right Reward (GS): ${exped.api_win_item2[1]}×${this.getItem(exped.api_win_item2[0])}\n`
 
     embed
         .addField("Rewards", rewards, true)
@@ -34,7 +35,7 @@ exports.run = (client, message, args) => {
     let notes = ""
 
     if(exped.api_sample_fleet)
-        notes += `Sample fleet: ${exped.api_sample_fleet.filter(k => k > 0).map(k => client.data.misc.ShipCodes[k]).join(", ")}\n`
+        notes += `Sample fleet: ${exped.api_sample_fleet.filter(k => k > 0).map(k => data.misc.ShipCodes[k]).join(", ")}\n`
 
     if(exped.api_reset_type == 1)
         notes += "Monthly expedition\n"
@@ -47,15 +48,16 @@ exports.run = (client, message, args) => {
     embed.addField("Notes", notes.trim())
     return message.channel.send(embed)
 }
-exports.getItem = (item, client) => {
+exports.getItem = (item) => {
+    const {config} = global
     switch (item) {
-        case 1: return client.config.emoji.bucket
-        case 2: return client.config.emoji.flamethrower
-        case 3: return client.config.emoji.devmat
-        case 4: return client.config.emoji.screw
-        case 10: return client.config.emoji.furniture_box_s
-        case 11: return client.config.emoji.furniture_box_m
-        case 12: return client.config.emoji.furniture_box_l
+        case 1: return config.emoji.bucket
+        case 2: return config.emoji.flamethrower
+        case 3: return config.emoji.devmat
+        case 4: return config.emoji.screw
+        case 10: return config.emoji.furniture_box_s
+        case 11: return config.emoji.furniture_box_m
+        case 12: return config.emoji.furniture_box_l
         default: return `Unknown item ${item}`
     }
 }
@@ -71,12 +73,6 @@ exports.winmatlevel = (k) => {
 }
 exports.getTime = (time) => `${(Math.floor(time / 60) + "").padStart(2, "0")}h${((time % 60) + "").padStart(2, "0")}m`
 exports.category = "Information"
-exports.help = () => {
-    return "Gets expedition info."
-}
-exports.usage = () => {
-    return "exped <exped ID>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets expedition info."
+exports.usage = "exped <exped ID>"
+exports.prefix = global.config.prefix

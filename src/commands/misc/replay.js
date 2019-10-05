@@ -1,4 +1,4 @@
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     let baseLink = "https://kc3kai.github.io/kancolle-replay/battleplayer.html"
 
     let link = baseLink
@@ -10,12 +10,6 @@ exports.run = (client, message, args) => {
 }
 
 exports.category = "Links+"
-exports.help = () => {
-    return "Get link to replayer site. Will use either given URL or attached image."
-}
-exports.usage = () => {
-    return "replay [url]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get link to replayer site. Will use either given URL or attached image."
+exports.usage = "replay [url]"
+exports.prefix = global.config.prefix

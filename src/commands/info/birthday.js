@@ -1,8 +1,8 @@
-exports.run = async (client, message, args) => {
+exports.run = async (message, args) => {
     const now = new Date()
     if(args && args.length > 0) {
         const shipName = args.join(" ")
-        const ship = client.data.getBirthdayByName(shipName)
+        const ship = global.data.getBirthdayByName(shipName)
         if(ship == undefined)
             return message.channel.send("Cannot find ship!")
 
@@ -22,15 +22,15 @@ exports.run = async (client, message, args) => {
 
     let lastDate = now.getTime() - 24*60*60*1000
     for(let i = 0; i < (message.channel.type == "dm" ? 15 : 5); i++) {
-        const next = client.timerManager.getNextBirthdayDate(lastDate)
+        const next = global.timerManager.getNextBirthdayDate(lastDate)
 
         if(next < now.getTime())
-            today = (`**Today** it's ${client.timerManager.getShipsOnBirthday(next)
+            today = (`**Today** it's ${global.timerManager.getShipsOnBirthday(next)
                 .map(s => `**${s}**`)
                 .join(", ")
                 .replace(/,([^,]*)$/, " and$1")}'s birthday.\n`)
         else
-            birthdays.push(`${client.timerManager.getShipsOnBirthday(next)
+            birthdays.push(`${global.timerManager.getShipsOnBirthday(next)
                 .map(s => `**${s}**`)
                 .join(", ")
                 .replace(/,([^,]*)$/, " and$1")} in ${this.getDateLine(next, now)}`)
@@ -74,12 +74,6 @@ exports.timeLeft = (diff) => {
 }
 
 exports.category = "Information"
-exports.help = () => {
-    return "Get birthday of a ship or list upcomming ones"
-}
-exports.usage = () => {
-    return "birthday"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get birthday of a ship or list upcomming ones"
+exports.usage = "birthday"
+exports.prefix = global.config.prefix

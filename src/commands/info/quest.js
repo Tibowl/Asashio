@@ -11,13 +11,14 @@ const questTypes = {
     "W": ["Quest_marriage.png", "#F4C6E8"]
 }
 
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a quest.")
+    const { data, config } = global
 
     const questId = args[0].toUpperCase()
-    let quest = client.data.getQuestByName(questId)
+    let quest = data.getQuestByName(questId)
     if(quest == undefined) {
-        const quests = client.data.getQuestsByDescription(args.join(" "))
+        const quests = data.getQuestsByDescription(args.join(" "))
         if(quests.length == 1)
             quest = quests[0]
         else if (quests.length == 0)
@@ -34,7 +35,7 @@ exports.run = (client, message, args) => {
     const embed = new Discord.RichEmbed()
         .setTitle([quest.label || questId, quest.title_en, quest.title].filter(a => a).join(" | "))
         .setURL(`https://kancolle.fandom.com/wiki/Quests#${questId}`)
-        .setDescription(this.parseText(quest.detail_en, client))
+        .setDescription(this.parseText(quest.detail_en))
 
     const type = questTypes[(quest.label || questId).substring(0,1)] || questTypes[quest.letter]
     if(type)
@@ -43,19 +44,19 @@ exports.run = (client, message, args) => {
 
     let rewards = ""
     if(quest.reward_fuel > 0 || quest.reward_ammo > 0 || quest.reward_bauxite > 0 || quest.reward_steel > 0)
-        rewards = `${quest.reward_fuel}×${client.config.emoji.fuel} ${quest.reward_ammo}×${client.config.emoji.ammo} ${quest.reward_bauxite}×${client.config.emoji.bauxite} ${quest.reward_steel}×${client.config.emoji.steel}
+        rewards = `${quest.reward_fuel}×${config.emoji.fuel} ${quest.reward_ammo}×${config.emoji.ammo} ${quest.reward_bauxite}×${config.emoji.bauxite} ${quest.reward_steel}×${config.emoji.steel}
 `
     if(quest.reward_other)
-        rewards += this.parseText(quest.reward_other, client)
+        rewards += this.parseText(quest.reward_other)
 
     embed.addField("Rewards", rewards)
     if(quest.note)
-        embed.addField("Notes", this.parseText(quest.note, client))
+        embed.addField("Notes", this.parseText(quest.note))
 
     return message.channel.send(embed)
 }
 
-exports.parseText = (text, client) => {
+exports.parseText = (text) => {
     // console.log(text)
     let links = text.match(/\[\[.*?\]\]/g)
 
@@ -71,7 +72,7 @@ exports.parseText = (text, client) => {
                 // title = clean.split("|").find(a => a.startsWith("link=")).replace("link=", "").replace(/_/g, " ") || title
 
                 const fileName = target.replace(/ /g, "_").trim()
-                text = text.replace(match, this.getEmoji(fileName, client))
+                text = text.replace(match, this.getEmoji(fileName))
             }
 
             if(target.startsWith("#"))
@@ -103,54 +104,55 @@ exports.parseText = (text, client) => {
     return text.replace(/<br>/g, "\n").replace(/<br\/>/g, "\n").replace(/<br \/>/g, "\n").replace(/'''/g, "**").replace(/"/g, "**")
 }
 
-exports.getEmoji = (fileName, client) => {
+exports.getEmoji = (fileName) => {
+    const {config} = global
     switch(fileName) {
         case "File:Furniture_box_large.jpg":
         case "File:Furniture_box_large.png":
-            return client.config.emoji.furniture_box_l
+            return config.emoji.furniture_box_l
         case "File:Furniture_box_medium.jpg":
         case "File:Furniture_box_medium.png":
-            return client.config.emoji.furniture_box_m
+            return config.emoji.furniture_box_m
         case "File:Furniture_box_small.jpg":
         case "File:Furniture_box_small.png":
-            return client.config.emoji.furniture_box_s
+            return config.emoji.furniture_box_s
 
         case "File:Development_material.png":
-            return client.config.emoji.devmat
+            return config.emoji.devmat
         case "File:Instant_construction_2.png":
-            return client.config.emoji.flamethrower
+            return config.emoji.flamethrower
         case "File:Improvement_Materials.png":
-            return client.config.emoji.screw
+            return config.emoji.screw
         case "File:Instant_repair_2.png":
-            return client.config.emoji.bucket
+            return config.emoji.bucket
         case "File:Reinforcement_expansion_064_useitem.png":
-            return client.config.emoji.reinforcement_expansion
+            return config.emoji.reinforcement_expansion
         case "File:Present_box.png":
-            return client.config.emoji.present_box
+            return config.emoji.present_box
         case "File:Medal.png":
-            return client.config.emoji.kcmedal
+            return config.emoji.kcmedal
         case "File:Furniture_fairy.png":
-            return client.config.emoji.furniture_fairy
+            return config.emoji.furniture_fairy
         case "File:Food_supply_ship_mamiya.png":
-            return client.config.emoji.mamiya
+            return config.emoji.mamiya
         case "File:Food_supply_ship_irako.png":
-            return client.config.emoji.irako
+            return config.emoji.irako
         case "File:Construction_Corps_Item.png":
-            return client.config.emoji.construction_corps
+            return config.emoji.construction_corps
         case "File:Skilled_Crew_Member_Card.png":
-            return client.config.emoji.skilled_crew_member
+            return config.emoji.skilled_crew_member
         case "File:New_Model_Gun_Mount_Improvement_Material_Card.png":
-            return client.config.emoji.gun_mat
+            return config.emoji.gun_mat
         case "File:New_Model_Aerial_Armament_Material_Card.png":
-            return client.config.emoji.air_mat
+            return config.emoji.air_mat
         case "File:Action_Report_Card.png":
-            return client.config.emoji.action_report
+            return config.emoji.action_report
         case "File:Prototype_Deck_Catapult.png":
-            return client.config.emoji.catapult
+            return config.emoji.catapult
         case "File:Headquarters_Personnel.png":
-            return client.config.emoji.headquarters_personnel
+            return config.emoji.headquarters_personnel
         case "File:Ranking_point_reward.png":
-            return client.config.emoji.ranking_points
+            return config.emoji.ranking_points
         default:
             return ""
     }
@@ -159,12 +161,6 @@ exports.getImage = (file) => {
     return `https://kancolle.fandom.com/wiki/Special:FilePath/${file.replace(/ /g, "_")}`
 }
 exports.category = "Information"
-exports.help = () => {
-    return "Get quest information."
-}
-exports.usage = () => {
-    return "quest <quest id> OR .quest <reward/title/description>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get quest information."
+exports.usage = "quest <quest id> OR .quest <reward/title/description>"
+exports.prefix = global.config.prefix

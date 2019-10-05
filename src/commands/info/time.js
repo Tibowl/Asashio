@@ -1,4 +1,4 @@
-exports.run = (client, message) => {
+exports.run = (message) => {
     const now = new Date()
     const timeZones = [
         "Asia/Tokyo",
@@ -24,12 +24,6 @@ exports.run = (client, message) => {
 }
 
 exports.category = "Information"
-exports.help = () => {
-    return "Get current time in a couple time zones"
-}
-exports.usage = () => {
-    return "time"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get current time in a couple time zones"
+exports.usage = "time"
+exports.prefix = global.config.prefix

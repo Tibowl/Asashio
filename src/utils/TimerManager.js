@@ -1,17 +1,14 @@
 const Utils = require("./Utils.js")
 const Logger = require("log4js").getLogger("TimerManager")
 
-exports.client = undefined
 exports.activityTimer = undefined
 
-exports.init = (client) => {
-    this.client = client
-
+exports.init = () => {
     this.scheduleNextMessages()
 
     const updateActivity = () => {
         const now = new Date()
-        client.user.setActivity(client.config.activity.replace("%t", now.toLocaleString("en-UK", {
+        global.client.user.setActivity(global.config.activity.replace("%t", now.toLocaleString("en-UK", {
             timeZone: "Asia/Tokyo",
             hour12: false,
             hourCycle: "h24",
@@ -71,14 +68,14 @@ ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]
         for (let k of [60, 30, 15, 5]) {
             let diff = nextTimeStamp - Date.now() - k * 60000
             if (diff > 0 && !(k == 60 && type == "pvp"))
-                setTimeout(() => this.update(`${message} in ${k} minutes.`), diff + this.client.config.timerOffsetms)
+                setTimeout(() => this.update(`${message} in ${k} minutes.`), diff + global.config.timerOffsetms)
         }
     }
 
     setTimeout(() => {
         this.update(`${message}.`)
         this.scheduleNextMessages()
-    }, nextTimeStamp - Date.now() + this.client.config.timerOffsetms)
+    }, nextTimeStamp - Date.now() + global.config.timerOffsetms)
 }
 
 exports.getNextBirthdayDate = (now = Date.now()) => {
@@ -88,7 +85,7 @@ exports.getNextBirthdayDate = (now = Date.now()) => {
 
     midnight.shiftDate(1)
     for(let i = 0; i < 370; i++) {
-        if(this.client.data.birthdays
+        if(global.data.birthdays
             .some(s => s.Day == midnight.getUTCDate() && s.Month == midnight.getUTCMonth() + 1)) {
             midnight.shiftDate(-1)
             return midnight
@@ -100,7 +97,7 @@ exports.getNextBirthdayDate = (now = Date.now()) => {
 exports.getShipsOnBirthday = (date) => {
     const dateJapan = new Date(date)
     dateJapan.shiftDate(1)
-    return this.client.data.birthdays
+    return global.data.birthdays
         .filter(s => s.Day == dateJapan.getUTCDate() && s.Month == dateJapan.getUTCMonth() + 1)
         .map(s => s.Name)
         .sort((a,b) => a-b)
@@ -117,8 +114,8 @@ exports.scheduleNextBirthday = (now = Date.now()) => {
         this.scheduleNextBirthday(Date.now() + 60 * 60000)
 
         const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
-        Utils.sendToChannels(this.client, this.client.config.birthdayChannels, newMessage)
-    }, midnight.getTime() - Date.now() + this.client.config.timerOffsetms)
+        Utils.sendToChannels(global.config.birthdayChannels, newMessage)
+    }, midnight.getTime() - Date.now() + global.config.timerOffsetms)
 }
 // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443
 exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
@@ -211,7 +208,7 @@ exports.update = async (newMessage) => {
     this.toDeleteMessages = []
     if(!newMessage) return Promise.all(deletion)
 
-    this.toDeleteMessages = await Utils.sendToChannels(this.client, this.client.config.timerChannels, newMessage)
+    this.toDeleteMessages = await Utils.sendToChannels(global.config.timerChannels, newMessage)
     Logger.info(`Send ${newMessage}`)
 
     return Promise.all(deletion)

@@ -1,13 +1,13 @@
 const Discord = require("discord.js")
 
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a map.")
 
     const map = args[0]
     if(!map.includes("-") || map.split("-").length !== 2 || map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
 
     const [world, mapid] = map.split("-").map(a => parseInt(a))
-    const bgm = client.data.api_start2.api_mst_mapbgm.find(k => k.api_no == mapid && k.api_maparea_id == world)
+    const bgm = global.data.api_start2.api_mst_mapbgm.find(k => k.api_no == mapid && k.api_maparea_id == world)
 
     if(bgm == undefined) return message.reply("Invalid map.")
 
@@ -15,35 +15,29 @@ exports.run = (client, message, args) => {
         .setURL("https://kancolle.fandom.com/wiki/Music")
         .setTitle(`${map} BGM`)
 
-    embed.addField("Overworld", this.parseLine(bgm.api_moving_bgm, client))
+    embed.addField("Overworld", this.parseLine(bgm.api_moving_bgm))
     if(bgm.api_map_bgm[0] == bgm.api_map_bgm[1])
-        embed.addField("Normal Node (Day & Night)", this.parseLine(bgm.api_map_bgm[0], client))
+        embed.addField("Normal Node (Day & Night)", this.parseLine(bgm.api_map_bgm[0]))
     else {
-        embed.addField("Normal Node (Day)", this.parseLine(bgm.api_map_bgm[0], client))
-        embed.addField("Normal Node (Night)", this.parseLine(bgm.api_map_bgm[1], client))
+        embed.addField("Normal Node (Day)", this.parseLine(bgm.api_map_bgm[0]))
+        embed.addField("Normal Node (Night)", this.parseLine(bgm.api_map_bgm[1]))
     }
 
     if(bgm.api_boss_bgm[0] == bgm.api_boss_bgm[1])
-        embed.addField("Boss Node (Day & Night)", this.parseLine(bgm.api_boss_bgm[0], client))
+        embed.addField("Boss Node (Day & Night)", this.parseLine(bgm.api_boss_bgm[0]))
     else {
-        embed.addField("Boss Node (Day)", this.parseLine(bgm.api_boss_bgm[0], client))
-        embed.addField("Boss Node (Night)", this.parseLine(bgm.api_boss_bgm[1], client))
+        embed.addField("Boss Node (Day)", this.parseLine(bgm.api_boss_bgm[0]))
+        embed.addField("Boss Node (Night)", this.parseLine(bgm.api_boss_bgm[1]))
     }
 
     return message.channel.send(embed)
 }
 
-exports.parseLine = (bgmId, client) => `${(this.bgmidmap[bgmId] || `Unknown BGM #${bgmId}`).replace(/<br>/g, " - ").replace(/<i>/g, "*").replace(/<\/i>/g, "*")} [▶️](${client.data.getBGMLink(bgmId)})`
+exports.parseLine = (bgmId) => `${(this.bgmidmap[bgmId] || `Unknown BGM #${bgmId}`).replace(/<br>/g, " - ").replace(/<i>/g, "*").replace(/<\/i>/g, "*")} [▶️](${global.data.getBGMLink(bgmId)})`
 exports.category = "Information"
-exports.help = () => {
-    return "Gets BGM from a map."
-}
-exports.usage = () => {
-    return "bgm <map>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets BGM from a map."
+exports.usage = "bgm <map>"
+exports.prefix = global.config.prefix
 
 exports.bgmidmap = {
     "-171": "Summer 2016 Event Main Operation: Normal Node BGM", // LBAS = 70

@@ -1,4 +1,6 @@
-exports.run = async (client, message) => {
+exports.run = async (message) => {
+    const { client } = global
+
     const msgPing = "**Pinging...**"
     const pingMsg = await message.reply(msgPing)
     const msgPong = [
@@ -11,12 +13,6 @@ exports.run = async (client, message) => {
 }
 
 exports.category = "hidden"
-exports.help = () => {
-    return "Pong."
-}
-exports.usage = () => {
-    return "ping"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Pong."
+exports.usage = "ping"
+exports.prefix = global.config.prefix

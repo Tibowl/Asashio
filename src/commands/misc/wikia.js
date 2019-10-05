@@ -9,12 +9,6 @@ exports.run = async (client, message, args) => {
 }
 
 exports.category = "Links+"
-exports.help = () => {
-    return "Search a term on wikia"
-}
-exports.usage = () => {
-    return "wikia [search term]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Search a term on wikia"
+exports.usage = "wikia [search term]"
+exports.prefix = global.config.prefix

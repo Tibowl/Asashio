@@ -1,12 +1,12 @@
 const fetch = require("node-fetch")
 
-exports.run = async (client, message, args) => {
+exports.run = async (message, args) => {
     if(!args || args.length != 1) return message.reply(`Usage: \`${this.usage()}\``)
-
+    const { data } = global
 
     let map = args[0].toUpperCase()
-    if(map.startsWith("E-")) map = map.replace("E", client.data.eventID())
-    else if(map.startsWith("E")) map = map.replace("E", client.data.eventID() + "-")
+    if(map.startsWith("E-")) map = map.replace("E", data.eventID())
+    else if(map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
     if(map.split("-").length != 2) return message.author.send("Invalid map!")
 
     let table = (await (await fetch(`http://kc.piro.moe/api/routing/droptable/${map}`)).text())
@@ -33,12 +33,6 @@ exports.run = async (client, message, args) => {
 }
 
 exports.category = "Tools"
-exports.help = () => {
-    return "Gets drop table of a map. Replies only in DM. Uses <http://kc.piro.moe> API"
-}
-exports.usage = () => {
-    return "droptable <map>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets drop table of a map. Replies only in DM. Uses <http://kc.piro.moe> API"
+exports.usage = "droptable <map>"
+exports.prefix = global.config.prefix

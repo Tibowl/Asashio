@@ -1,9 +1,9 @@
 const Utils = require("../../utils/Utils.js")
 const fetch = require("node-fetch")
 
-exports.run = async (client, message, args) => {
+exports.run = async (message, args) => {
     if(!args || args.length < 2) return message.reply(`Invalid amount of arguments! Usage: \`${this.usage()}\``)
-
+    const { data } = global
 
     let map, node, difficulty = "H", rank = "S"
     for(let i = args.length - 1; i > 0; i--) {
@@ -36,8 +36,8 @@ exports.run = async (client, message, args) => {
     }
     if(map == undefined) return message.reply("Invalid arguments!")
 
-    if(map.startsWith("E-")) map = map.replace("E", client.data.eventID())
-    if(map.startsWith("E")) map = map.replace("E", client.data.eventID() + "-")
+    if(map.startsWith("E-")) map = map.replace("E", data.eventID())
+    if(map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
     if(map.split("-").length != 2) return message.reply("Invalid map!")
 
     const isEvent = map.split("-")[0].length > 1
@@ -50,16 +50,16 @@ exports.run = async (client, message, args) => {
 
 
     const shipName = args.join(" ")
-    let ship = client.data.getShipByName(shipName)
+    let ship = data.getShipByName(shipName)
 
     if(ship == undefined) return message.reply("Unknown ship")
 
     if(ship.remodel_from)
-        ship = client.data.getShipByName(ship.remodel_from.replace("/", "")) || ship
-    ship = client.data.getShipByName(ship.name)
+        ship = data.getShipByName(ship.remodel_from.replace("/", "")) || ship
+    ship = data.getShipByName(ship.name)
 
 
-    const mapInfo = await client.data.getMapInfo(map)
+    const mapInfo = await data.getMapInfo(map)
     if(Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
 
     const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
@@ -84,12 +84,6 @@ exports.run = async (client, message, args) => {
 }
 
 exports.category = "Tools"
-exports.help = () => {
-    return "Gets dupes list of a drop. Uses <http://kc.piro.moe> API"
-}
-exports.usage = () => {
-    return "dupes <ship> <map> <node> [difficulty: H/M/E/C] [rank: S/A]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets dupes list of a drop. Uses <http://kc.piro.moe> API"
+exports.usage = "dupes <ship> <map> <node> [difficulty: H/M/E/C] [rank: S/A]"
+exports.prefix = global.config.prefix

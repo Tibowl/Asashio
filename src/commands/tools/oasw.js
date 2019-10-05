@@ -1,6 +1,6 @@
 const Discord = require("discord.js")
 
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a ship name.")
 
     let aswOffset = 0, equipmentAsw = -1
@@ -9,7 +9,7 @@ exports.run = (client, message, args) => {
     if(args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop().slice(1))
 
     const shipName = args.join(" ")
-    const ship = client.data.getShipByName(shipName)
+    const ship = global.data.getShipByName(shipName)
 
     if(ship == undefined) return message.reply("Unknown ship")
 
@@ -134,12 +134,7 @@ exports.generateLine = (equipAsw, ship, aswRequired, aswOffset, maxSlots, force 
 `
 }
 exports.category = "Tools"
-exports.help = () => {
-    return "Gets levels when a ship can OASW with certain equipment."
-}
-exports.usage = () => {
-    return "oasw <ship> [+<asw mod>] [=<equipment ASW>]"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Gets levels when a ship can OASW with certain equipment."
+exports.usage = "oasw <ship> [+<asw mod>] [=<equipment ASW>]"
+exports.prefix = global.config.prefix
+exports.aliases = ["asw"]

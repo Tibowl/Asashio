@@ -1,8 +1,8 @@
 const Discord = require("discord.js")
 
-exports.run = (client, message, args) => {
+exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide an equip name.")
-    const data = client.data
+    const data = global.data
 
     const equipName = args.join(" ")
     const equip = data.getEquipByName(equipName)
@@ -70,12 +70,6 @@ ${equipStats.map(stat => `${stat[0].padEnd(longestName, " ")} :: ${stat[1]}`).jo
 
 
 exports.category = "Information"
-exports.help = () => {
-    return "Get equip information."
-}
-exports.usage = () => {
-    return "equip <equip>"
-}
-exports.prefix = (client) => {
-    return client.config.prefix
-}
+exports.help = "Get equip information."
+exports.usage = "equip <equip>"
+exports.prefix = global.config.prefix

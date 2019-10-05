@@ -8,8 +8,9 @@ module.exports = (client) => {
     alreadyLoaded = true
 
     client.user.setStatus("online")
-    client.linkManager.loadLinks(client)
-    client.timerManager.init(client)
-    client.tweetManager.init(client)
-    client.data.reloadShipData(client)
+
+    global.linkManager.loadLinks()
+    global.timerManager.init()
+    global.tweetManager.init()
+    global.data.reloadShipData()
 }
