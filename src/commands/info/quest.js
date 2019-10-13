@@ -33,7 +33,7 @@ exports.run = (message, args) => {
 
     // console.log(quest)
     const embed = new Discord.RichEmbed()
-        .setTitle([quest.label || questId, quest.title_en, quest.title].filter(a => a).join(" | "))
+        .setTitle([quest.label || questId, this.cleanText(quest.title_en), this.cleanText(quest.title)].filter(a => a).join(" | "))
         .setURL(`https://kancolle.fandom.com/wiki/Quests#${questId}`)
         .setDescription(this.parseText(quest.detail_en))
 
@@ -55,7 +55,9 @@ exports.run = (message, args) => {
 
     return message.channel.send(embed)
 }
-
+exports.cleanText = (text) => {
+    return text.replace(/\[\[.*?\]\]/g, "").replace(/<.*?>/g, "")
+}
 exports.parseText = (text) => {
     // console.log(text)
     let links = text.match(/\[\[.*?\]\]/g)

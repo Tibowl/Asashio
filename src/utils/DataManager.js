@@ -141,10 +141,10 @@ exports.getQuestsByDescription = (desc) => {
         q => q.note.toLowerCase().includes(desc)
     ]
     const quests = []
-    for(const filter of filters) {
+    for(const filter of filters)
         quests.push(...Object.values(this.quests).filter(filter))
-    }
-    return quests
+
+    return quests.filter((obj, pos, self) => self.indexOf(obj) == pos)
 }
 exports.getEquipById = (id) => {
     return this.equips[id]
