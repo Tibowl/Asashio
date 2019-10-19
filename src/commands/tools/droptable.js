@@ -9,16 +9,21 @@ exports.run = async (message, args) => {
     else if(map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
     if(map.split("-").length != 2) return message.author.send("Invalid map!")
 
+    const isEventMap = map.split("-")[0].length > 1
+
     let table = (await (await fetch(`http://kc.piro.moe/api/routing/droptable/${map}`)).text())
         .replace(/^\| /gm, "")
         .replace(/\|$/gm, "")
-        .replace(/\| ([A-Z0-9]) +/g, "|  $1  ")
-        .replace(/\| ([A-Z0-9]{2}) +/g, "| $1  ")
+        .replace(/\| ([A-Z0-9]) +/g, isEventMap ? "|  $1  " : "| $1 ")
+        .replace(/\| ([A-Z0-9]{2}) +/g, isEventMap ? "|  $1  " : "| $1")
         .replace(/Casual/g, "C")
         .replace(/Normal/g, "N")
         .replace(/Easy {2}/g, "E")
         .replace(/Hard {2}/g, "H")
         .replace(/\| {10}/g, "|     ")
+
+    if(!isEventMap)
+        table = table.replace(/\| {2}/g, "| ")
 
     const rows = table.split("\n")
     rows[1] = undefined
