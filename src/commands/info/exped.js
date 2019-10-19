@@ -10,7 +10,7 @@ exports.run = (message, args) => {
     const extraExpedData = data.getExpedByID(exped.api_disp_no)
 
     if(exped == undefined) return message.reply("Unknown expedition.")
-    const [fuel, ammo, bauxite, steel] = (extraExpedData && extraExpedData.rsc) || (exped.api_win_mat_level.map(this.winmatlevel))
+    const [fuel, ammo, steel, bauxite] = (extraExpedData && extraExpedData.rsc) || (exped.api_win_mat_level.map(this.winmatlevel))
 
     const embed = new Discord.RichEmbed()
         .setURL("https://kancolle.fandom.com/wiki/Expedition#/Expedition_Tables")
@@ -22,7 +22,7 @@ exports.run = (message, args) => {
     if(extraExpedData && extraExpedData.misc_req) req += `\n${extraExpedData.misc_req}`
     embed.addField("Fleet requirements", req)
 
-    let rewards = `${fuel}×${config.emoji.fuel} ${ammo}×${config.emoji.ammo} ${bauxite}×${config.emoji.bauxite} ${steel}×${config.emoji.steel}\n`
+    let rewards = `${fuel}×${config.emoji.fuel} ${ammo}×${config.emoji.ammo} ${steel}×${config.emoji.steel} ${bauxite}×${config.emoji.bauxite}\n`
     if(exped.api_win_item1[0] != 0)
         rewards +=  `Left Reward (RNG): ${exped.api_win_item1[1]}×${this.getItem(exped.api_win_item1[0])}\n`
     if(exped.api_win_item2[0] != 0)

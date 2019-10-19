@@ -44,7 +44,7 @@ exports.run = (message, args) => {
 
     let rewards = ""
     if(quest.reward_fuel > 0 || quest.reward_ammo > 0 || quest.reward_bauxite > 0 || quest.reward_steel > 0)
-        rewards = `${quest.reward_fuel}×${config.emoji.fuel} ${quest.reward_ammo}×${config.emoji.ammo} ${quest.reward_bauxite}×${config.emoji.bauxite} ${quest.reward_steel}×${config.emoji.steel}
+        rewards = `${quest.reward_fuel}×${config.emoji.fuel} ${quest.reward_ammo}×${config.emoji.ammo} ${quest.reward_steel}×${config.emoji.steel} ${quest.reward_bauxite}×${config.emoji.bauxite}
 `
     if(quest.reward_other)
         rewards += this.parseText(quest.reward_other)
