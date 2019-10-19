@@ -22,7 +22,7 @@ exports.run = (message, args) => {
     if(extraExpedData && extraExpedData.misc_req) req += `\n${extraExpedData.misc_req}`
     embed.addField("Fleet requirements", req)
 
-    let rewards = `${fuel}×${config.emoji.fuel} ${ammo}×${config.emoji.ammo} ${steel}×${config.emoji.steel} ${bauxite}×${config.emoji.bauxite}\n`
+    let rewards = `${config.emoji.fuel}×${fuel} ${config.emoji.ammo}×${ammo} ${config.emoji.steel}×${steel} ${config.emoji.bauxite}×${bauxite}\n`
     if(exped.api_win_item1[0] != 0)
         rewards +=  `Left Reward (RNG): ${exped.api_win_item1[1]}×${this.getItem(exped.api_win_item1[0])}\n`
     if(exped.api_win_item2[0] != 0)
