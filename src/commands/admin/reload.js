@@ -17,8 +17,7 @@ exports.run = (message, args) => {
         global.data.reloadShipData()
         return message.reply("The DataManager is now being reloaded!")
     } else if(commandName === "links") {
-        global.linkManager.loadLinks()
-        return message.reply("Links are now being reloaded!")
+        return message.reply("This requires a restart!")
     }
 
     if(!global.commands.has(commandName) && global.commands.has(commandName.slice(1)))
