@@ -257,7 +257,7 @@
         "misc_req": "4 ships carrying at least 8 drums total"
     },  {
         "id": "39",
-        "rsc": [0, "<250", "300?", 0],
+        "rsc": [0, 30, 300, 0],
         "fleet": "1AS 4SS(V)",
         "fs_lvl": 3,
         "fleet_lvl": 180,
