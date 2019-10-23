@@ -28,107 +28,77 @@
         "id": "06",
         "rsc": [0, 0, 0, 80],
         "fleet": "4XX",
-        "fs_lvl": 4,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 4
     },  {
         "id": "07",
         "rsc": [0, 0, 50, 30],
         "fleet": "6XX",
-        "fs_lvl": 5,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 5
     },  {
         "id": "08",
         "rsc": [50, 100, 50, 50],
         "fleet": "6XX",
-        "fs_lvl": 6,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 6
     },  {
         "id": "09",
         "rsc": [350, 0, 0, 0],
         "fleet": "1CL 2DD 1XX / 1DD 3DE",
-        "fs_lvl": 3,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 3
     },  {
         "id": "10",
         "rsc": [0, 50, 0, 30],
         "fleet": "2CL 1XX",
-        "fs_lvl": 3,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 3
     },  {
         "id": "11",
         "rsc": [0, 0, 0, 250],
         "fleet": "2DD 2XX",
-        "fs_lvl": 6,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 6
     },  {
         "id": "12",
         "rsc": [50, 250, 200, 50],
         "fleet": "2DD 2XX",
-        "fs_lvl": 4,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 4
     },  {
         "id": "13",
         "rsc": [240, 300, 0, 0],
         "fleet": "1CL 4DD 1XX",
-        "fs_lvl": 5,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 5
     },  {
         "id": "14",
         "rsc": [0, 280, 200, 30],
         "fleet": "1CL 3DD 2XX",
-        "fs_lvl": 6,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 6
     },  {
         "id": "15",
         "rsc": [0, 0, 300, 400],
         "fleet": "2CV 2DD 2XX",
-        "fs_lvl": 9,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 9
     },  {
         "id": "16",
         "rsc": [500, 500, 200, 200],
         "fleet": "1CL 2DD 3XX",
-        "fs_lvl": 0,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 0
     },  {
         "id": "17",
         "rsc": [70, 70, 50, 0],
         "fleet": "1CL 3DD 2XX",
-        "fs_lvl": 20,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 20
     },  {
         "id": "18",
         "rsc": [0, 0, 300, 100],
         "fleet": "3(CV(L)/AV) 2DD 1XX",
-        "fs_lvl": 15,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 15
     },  {
         "id": "19",
         "rsc": [400, 50, 50, 30],
         "fleet": "2BBV 2DD 2XX",
-        "fs_lvl": 20,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 20
     },  {
         "id": "20",
         "rsc": [0, 0, 150, 0],
         "fleet": "1SS(V) 1CL",
-        "fs_lvl": 1,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 1
     },  {
         "id": "21",
         "rsc": [320, 270, 0, 0],
@@ -141,106 +111,79 @@
         "rsc": [0, 10, 0, 0],
         "fleet": "1CA 1CL 2DD 2XX",
         "fs_lvl": 30,
-        "fleet_lvl": 45,
-        "misc_req": ""
+        "fleet_lvl": 45
     },  {
         "id": "23",
         "rsc": [0, 20, 0, 100],
         "fleet": "2BBV 2DD 2XX",
         "fs_lvl": 50,
-        "fleet_lvl": 200,
-        "misc_req": ""
+        "fleet_lvl": 200
     },  {
         "id": "24",
         "rsc": [500, 0, 0, 150],
         "fleet": "1CL(FS) 4DD 1XX",
-        "fs_lvl": 0,
-        "fleet_lvl": 0,
         "misc_req": "Drums affect GS"
     },  {
         "id": "25",
         "rsc": [900, 0, 500, 0],
         "fleet": "2CA 2DD",
-        "fs_lvl": 25,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 25
     },  {
         "id": "26",
         "rsc": [0, 0, 0, 900],
         "fleet": "1(CV(L)/AV) 1CL 2DD",
-        "fs_lvl": 30,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 30
     },  {
         "id": "27",
         "rsc": [0, 0, 800, 0],
         "fleet": "2SS(V)",
-        "fs_lvl": 1,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 1
     },  {
         "id": "28",
         "rsc": [0, 0, 900, 350],
         "fleet": "3SS(V)",
-        "fs_lvl": 30,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 30
     },  {
         "id": "29",
         "rsc": [0, 50, 0, 100],
         "fleet": "3SS(V)",
-        "fs_lvl": 50,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 50
     },  {
         "id": "30",
         "rsc": [0, 50, 0, 100],
         "fleet": "4SS(V)",
-        "fs_lvl": 55,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 55
     },  {
         "id": "31",
         "rsc": [0, 30, 0, 0],
         "fleet": "4SS(V)",
         "fs_lvl": 60,
-        "fleet_lvl": 200,
-        "misc_req": ""
+        "fleet_lvl": 200
     },  {
         "id": "32",
         "rsc": [50, 50, 50, 50],
         "fleet": "CT(FS) 2DD 3XX",
-        "fs_lvl": 5,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 5
     },  {
         "id": "33",
         "rsc": [0, 0, 0, 0],
         "fleet": "2DD",
-        "fs_lvl": 0,
-        "fleet_lvl": 0,
         "misc_req": "This is a support expedition"
     },  {
         "id": "34",
         "rsc": [0, 0, 0, 0],
         "fleet": "2DD",
-        "fs_lvl": 0,
-        "fleet_lvl": 0,
         "misc_req": "This is a support expedition"
     },  {
         "id": "35",
         "rsc": [0, 0, 240, 280],
         "fleet": "2(CV(L)/AV) 1CA 1DD 2XX",
-        "fs_lvl": 40,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 40
     },  {
         "id": "36",
         "rsc": [480, 0, 200, 200],
         "fleet": "2AV 1CL 1DD 2XX",
-        "fs_lvl": 30,
-        "fleet_lvl": 0,
-        "misc_req": ""
+        "fs_lvl": 30
     },  {
         "id": "37",
         "rsc": [0, 380, 270, 0],
@@ -260,8 +203,7 @@
         "rsc": [0, 30, 300, 0],
         "fleet": "1AS 4SS(V)",
         "fs_lvl": 3,
-        "fleet_lvl": 180,
-        "misc_req": ""
+        "fleet_lvl": 180
     },  {
         "id": "40",
         "rsc": [300, 300, 0, 100],
@@ -281,8 +223,7 @@
         "rsc": [800, 0, 0, 200],
         "fleet": "1(CVE/CT/CL) 3(DD/DE)",
         "fs_lvl": 45,
-        "fleet_lvl": 200,
-        "misc_req": ""
+        "fleet_lvl": 200
     },  {
         "id": "43",
         "rsc": [2000, 0, 0, 400],
@@ -302,14 +243,12 @@
         "rsc": [45, 45, 0, 0],
         "fleet": "3(DD/DE) 1XX",
         "fs_lvl": 5,
-        "fleet_lvl": 10,
-        "misc_req": ""
+        "fleet_lvl": 10
     },  {
         "id": "A2",
         "rsc": [70, 40, 0, 10],
         "fleet": "4(DD/DE)",
         "fs_lvl": 20,
-        "fleet_lvl": 0,
         "misc_req": "180+ ASW, 70+ AA, 73+ LoS"
     },  {
         "id": "A3",
