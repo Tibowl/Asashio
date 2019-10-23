@@ -327,7 +327,7 @@
         "misc_req": "300+ FP, 200+ ASW"
     },  {
         "id": "B1",
-        "rsc": [0, 0, 10, 30],
+        "rsc": [0, 0, 20, 30],
         "fleet": "1AV 1CL 2(DD/DE) 2 XX",
         "fs_lvl": 40,
         "fleet_lvl": 150,
