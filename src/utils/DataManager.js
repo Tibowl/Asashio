@@ -98,19 +98,28 @@ exports.getBirthdayByName = (name) => {
 }
 
 
+exports.normalizeName = (name) => name.toLowerCase().replace(/\./g, " ").trim()
 exports.getEquipByName = (name) => {
-    name = name.toLowerCase()
+    name = this.normalizeName(name)
+
+    let result = this.getEquipById(name)
+    if(result != undefined) return result
 
     const aliases = [
         [/ lm/, " late model"],
     ]
     for(let alias of aliases)
-        name = name.replace(alias[0], alias[1])
+        name = name.replace(alias[0], alias[1]).trim()
 
-    let equipList = Object.values(this.equips).filter(k => k.name.toLowerCase().includes(" " + name.split(" ")[0]) || k.name.toLowerCase().startsWith(name.split(" ")[0]))
+    const firstWord = name.split(" ")[0]
+    let equipList = Object.values(this.equips).filter(k => {
+        const equipName = this.normalizeName(k.name)
+        return equipName.includes(" " + firstWord) || equipName.startsWith(firstWord)
+    })
+
     if(equipList.length == 0) return
 
-    const dists = equipList.map(equip => this.distance(equip.name.toLowerCase(), name.trim()))
+    const dists = equipList.map(equip => this.distance(this.normalizeName(equip.name), name))
     const minDist = Math.min(...dists)
     return equipList[dists.indexOf(minDist)]
 }
