@@ -2,6 +2,7 @@ const Twit = require("twit")
 const Discord = require("discord.js")
 const Utils = require("./Utils.js")
 const Logger = require("log4js").getLogger("TweetManager")
+const OneHourDraw = require("./../commands/tools/1hdraw.js")
 
 exports.stream = undefined
 
@@ -11,6 +12,12 @@ exports.init = () => {
     this.toFollow = global.config.toTweet
     this.stream = T.stream("statuses/filter", { follow: this.toFollow })
     this.stream.on("tweet", this.handleTweet)
+
+    T.get("search/tweets", {q: "お題は from:kancolle_1draw", result_type: "recent", count: 1}, (err, data) => {
+        if(err || !data.statuses || data.statuses.length == 0) return
+
+        OneHourDraw.setTweet(data.statuses[0])
+    })
 
     Logger.info(`Following ${this.toFollow.length} twitter account(s)!`)
 }
@@ -29,6 +36,19 @@ exports.handleTweet = (tweet) => {
 
         if(text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
             Utils.sendToChannels(global.config.tweetChannels, text.replace("&gt;", ">"))
+
+        return
+    }
+
+    // @kancolle_1draw
+    if(tweet.user.id_str == "3098155465") {
+        let text = tweet.text
+
+        if(tweet.extended_tweet)
+            text = tweet.extended_tweet.full_text
+
+        if(text.includes("お題は"))
+            OneHourDraw.setTweet(tweet)
 
         return
     }

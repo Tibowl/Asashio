@@ -26,6 +26,7 @@ exports.getShipByName = (name) => {
             return (ship.full_name    ||"").toLowerCase() == toSearch
                 || (ship.japanese_name||"").toLowerCase() == toSearch
                 || (ship.nick         ||"").toLowerCase() == toSearch
+                || (ship.reading      ||"").toLowerCase() == toSearch
         })
     }
 
