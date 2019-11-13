@@ -14,7 +14,7 @@ exports.run = async (message, args) => {
         while(!(ship.Day == next.getUTCDate() && ship.Month == next.getUTCMonth() + 1))
             next.shiftDate(1)
         next.shiftDate(-1)
-        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now, ship.Year)}`)
+        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now)} (from ${ship.Year})`)
     }
 
     const birthdays = []
@@ -39,10 +39,8 @@ exports.run = async (message, args) => {
 
     return message.channel.send(`${today}Upcoming birthdays:\n` + birthdays.join("\n"))
 }
-exports.getDateLine = (next, now, year) => {
+exports.getDateLine = (next, now) => {
     const timeLeft = this.timeLeft(next.getTime() - now)
-    if(year)
-        next.setUTCFullYear(year)
     return `**${timeLeft}** @ ${next.toLocaleString("en-UK", {
         timeZone: "Asia/Tokyo",
         hour12: false,

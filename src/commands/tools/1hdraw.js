@@ -17,12 +17,7 @@ exports.setTweet = (tweet) => {
         const ships = match[1].trim().split(" ")
 
         cachedShips = {
-            ships: ships.map((name) => {
-                const candidate = global.data.getShipByName(name)
-                if(name == candidate.japanese_name || name == candidate.reading)
-                    return candidate.name
-                return name
-            }),
+            ships,
             date: new Date(tweet.created_at).toLocaleString("en-UK", {
                 timeZone: "Asia/Tokyo",
                 timeZoneName: "short",
@@ -44,6 +39,12 @@ exports.run = (message) => {
     }
 
     return message.channel.send(`Today's 1h draw ships: ${cachedShips.ships
+        .map((name) => {
+            const candidate = global.data.getShipByName(name)
+            if(candidate && (name == candidate.japanese_name || name == candidate.reading))
+                return candidate.name
+            return name
+        })
         .map(s => `**${s}**`)
         .join(", ")
         .replace(/,([^,]*)$/, " and$1")}
