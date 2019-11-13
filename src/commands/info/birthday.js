@@ -14,7 +14,7 @@ exports.run = async (message, args) => {
         while(!(ship.Day == next.getUTCDate() && ship.Month == next.getUTCMonth() + 1))
             next.shiftDate(1)
         next.shiftDate(-1)
-        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now)} (from ${ship.Year})`)
+        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now)} (launched in ${ship.Year})`)
     }
 
     const birthdays = []
