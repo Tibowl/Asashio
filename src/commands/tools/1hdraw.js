@@ -12,7 +12,7 @@ exports.setTweet = (tweet) => {
         text = tweet.extended_tweet.full_text
 
     Logger.info(`Received new tweet: ${text}`)
-    let match = text.match(/お題は(.*)になります/)
+    let match = text.match(/お題は(.*)(になります|となります)/)
     if(match) {
         const ships = match[1].trim().split(" ")
 
