@@ -10,10 +10,11 @@ exports.expeds = []
 
 exports.birthdays = []
 exports.api_start2 = {}
+exports.levels_exp = [0]
 
 exports.mapInfoCache = {}
 
-exports.getMaxLevel = () => 175
+exports.getMaxLevel = () => this.levels_exp.length
 exports.getServerIP = () => "http://203.104.209.23"
 exports.eventID = () => 45
 
@@ -272,9 +273,13 @@ exports.reloadShipData = async () => {
     Logger.info("Loaded api_start2!")
 
     this.birthdays = require("../data/kcbirthday.json")
-    Logger.info(`Loading birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
+    Logger.info(`Loaded birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
     global.timerManager.scheduleNextBirthday()
 
     this.expeds = require("../data/exped.json")
-    Logger.info(`Loading expeds! ${this.expeds.length} expeds!`)
+    Logger.info(`Loaded expeds! ${this.expeds.length} expeds!`)
+
+    this.levels_exp = require("../data/levels.json")
+    Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
+
 }
