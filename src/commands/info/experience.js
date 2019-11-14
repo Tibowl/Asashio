@@ -8,8 +8,11 @@ exports.run = (message, args) => {
             const split = currentLevel.split(/[+-]/)
             if(split.length > 2) return message.reply("Invalid arguments")
             const [lvl, offset] = split
-            currentLevel = parseInt(lvl)
             xpOffset = parseInt(offset)
+            if(currentLevel.includes("-") && xpOffset > 0)
+                xpOffset = -xpOffset
+
+            currentLevel = parseInt(lvl)
         } else
             currentLevel = parseInt(currentLevel)
 
@@ -55,6 +58,6 @@ exports.run = (message, args) => {
 
 exports.category = "Information"
 exports.help = "Get experience needed to reach a target level (defaults to 99 or max level)"
-exports.usage = "experience <current level[+current xp offset]> [target level]"
+exports.usage = "experience <current level[(+ or -)current xp offset]> [target level]"
 exports.prefix = global.config.prefix
 exports.aliases = ["xp", "exp"]
