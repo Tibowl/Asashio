@@ -4,17 +4,22 @@ const Discord = require("discord.js"),
       log4js = require("log4js")
 
 require("./logger")
+const Logger = log4js.getLogger("main")
 
+if(!fs.existsSync("./data/config.json")) {
+    Logger.error("Config does not exist!")
+    return 0
+}
 const config = require("./data/config.json")
 config.emoji = require("./data/emoji.json")
 const client = new Discord.Client()
-const Logger = log4js.getLogger("main")
 
 global.config = config
 global.data = require("./utils/DataManager.js")
 global.linkManager = require("./utils/LinkManager.js")
 global.timerManager = require("./utils/TimerManager.js")
 global.tweetManager = require("./utils/TweetManager.js")
+global.maintManager = require("./utils/MaintManager.js")
 global.recentMessages = []
 global.client = client
 

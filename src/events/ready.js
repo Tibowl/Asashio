@@ -13,4 +13,5 @@ module.exports = (client) => {
     global.timerManager.init()
     global.tweetManager.init()
     global.data.reloadShipData()
+    global.maintManager.init()
 }

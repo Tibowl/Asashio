@@ -89,3 +89,4 @@ typings/
 
 .vscode
 **/config.json
+**/maint.json
