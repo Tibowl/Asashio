@@ -165,12 +165,12 @@ exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
     //   but points from quest Z cannon not counted after JST 1400.
     const nextPtCutoff = new Date(nextPvPstamp)
     nextPtCutoff.shiftHour(-1)
-    if(nextPtCutoff.getTime() < now) nextPtCutoff.shiftHour(13)
+    if(nextPtCutoff.getTime() < now) nextPtCutoff.shiftHour(12)
     timeStamps.rank = nextPtCutoff.getTime()
 
     const nextMonthlyPointReset = new Date(nextPtCutoff)
     nextMonthlyPointReset.setUTCHours(13, 0, 0, 0)
-    if(nextMonthlyPointReset.getTime() < now) nextMonthlyPointReset.shiftDate(10)
+    if(nextMonthlyPointReset.getTime() < now) nextMonthlyPointReset.shiftDate(1)
     nextMonthlyPointReset.shiftDate(1)
     while(nextMonthlyPointReset.getUTCDate() !== 1)
         nextMonthlyPointReset.shiftDate(1)
@@ -179,7 +179,7 @@ exports.nextResetsTimestamp = (now = Date.now(), extraQuest = false) => {
 
     const nextEOReset = new Date(nextPtCutoff)
     nextEOReset.setUTCHours(15, 0, 0, 0)
-    if(nextEOReset.getTime() < now) nextEOReset.shiftDate(10)
+    if(nextEOReset.getTime() < now) nextEOReset.shiftDate(1)
     nextEOReset.shiftDate(1)
     while(nextEOReset.getUTCDate() !== 1)
         nextEOReset.shiftDate(1)
