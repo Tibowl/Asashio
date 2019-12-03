@@ -1,4 +1,5 @@
 const Discord = require("discord.js")
+const Utils = require("../../utils/Utils.js")
 
 exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide an equip name.")
@@ -10,7 +11,7 @@ exports.run = (message, args) => {
     if(equip == undefined) return message.reply("Unknown equip")
     // console.log(equip)
 
-    const embed = this.displayEquip(equip, data)
+    const embed = this.displayEquip(equip, data, message.guild)
     return message.channel.send(embed)
 }
 
@@ -31,10 +32,10 @@ const stats = {
     "flight_range": "Flight Range",
 
 }
-exports.displayEquip = (equip, data) => {
+exports.displayEquip = (equip, data, guild = false) => {
     const embed = new Discord.RichEmbed()
         .setTitle([`No. ${equip.id}`, equip.name, equip.japanese_name].filter(a => a).join(" | "))
-        .setURL(`https://kancolle.fandom.com/wiki/${equip.name.replace(/ /g, "_")}`)
+        .setURL(Utils.getWiki(equip.name, guild))
         .setThumbnail(data.getEquipLink(equip.id))
         // TODO rarity color? .setColor("#")
 

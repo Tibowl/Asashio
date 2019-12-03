@@ -1,4 +1,6 @@
 const Discord = require("discord.js")
+const Utils = require("../../utils/Utils.js")
+
 const questTypes = {
     "A": ["Quest_composition.png", "#419058"],
     "B": ["Quest_sortie.png", "#D95556"],
@@ -34,8 +36,8 @@ exports.run = (message, args) => {
     // console.log(quest)
     const embed = new Discord.RichEmbed()
         .setTitle([quest.label || questId, this.cleanText(quest.title_en), this.cleanText(quest.title)].filter(a => a).join(" | "))
-        .setURL(`https://kancolle.fandom.com/wiki/Quests#${questId}`)
-        .setDescription(this.parseText(quest.detail_en))
+        .setURL(Utils.getWiki(`Quests#${quest.label || questId}`, message.guild))
+        .setDescription(this.parseText(quest.detail_en, message.guild))
 
     const type = questTypes[(quest.label || questId).substring(0,1)] || questTypes[quest.letter]
     if(type)
@@ -47,18 +49,18 @@ exports.run = (message, args) => {
         rewards = `${config.emoji.fuel}×${quest.reward_fuel} ${config.emoji.ammo}×${quest.reward_ammo} ${config.emoji.steel}×${quest.reward_steel} ${config.emoji.bauxite}×${quest.reward_bauxite}
 `
     if(quest.reward_other)
-        rewards += this.parseText(quest.reward_other)
+        rewards += this.parseText(quest.reward_other, message.guild)
 
     embed.addField("Rewards", rewards)
     if(quest.note)
-        embed.addField("Notes", this.parseText(quest.note))
+        embed.addField("Notes", this.parseText(quest.note, message.guild))
 
     return message.channel.send(embed)
 }
 exports.cleanText = (text) => {
     return text.replace(/\[\[.*?\]\]/g, "").replace(/<.*?>/g, "")
 }
-exports.parseText = (text) => {
+exports.parseText = (text, guild) => {
     // console.log(text)
     let links = text.match(/\[\[.*?\]\]/g)
 
@@ -78,9 +80,9 @@ exports.parseText = (text) => {
             }
 
             if(target.startsWith("#"))
-                target = "Quests#" + target
+                target = "Quests#" + target.substring(1)
 
-            text = text.replace(match, `[${title}](https://kancolle.fandom.com/wiki/${target.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)")})`)
+            text = text.replace(match, `[${title}](${Utils.getWiki(target.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)"), guild)})`)
         }
 
     links = text.match(/\{\{[^{]*?\}\}/g)
@@ -98,7 +100,7 @@ exports.parseText = (text) => {
                     break
                 }
 
-            text = text.replace(match, `[${title.replace(/\//g, " ")}](https://kancolle.fandom.com/wiki/${title.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)")})`)
+            text = text.replace(match, `[${title.replace(/\//g, " ")}](${Utils.getWiki(title.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)"), guild)})`)
         }
         links = text.match(/\{\{[^{]*?\}\}/g)
     }

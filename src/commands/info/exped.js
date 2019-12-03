@@ -1,4 +1,5 @@
 const Discord = require("discord.js")
+const Utils = require("../../utils/Utils.js")
 
 exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide an expedition.")
@@ -7,13 +8,13 @@ exports.run = (message, args) => {
     const expedID = args[0].toUpperCase()
 
     const exped = data.api_start2.api_mst_mission.find(k => k.api_disp_no == expedID || k.api_id == expedID)
-    const extraExpedData = data.getExpedByID(exped.api_disp_no)
-
     if(exped == undefined) return message.reply("Unknown expedition.")
+
+    const extraExpedData = data.getExpedByID(exped.api_disp_no)
     const [fuel, ammo, steel, bauxite] = (extraExpedData && extraExpedData.rsc) || (exped.api_win_mat_level.map(this.winmatlevel))
 
     const embed = new Discord.RichEmbed()
-        .setURL("https://kancolle.fandom.com/wiki/Expedition#/Expedition_Tables")
+        .setURL(Utils.getWiki("Expedition#/Expedition_Tables", message.guild))
         .setTitle(`${exped.api_disp_no} ${exped.api_reset_type == 1 ? "[M] " : ""}${exped.api_damage_type == 1 ? "[D] " : ""}- ${exped.api_name} - ${this.getTime(exped.api_time)}`)
 
     let req = (extraExpedData && extraExpedData.fleet) || `${exped.api_deck_num} ships required, details unknown`

@@ -1,4 +1,5 @@
 const Discord = require("discord.js")
+const Utils = require("../../utils/Utils.js")
 
 exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a ship name.")
@@ -15,7 +16,7 @@ exports.run = (message, args) => {
 
     const embed = new Discord.RichEmbed()
         .setTitle(`${ship.full_name} ${aswOffset > 0 ? `+${aswOffset} ASW` : ""}`)
-        .setURL(`https://kancolle.fandom.com/wiki/${ship.name.replace(/ /g, "_")}`)
+        .setURL(Utils.getWiki(ship.name, message.guild))
         .setThumbnail(`https://raw.githubusercontent.com/KC3Kai/KC3Kai/develop/src/assets/img/ships/${ship.api_id}.png`)
 
     const aswRequired = this.findAswRequired(ship)

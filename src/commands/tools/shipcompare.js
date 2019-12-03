@@ -73,8 +73,6 @@ ${shipB.remodel_text}`
     return message.channel.send(Utils.displayShip(ship))
 }
 
-exports.getImage = (file) => `https://kancolle.fandom.com/wiki/Special:FilePath/${file.replace(/ /g, "_")}`
-
 exports.category = "Tools"
 exports.help = "Compares two ships."
 exports.usage = "shipcompare <ship A>, <ship B>"

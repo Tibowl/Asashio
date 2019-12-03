@@ -2,12 +2,19 @@ const fetch = require("node-fetch")
 const Discord = require("discord.js")
 const Logger = require("log4js").getLogger("Utils")
 
-exports.displayShip = (ship) => {
+exports.getWiki = (page, guild) => {
+    if(guild && guild.id == "165107190980542464")
+        return `https://en.kancollewiki.net/${page.replace(/ /g, "_")}`
+
+    return `https://kancolle.fandom.com/wiki/${page.replace(/ /g, "_")}`
+}
+
+exports.displayShip = (ship, guild = false) => {
     const embed = new Discord.RichEmbed()
         .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`,ship.full_name, ship.japanese_name, /*ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
 
     if(typeof ship.api_id == "number")
-        embed.setURL(`https://kancolle.fandom.com/wiki/${ship.name.replace(/ /g, "_")}`)
+        embed.setURL(this.getWiki(ship.name, guild))
             .setThumbnail(`https://raw.githubusercontent.com/KC3Kai/KC3Kai/develop/src/assets/img/ships/${ship.api_id}.png`)
     // TODO rarity color? .setColor("#")
 

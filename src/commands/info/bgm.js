@@ -1,4 +1,5 @@
 const Discord = require("discord.js")
+const Utils = require("../../utils/Utils.js")
 
 exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a map.")
@@ -12,7 +13,7 @@ exports.run = (message, args) => {
     if(bgm == undefined) return message.reply("Invalid map.")
 
     const embed = new Discord.RichEmbed()
-        .setURL("https://kancolle.fandom.com/wiki/Music")
+        .setURL(Utils.getWiki("Music", message.guild))
         .setTitle(`${map} BGM`)
 
     embed.addField("Overworld", this.parseLine(bgm.api_moving_bgm))

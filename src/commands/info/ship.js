@@ -47,7 +47,7 @@ exports.run = (message, args) => {
     }
     ship.class_description = `${ship.class} Class #${ship.class_number}`
 
-    return message.channel.send(Utils.displayShip(ship))
+    return message.channel.send(Utils.displayShip(ship, message.guild))
 }
 
 exports.category = "Information"
