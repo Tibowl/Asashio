@@ -77,8 +77,8 @@ exports.run = async (message, args) => {
     }
 
     return message.channel.send(`${ship.full_name} dupes in ${map}${node}${isEvent ? ` on ${difficulty}`:""} with rank ${rank}\`\`\`\n${Utils.createTable(
-        undefined,
-        [["Dupes", "Rate", "Drops"], ...dupes],
+        ["Dupes", "Rate", "Drops"],
+        dupes,
         [Utils.PAD_END]
     )}\n\`\`\`\nData provided by TsunDB.${msg}`)
 }

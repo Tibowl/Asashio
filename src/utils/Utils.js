@@ -313,10 +313,10 @@ exports.createTable = (names, rows, pads = [PAD_END]) => {
     let title = "", currentInd = 0
 
     for (let i = 0; i < maxColumns; i++) {
-        const maxLength = Math.max(...rows.map(row => row.length > i ? (row[i]||"").length : 0), (names && names[i]) ? names[i].length : 0)
-
         if(names && names[i])
             title = title.padEnd(currentInd) + names[i]
+
+        const maxLength = Math.max(...rows.map(row => row.length > i ? (row[i]||"").length : 0), (names && names[i+1]) ? (title.length - currentInd) : 0)
         currentInd += 1 + maxLength
 
         rows.forEach(row => {
