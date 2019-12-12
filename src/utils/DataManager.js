@@ -73,7 +73,7 @@ exports.getBirthdayByName = (name) => {
     const findShip = (toSearch) => {
         toSearch = toSearch.toLowerCase().trim()
         return this.birthdays.find(ship => {
-            return (ship.Name ||"").toLowerCase() == toSearch
+            return (ship.name ||"").toLowerCase() == toSearch
         })
     }
 
@@ -84,17 +84,17 @@ exports.getBirthdayByName = (name) => {
     for(let alias of aliases)
         name = name.replace(alias[0], alias[1])
 
-    let result = this.birthdays.find(ship => ship.Id == name)
+    let result = this.birthdays.find(ship => ship.id == name)
     if(result != undefined) return result
 
     result = findShip(name)
     if(result != undefined) return result
 
-    let shipList = this.birthdays.filter(k => k.Name.toLowerCase().includes(name))
+    let shipList = this.birthdays.filter(k => k.name.toLowerCase().includes(name))
     if(shipList.length == 0)
         shipList = this.birthdays
 
-    const dists = shipList.map(ship => this.lenz(ship.Name.toLowerCase(), name.trim()))
+    const dists = shipList.map(ship => this.lenz(ship.name.toLowerCase(), name.trim()))
     const minDist = Math.min(...dists)
     return shipList[dists.indexOf(minDist)]
 }

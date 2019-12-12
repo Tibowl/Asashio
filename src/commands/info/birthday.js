@@ -1,6 +1,45 @@
 exports.run = async (message, args) => {
     const now = new Date()
     if(args && args.length > 0) {
+        const monthDayMatch = args[0].match(/^(\d{1,2})[/\-~\\](\d{1,2})$/)
+        if(args.length == 1 && monthDayMatch) {
+            const d = monthDayMatch[1], m = monthDayMatch[2]
+
+            if ((+m > 12 && +d > 12) || +m > 31 || +d > 31 || +m <= 0 || +d <= 0)
+                return message.reply("Invalid date!")
+
+            const target = new Date(now)
+            target.setUTCHours(15, 0, 0, 0)
+
+            let msg = ""
+
+            if(+m <= 12 && +d <= 31) {
+                target.setUTCFullYear(now.getUTCFullYear())
+                target.setUTCMonth((+m)-1, (+d)-1)
+                if(now.getTime() > target.getTime()) target.setUTCFullYear(now.getUTCFullYear() + 1)
+
+                const ships = global.timerManager.getShipsOnBirthday(target)
+                if (ships.length == 0)
+                    msg += `There are no birthdays in ${this.getDateLine(target, now)}\n`
+                else
+                    msg += `${ships.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")} birthday is in ${this.getDateLine(target, now)}\n`
+            }
+
+            if(+d <= 12 && +m <= 31 && +d != +m) {
+                target.setUTCFullYear(now.getUTCFullYear())
+                target.setUTCMonth((+d)-1, (+m)-1)
+                if(now.getTime() > target.getTime()) target.setUTCFullYear(now.getUTCFullYear() + 1)
+
+                const ships = global.timerManager.getShipsOnBirthday(target)
+                if (ships.length == 0)
+                    msg += `There are no birthdays in ${this.getDateLine(target, now)}\n`
+                else
+                    msg += `${ships.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")} birthday is in ${this.getDateLine(target, now)}`
+            }
+
+            message.channel.send(msg.trim())
+            return
+        }
         const shipName = args.join(" ")
         const ship = global.data.getBirthdayByName(shipName)
         if(ship == undefined)
@@ -11,10 +50,10 @@ exports.run = async (message, args) => {
         if(now.getTime() > next.getTime()) next.shiftDate(1)
 
         next.shiftDate(1)
-        while(!(ship.Day == next.getUTCDate() && ship.Month == next.getUTCMonth() + 1))
+        while(!(ship.day == next.getUTCDate() && ship.month == next.getUTCMonth() + 1))
             next.shiftDate(1)
         next.shiftDate(-1)
-        return message.channel.send(`**${ship.Name}**'s birthday is in ${this.getDateLine(next, now)} (launched in ${ship.Year})`)
+        return message.channel.send(`**${ship.name}**'s birthday is in ${this.getDateLine(next, now)} (launched in ${ship.year})`)
     }
 
     const birthdays = []
@@ -73,5 +112,5 @@ exports.timeLeft = (diff) => {
 
 exports.category = "Information"
 exports.help = "Get birthday of a ship or list upcomming ones"
-exports.usage = "birthday"
+exports.usage = "birthday [ship or dd/mm]"
 exports.prefix = global.config.prefix

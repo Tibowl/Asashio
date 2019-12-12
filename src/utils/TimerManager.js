@@ -86,7 +86,7 @@ exports.getNextBirthdayDate = (now = Date.now()) => {
     midnight.shiftDate(1)
     for(let i = 0; i < 370; i++) {
         if(global.data.birthdays
-            .some(s => s.Day == midnight.getUTCDate() && s.Month == midnight.getUTCMonth() + 1)) {
+            .some(s => s.day == midnight.getUTCDate() && s.month == midnight.getUTCMonth() + 1)) {
             midnight.shiftDate(-1)
             return midnight
         }
@@ -98,8 +98,8 @@ exports.getShipsOnBirthday = (date) => {
     const dateJapan = new Date(date)
     dateJapan.shiftDate(1)
     return global.data.birthdays
-        .filter(s => s.Day == dateJapan.getUTCDate() && s.Month == dateJapan.getUTCMonth() + 1)
-        .map(s => s.Name)
+        .filter(s => s.day == dateJapan.getUTCDate() && s.month == dateJapan.getUTCMonth() + 1)
+        .map(s => s.name)
         .sort((a,b) => a-b)
 }
 exports.nextBirthday = undefined
