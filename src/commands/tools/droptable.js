@@ -18,9 +18,10 @@ exports.run = async (message, args) => {
         .replace(/\| ([A-Z0-9]{2}) +/g, isEventMap ? "|  $1  " : "| $1")
         .replace(/Casual/g, "C")
         .replace(/Normal/g, "N")
-        .replace(/Easy {2}/g, "E")
-        .replace(/Hard {2}/g, "H")
-        .replace(/\| {10}/g, "|     ")
+        .replace(/Easy/g, "E")
+        .replace(/Hard/g, "H")
+        .replace(/(C|N|E|H) *(S|A)/g, "$1 $2")
+        .replace(/\| {5} +/g, "|     ")
 
     if(!isEventMap)
         table = table.replace(/\| {2}/g, "| ")
