@@ -37,8 +37,7 @@ exports.run = async (message, args) => {
                     msg += `${ships.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")} birthday is in ${this.getDateLine(target, now)}`
             }
 
-            message.channel.send(msg.trim())
-            return
+            return message.channel.send(msg.trim())
         }
         const shipName = args.join(" ")
         const ship = global.data.getBirthdayByName(shipName)
