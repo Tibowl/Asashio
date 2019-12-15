@@ -2,16 +2,9 @@ const Utils = require("./Utils.js")
 const Logger = require("log4js").getLogger("MaintManager")
 const htmlToText = require("html-to-text")
 const fetch = require("node-fetch")
-const fs = require("fs")
-
-let maintInfo = {}
 
 exports.init = () => {
-    if(!fs.existsSync("./data/maint.json")) {
-        fs.writeFileSync("./data/maint.json", JSON.stringify(maintInfo))
-    } else {
-        maintInfo = require("../data/maint.json")
-    }
+    global.data.store.maintInfo = global.data.store.maintInfo || {}
 
     this.check()
     setInterval(() => {
@@ -20,6 +13,7 @@ exports.init = () => {
 }
 
 exports.getTimes = () => {
+    const {maintInfo} = global.data.store
     if(!maintInfo || !maintInfo.lastLine) return []
 
     const line = maintInfo.lastLine
@@ -30,6 +24,7 @@ exports.getTimes = () => {
     return times
 }
 exports.check = async () => {
+    const {maintInfo} = global.data.store
     const html = await (await fetch("http://203.104.209.7/kcscontents/news/post.html")).text()
     const line = htmlToText.fromString(html)
     if(maintInfo.lastLine == line) return
@@ -37,7 +32,7 @@ exports.check = async () => {
     Logger.info(line)
 
     maintInfo.lastLine = line
-    fs.writeFile("./data/maint.json", JSON.stringify(maintInfo, undefined, 4), (err) => {if(err) Logger.error(err)})
+    global.data.saveStore()
 
     Logger.info(this.getTimes())
     Utils.sendToChannels(global.config.maintChannels, `Maint info: ${this.getTimes().join(" ~ ")}\n${line}`)

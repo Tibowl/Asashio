@@ -6,7 +6,9 @@ exports.run = async (message) => {
 
     Logger.info(`Shutting down by ${message.author.id}`)
     await client.user.setStatus("dnd")
-    const toRemove = global.recentMessages.map(reply => reply.reactions.map((reaction) => reaction.me ? reaction.remove() : false).find(k => k)).filter(k => k)
+    const toRemove = global.recentMessages
+        .map(reply => reply && !reply.deleted && reply.reactions.map((reaction) => reaction.me ? reaction.remove() : false).find(k => k))
+        .filter(k => k)
     const reply = await message.reply(`Shutting down after cleanup. ${toRemove.length ? `Removing ${toRemove.length} reactions...` : ""}`)
 
     global.tweetManager.shutdown()

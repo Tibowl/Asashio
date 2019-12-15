@@ -4,7 +4,7 @@ const Utils = require("../../utils/Utils.js")
 exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a map.")
 
-    const map = args[0]
+    const map = args[0].replace(/E(-)*/i, `${global.data.eventID()}-`)
     if(!map.includes("-") || map.split("-").length !== 2 || map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
 
     const [world, mapid] = map.split("-").map(a => parseInt(a))

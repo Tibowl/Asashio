@@ -1,6 +1,7 @@
 const Logger = require("log4js").getLogger("DataManager")
 
 const fetch = require("node-fetch")
+const fs = require("fs")
 
 exports.ships = {}
 exports.quests = {}
@@ -12,11 +13,18 @@ exports.birthdays = []
 exports.api_start2 = {}
 exports.levels_exp = [0]
 
+exports.store = {}
+if(!fs.existsSync("./data/store.json")) {
+    fs.writeFileSync("./data/store.json", JSON.stringify(this.store))
+} else {
+    this.store = require("../data/store.json")
+}
+
 exports.mapInfoCache = {}
 
 exports.getMaxLevel = () => this.levels_exp.length
 exports.getServerIP = () => "http://203.104.209.23"
-exports.eventID = () => 46
+exports.eventID = () => this.store.eventID || 46
 
 exports.getShipByName = (name) => {
     name = name.toLowerCase()
@@ -145,11 +153,11 @@ exports.getQuestByName = (id) => {
 exports.getQuestsByDescription = (desc) => {
     desc = desc.toLowerCase().trim()
     const filters = [
-        q => q.title_en.toLowerCase().includes(desc),
-        q => q.title.toLowerCase().includes(desc),
-        q => q.detail_en.toLowerCase().includes(desc),
-        q => q.reward_other.toLowerCase().includes(desc),
-        q => q.note.toLowerCase().includes(desc)
+        q => q.title_en && q.title_en.toLowerCase().includes(desc),
+        q => q.title && q.title.toLowerCase().includes(desc),
+        q => q.detail_en && q.detail_en.toLowerCase().includes(desc),
+        q => q.reward_other && q.reward_other.toLowerCase().includes(desc),
+        q => q.note && q.note.toLowerCase().includes(desc)
     ]
     const quests = []
     for(const filter of filters)
@@ -233,6 +241,10 @@ exports.lenz = (a,b) => {
     return row[a.length]
 }
 
+exports.saveStore = () => {
+    fs.writeFile("./data/store.json", JSON.stringify(this.store, undefined, 4), (err) => {if(err) Logger.error(err)})
+}
+
 exports.reloadShipData = async () => {
     const shipData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/ship.json")).json()
 
@@ -270,7 +282,14 @@ exports.reloadShipData = async () => {
     Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)//, this.equips[1])
 
     this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
-    Logger.info("Loaded api_start2!")
+    if(this.api_start2 && this.api_start2.api_mst_maparea) {
+        const eventID = Math.max(...this.api_start2.api_mst_maparea.map(area => area.api_id))
+        if(eventID > 10 && this.store.eventID != eventID) {
+            Logger.log("Updated event ID!")
+            this.store.eventID = eventID
+        }
+    }
+    Logger.info(`Loaded api_start2! Last event ID: ${this.eventID()}`)
 
     this.birthdays = require("../data/kcbirthday.json")
     Logger.info(`Loaded birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
@@ -281,5 +300,5 @@ exports.reloadShipData = async () => {
 
     this.levels_exp = require("../data/levels.json")
     Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
-
+    this.saveStore()
 }
