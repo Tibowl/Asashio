@@ -5,7 +5,7 @@ module.exports = async (client, message) => {
     const { commands } = global
 
     if(message.channel.type === "dm")
-        Logger.info(`${message.author.id} (${message.author.username}) in ${message.channel.name || message.channel.type}: ${message.content}`)
+        Logger.info(`${message.author.id} (${message.author.username}) in ${message.channel.name || message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"}): ${message.content}`)
     const args = message.content.slice(1).trim().split(/ +/g)
     const command = args.shift().toLowerCase()
 
