@@ -25,7 +25,12 @@ exports.init = () => {
             delay += 60000
         this.activityTimer = setTimeout(updateActivity, delay + 500)
 
-        const birthdays = global.timerManager.getShipsOnBirthday(now)
+        const time = now.getTime() - 24*60*60*1000
+        const midnight = new Date(time)
+        midnight.setUTCHours(15, 0, 0, 0)
+        if(midnight.getTime() < time) midnight.shiftDate(1)
+
+        const birthdays = this.getShipsOnBirthday(midnight)
         if(birthdays.includes("Asashio"))
             global.client.guilds.forEach(k => k.me.nickname == null ? k.me.setNickname("Asashio 🎉") : false)
         else
