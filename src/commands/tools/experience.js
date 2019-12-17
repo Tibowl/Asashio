@@ -32,14 +32,14 @@ exports.run = (message, args) => {
         return message.reply("Current level is not a number")
     if(currentLevel > global.data.getMaxLevel())
         return message.reply(`Current level is too large (max: ${global.data.getMaxLevel()})`)
-    if(currentLevel < 0)
+    if(currentLevel < 1)
         return message.reply("Current level too small")
 
     if(!isFinite(targetLevel))
         return message.reply("Target level is not a number")
     if(targetLevel > global.data.getMaxLevel())
         return message.reply(`Target level is too large (max: ${global.data.getMaxLevel()})`)
-    if(targetLevel < 0)
+    if(targetLevel < 1)
         return message.reply("Target level too small")
 
     if(currentLevel > targetLevel)
@@ -56,7 +56,7 @@ exports.run = (message, args) => {
     })}%)`)
 }
 
-exports.category = "Information"
+exports.category = "Tools"
 exports.help = "Get experience needed to reach a target level (defaults to 99 or max level)"
 exports.usage = "experience <current level[(+ or -)current xp offset]> [target level]"
 exports.prefix = global.config.prefix
