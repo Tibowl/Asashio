@@ -4,17 +4,22 @@ module.exports = async (client, message) => {
     if (message.author.bot) return
 
     const cmdInfo = await getCommand(message)
+    const attach = message.attachments && message.attachments.filter(k => k && k.url).map(k => k.url).map(k => k.url).join(", ") || "/"
 
     if (cmdInfo && cmdInfo.cmd) {
         if (message.channel.type === "dm")
-            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type}: ${message.content}`)
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type} +${attach}: ${message.content}`)
         else
-            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"}): ${message.content}`)
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"}) +${attach}: ${message.content}`)
 
         handleCommand(message, cmdInfo)
         addStats(message, cmdInfo)
-    } else if(message.channel.type === "dm")
-        Logger.info(`${message.author.id} (${message.author.username}) sends message in dm: ${message.content}`)
+    } else if(message.channel.type === "dm") {
+        Logger.info(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm +${attach}: ${message.content}`)
+        // Gather information for new aliases
+        global.client.channels.get("658083473818517505").send(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm +${attach}: ${message.content}`)
+    }
+    // Logger.info(message)
 }
 
 function getCommand(message) {

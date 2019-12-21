@@ -46,13 +46,23 @@ exports.setLink = async (message, args) => {
     return await message.reply(`Updated \`${command}\` from \`${oldValue}\` -> \`${link}\``)
 }
 
+exports.getLinks = () => {
+    return Object.keys(this.links).filter(k => !this.links[k].startsWith("@"))
+}
+
 exports.updateDb = async (id) => {
     fs.writeFileSync("./data/links.json", JSON.stringify(this.links, null, 4))
     child_process.execSync(`git add ./data/links.json && git commit -m "Link updated by ${id}" && git push`)
 }
 
 exports.run = (message, args, command) => {
-    return message.channel.send(this.links[command])
+    let toSend = this.links[command]
+
+    let tries = 0
+    while (toSend.startsWith("@") && tries++ < 100)
+        toSend = this.links[toSend.substring(1)]
+
+    return message.channel.send(toSend)
 }
 exports.help = false
 exports.usage = false

@@ -15,6 +15,7 @@ exports.run = (message, args) => {
                 categorized[category] = []
             categorized[category].push(cmd)
         })
+        categorized.Links = global.linkManager.getLinks()
 
         return message.channel.send(`Commands: 
 ${Object.keys(categorized)
