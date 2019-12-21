@@ -32,6 +32,7 @@ exports.run = (message, args) => {
                 if(name == commandName) {
                     delete require.cache[require.resolve(`../../${dir}/${commandName}.js`)]
                     let props = require(`../../${dir}/${commandName}.js`)
+                    props.commandName = commandName
                     Logger.info(`Loading ${commandName}`)
                     global.commands.delete(commandName)
                     global.commands.set(commandName, props)
