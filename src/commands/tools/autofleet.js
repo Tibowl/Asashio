@@ -99,7 +99,7 @@ Fleet Composition:
     Escort fleet: ${fleet2Comp.join(", ")}`:""}
 Ships to use:
     Main fleet: ${ships1.map(k => `${k.name} (x${k.count})`).join(", ")}${fleet2Comp.length > 0 ? `
-    Escort fleet: ${ships2.map(k => `${k.name} (x${k.count})`).join(", ")}}`:""}
+    Escort fleet: ${ships2.map(k => `${k.name} (x${k.count})`).join(", ")}`:""}
 \`\`\``
 }
 
