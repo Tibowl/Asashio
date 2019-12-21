@@ -10,17 +10,20 @@ exports.run = async (message, args) => {
     else if (!args[0].match(/E\d$/))
         args[0] = args[0].replace(/E\d/,"$& ")
 
-    args = args.join(" ").split(" ")
+    args = args.join(" ").toUpperCase().split(" ")
 
-    let map = args[0].toUpperCase()
+    let map = args[0]
     if(map.startsWith("E-")) map = map.replace("E", data.eventID())
     else if(map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
     if(map.split("-").length != 2) return message.reply("Invalid map!")
 
-    if(args.length !== 2) return message.reply("Missing node!" + args.join("/"))
+    if(args.length !== 2)
+        return message.reply("Missing node!")
     let node = args[1]
     const mapInfo = await data.getMapInfo(map)
     if(Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
+    if(Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).length == 0)
+        return message.reply("Invalid/unknown node!")
 
     const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
 
@@ -36,6 +39,7 @@ exports.autoFleet = async (map, edges) => {
 
 
     const allComps = await getAllComps(map, edges)
+    if(allComps.length == 0) return "Couldn't find a comp!"
     const bestComp = allComps.sort((a,b) => b.count - a.count)[0]
 
     const { fleet1Comp, fleet2Comp, fleetTypes } = bestComp
@@ -89,12 +93,13 @@ exports.autoFleet = async (map, edges) => {
     }
     return `\`\`\`
 Fleet Composition:
+    Node reached count with comp: ${bestComp.count}
     Fleet Type: ${fleetTypes.map(k => ["Single", "CTF", "STF", "TCF"][k]).join(", ")}
-    Main fleet: ${fleet1Comp.join(", ")}
-    Escort fleet: ${fleet2Comp.join(", ")}
+    Main fleet: ${fleet1Comp.join(", ")}${fleet2Comp.length > 0 ? `
+    Escort fleet: ${fleet2Comp.join(", ")}`:""}
 Ships to use:
-    Main fleet: ${ships1.map(k => k.name).join(", ")}
-    Escort fleet: ${ships2.map(k => k.name).join(", ")}
+    Main fleet: ${ships1.map(k => `${k.name} (x${k.count})`).join(", ")}${fleet2Comp.length > 0 ? `
+    Escort fleet: ${ships2.map(k => `${k.name} (x${k.count})`).join(", ")}}`:""}
 \`\`\``
 }
 
