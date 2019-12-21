@@ -8,7 +8,7 @@ exports.run = async (message, args) => {
     if (args[0].includes("-") && !args[0].match(/-\d$/))
         args[0] = args[0].replace(/-\d/,"$& ")
     else if (!args[0].match(/E\d$/))
-        args[0] = args[0].replace(/E\d/,"$& ")
+        args[0] = args[0].replace(/E\d/i,"$& ")
 
     args = args.join(" ").toUpperCase().split(" ")
 
