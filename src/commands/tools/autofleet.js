@@ -108,17 +108,21 @@ async function getAllComps(map, edges) {
 
     const allComps = []
     for (const edge of edges) {
-        const comps = await (await fetch(`http://kc.piro.moe/api/routing/comps/${map}/${edge}?${constants}&mainComp=&escortComp=&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()
-        if (comps.result)
-            for (const result of comps.result) {
-                const found = allComps.find(k => k.fleet1Comp.join(",") == result.fleet1Comp.join(",")
+        try {
+            const comps = await (await fetch(`http://kc.piro.moe/api/routing/comps/${map}/${edge}?${constants}&mainComp=&escortComp=&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()
+            if (comps.result)
+                for (const result of comps.result) {
+                    const found = allComps.find(k => k.fleet1Comp.join(",") == result.fleet1Comp.join(",")
                     && k.fleet2Comp.join(",") == result.fleet2Comp.join(",")
                     && k.fleetTypes[0] == result.fleetTypes[0])
-                if (found)
-                    found.count += result.count
-                else
-                    allComps.push(result)
-            }
+                    if (found)
+                        found.count += result.count
+                    else
+                        allComps.push(result)
+                }
+        } catch (error) {
+            Logger.error(`Gathering comps for ${map} - ${edge} failed`)
+        }
     }
     if(!compsCache[map])
         compsCache[map] = {}
@@ -137,15 +141,19 @@ async function getTopShips(map, edges, fleet1Comp, fleet2Comp) {
     Logger.info(`Caching top ships of ${map} ${edges.join(",")}`)
     const allShips = []
     for (const edge of edges) {
-        const ships = await (await fetch(`http://kc.piro.moe/api/routing/edges/${map}/${edge}?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)).json()
-        if (ships.topships)
-            for (const result of ships.topships) {
-                const found = allShips.find(k => k.id == result.id)
-                if (found)
-                    found.count += result.count
-                else
-                    allShips.push(result)
-            }
+        try{
+            const ships = await (await fetch(`http://kc.piro.moe/api/routing/edges/${map}/${edge}?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)).json()
+            if (ships.topships)
+                for (const result of ships.topships) {
+                    const found = allShips.find(k => k.id == result.id)
+                    if (found)
+                        found.count += result.count
+                    else
+                        allShips.push(result)
+                }
+        } catch (error) {
+            Logger.error(`Gathering fleets for ${map} - ${edge} failed`)
+        }
     }
     if(!shipsCache[map])
         shipsCache[map] = {}
