@@ -1,5 +1,5 @@
 exports.run = (message, args) => {
-    if(!args || args.length < 1) return message.reply(this.usage)
+    if(!args || args.length < 1) return message.reply(`Usage: \`${this.usage()}\``)
 
     let [currentLevel, targetLevel] = args
     let xpOffset = 0

@@ -32,7 +32,7 @@ Available types: ${Object.keys(cutins).map(k => `\`${k}\``).join(", ")}`)
     const { data } = global
 
     let [cutin, level, luck] = args
-    if((cutin = cutins[cutin]) == undefined) return message.reply("Unknown cutin")
+    if((cutin = cutins[cutin.toLowerCase()]) == undefined) return message.reply("Unknown cutin")
 
     if(level == undefined) {
         const format = (base) => (base / cutin.value * 100).toFixed(2).padStart(5)

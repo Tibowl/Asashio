@@ -41,6 +41,7 @@ const readDir = (dir) => {
             if (!file.endsWith(".js")) return readDir(dir + file + "/")
             let props = require(`${dir}${file}`)
             let commandName = file.split(".")[0]
+            props.commandName = commandName
             Logger.info(`Loading ${commandName}`)
             global.commands.set(commandName, props)
         })

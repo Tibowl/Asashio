@@ -58,3 +58,4 @@ exports.help = false
 exports.usage = false
 exports.prefix = global.config.prefix
 exports.category = "Links"
+exports.commandName = "Links"

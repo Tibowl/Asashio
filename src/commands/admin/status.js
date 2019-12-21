@@ -27,10 +27,12 @@ exports.run = async (message, args) => {
         return (await Promise.all(users)).map(user => user.tag).join(", ")
     }
 
+    const totalCommands = Object.keys(global.data.store.stats).map(k => Object.values(global.data.store.stats[k]).reduce((a,b) => a+b, 0)).reduce((a,b) => a+b, 0)
     return message.channel.send(`Running on commit ${args && args.length > 0 ? `<${getVersion()}>` : getVersion()}
 Memory heap usage: ${getMemoryUsage()}
 Current uptime: ${getUptime()}
 In ${client.channels.size} channels on ${client.guilds.size} servers, for a total of ${client.users.size} users.
+Total commands executed: ${totalCommands}
 ${args && args.length > 0 ? `
 Loaded ${Object.keys(global.data.ships).length} ships, ${Object.keys(global.data.quests).length} quests, ${global.data.expeds.length} expeds, ${global.data.birthdays.length} birthdays, ${Object.keys(global.config.emoji).length} emoji
 Cached ${Object.keys(global.data.mapInfoCache).length} maps
