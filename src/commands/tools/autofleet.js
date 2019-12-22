@@ -46,7 +46,6 @@ exports.autoFleet = async (map, edges) => {
     //console.log("Found fleet: ", fleet1Comp, fleet2Comp)
 
     const allShips = await getTopShips(map, edges, fleet1Comp, fleet2Comp)
-    const bestShips = allShips.sort((a,b) => b.count - a.count)
 
     const usedShips = []
     const ships1 = [], ships2 = []
@@ -76,7 +75,7 @@ exports.autoFleet = async (map, edges) => {
         }
 
         // Select ship
-        const ship = bestShips.find(k => k.class == typeToFill && !usedShips.includes(k.id))
+        const ship = allShips[["main", "escort"][fleet-1]].sort((a,b) => b.count - a.count).find(k => k.class == typeToFill && !usedShips.includes(k.id))
 
         // Fill ship in fleet
         if (fleet == 1) {
@@ -98,12 +97,12 @@ Fleet Composition:
     Main fleet: ${fleet1Comp.join(", ")}${fleet2Comp.length > 0 ? `
     Escort fleet: ${fleet2Comp.join(", ")}`:""}
 Ships to use:
-    Main fleet: ${ships1.map(k => `${k.name} (x${k.count})`).join(", ")}${fleet2Comp.length > 0 ? `
-    Escort fleet: ${ships2.map(k => `${k.name} (x${k.count})`).join(", ")}`:""}
+    Main fleet: ${ships1.map(k => `${k.name_en} (x${k.count})`).join(", ")}${fleet2Comp.length > 0 ? `
+    Escort fleet: ${ships2.map(k => `${k.name_en} (x${k.count})`).join(", ")}`:""}
 \`\`\``
 }
-
-const constants = "include=&exclude=&minGauge=1&maxGauge=4&minGaugeLevel=0&maxGaugeLevel=9999&minEdges=0&maxEdges=99&minLos=-40&maxLos=999&minRadars=0&maxRadars=60&minRadarShips=0&maxRadarShips=12&minSpeed=5&maxSpeed=20&nodes=&edges=&fleetType=-1&losType=1&radarType=0&difficulty=4&showEdgeIds=false&showLbasDistance=true&showMapBackground=true&retreats=true&cleared=-1&useMainFs=true&useEscortFs=true&allComp=&start="
+// include=&exclude=&minGauge=1&maxGauge=4&minGaugeLevel=0&maxGaugeLevel=9999&minEdges=0&maxEdges=99&minLos=-40&maxLos=999&minRadars=0&maxRadars=60&minRadarShips=0&maxRadarShips=12&minSpeed=5&maxSpeed=20&nodes=&edges=&fleetType=-1&losType=1&radarType=0& &showEdgeIds=false&showLbasDistance=true&showMapBackground=true&retreats=true&cleared=-1
+const constants = "difficulty=4&useMainFs=true&useEscortFs=true&allComp=&start="
 
 const compsCache = {}
 async function getAllComps(map, edges) {
@@ -117,9 +116,10 @@ async function getAllComps(map, edges) {
             const comps = await (await fetch(`http://kc.piro.moe/api/routing/comps/${map}/${edge}?${constants}&mainComp=&escortComp=&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()
             if (comps.result)
                 for (const result of comps.result) {
-                    const found = allComps.find(k => k.fleet1Comp.join(",") == result.fleet1Comp.join(",")
-                    && k.fleet2Comp.join(",") == result.fleet2Comp.join(",")
-                    && k.fleetTypes[0] == result.fleetTypes[0])
+                    const found = allComps.find( k =>
+                        k.fleet1Comp.join(",") == result.fleet1Comp.join(",") &&
+                        k.fleet2Comp.join(",") == result.fleet2Comp.join(",") &&
+                        k.fleetTypes[0] == result.fleetTypes[0] )
                     if (found)
                         found.count += result.count
                     else
@@ -144,18 +144,21 @@ async function getTopShips(map, edges, fleet1Comp, fleet2Comp) {
         return shipsCache[map][edges.join(",")][fleet1Comp.join(",") + fleet2Comp.join(",")]
 
     Logger.info(`Caching top ships of ${map} ${edges.join(",")}`)
-    const allShips = []
+    const allShips = {"main": [], "escort": []}
     for (const edge of edges) {
         try{
             const ships = await (await fetch(`http://kc.piro.moe/api/routing/edges/${map}/${edge}?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)).json()
-            if (ships.topships)
-                for (const result of ships.topships) {
-                    const found = allShips.find(k => k.id == result.id)
+            if (!ships.topships) continue
+            for(const fleet of ["main", "escort"]) {
+                if(!ships.topships[fleet]) continue
+                for (const result of ships.topships[fleet]) {
+                    const found = allShips[fleet].find(k => k.id == result.id)
                     if (found)
                         found.count += result.count
                     else
-                        allShips.push(result)
+                        allShips[fleet].push(result)
                 }
+            }
         } catch (error) {
             Logger.error(`Gathering fleets for ${map} - ${edge} failed`)
         }
