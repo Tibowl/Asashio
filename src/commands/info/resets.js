@@ -56,4 +56,4 @@ exports.category = "Information"
 exports.help = "Get times when stuff resets"
 exports.usage = "resets"
 exports.prefix = global.config.prefix
-exports.aliases = ["cutoff", "cutoffs", "reset"]
+exports.aliases = ["cutoff", "cutoffs", "reset", "timer", "timers"]
