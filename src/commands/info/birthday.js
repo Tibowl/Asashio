@@ -113,3 +113,4 @@ exports.category = "Information"
 exports.help = "Get birthday of a ship or list upcomming ones"
 exports.usage = "birthday [ship or dd/mm]"
 exports.prefix = global.config.prefix
+exports.aliases = ["birthdays"]
