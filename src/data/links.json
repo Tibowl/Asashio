@@ -10,7 +10,7 @@
     "gunfit": "@gunfits",
     "gunfits": "<https://docs.google.com/spreadsheets/d/11-nekeN0IBLtzdxxIzV0Gm3T7U4BpCrYA1lGsQYAEJo>",
     "hqxp": "https://i.imgur.com/0efnuyO.png",
-    "installation": "https://i.imgur.com/bHWU8dB.png",
+    "installation": "https://i.imgur.com/oR7PmAC.png",
     "invite": "<https://discordapp.com/oauth2/authorize?client_id=621009359627091968&scope=bot&permissions=0>",
     "lb": "https://i.imgur.com/8fgG60S.png",
     "monthlyexped": "https://i.imgur.com/gfBbOrv.png",
@@ -21,5 +21,7 @@
     "kcnav": "<http://kc.piro.moe/nav/#/>",
     "eventlist": "<https://flatisjustice.moe/eventlist>\nGeneral: Enter ship levels/export to kanmusu list -> Copy the code in the box at top (starts with `.2|`) -> Paste in text box on site linked above -> Press enter/select wanted image\nFor KC3: Strategy room -> Ship list -> Click on `Export to: kanmusu_list` at bottom of filter box -> See general\nFor EO: Right click fleet name in fleet panel -> Click on `Copy Ship List (kancolle-calc)` -> See general",
     "soundfix": "https://twitter.com/FlatIsNice/status/1190627905858134017",
-    "lbas": "@lb"
+    "lbas": "@lb",
+    "development": "@dev",
+    "install": "@installation"
 }
