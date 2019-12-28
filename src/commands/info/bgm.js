@@ -2,7 +2,17 @@ const Discord = require("discord.js")
 const Utils = require("../../utils/Utils.js")
 
 exports.run = (message, args) => {
-    if(!args || args.length < 1) return message.reply("Must provide a map.")
+    if(!args || args.length < 1) return message.reply("Must provide a map or bgm id.")
+
+    if(isFinite(+args[0])) {
+        const bgm = +args[0]
+        const embed = new Discord.RichEmbed()
+            .setURL(Utils.getWiki("Music", message.guild))
+            .setTitle(`BGM #${bgm}`)
+
+        embed.setDescription(this.parseLine(bgm))
+        return message.channel.send(embed)
+    }
 
     const map = args[0].replace(/E(-)*/i, `${global.data.eventID()}-`)
     if(!map.includes("-") || map.split("-").length !== 2 || map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
@@ -37,7 +47,7 @@ exports.run = (message, args) => {
 exports.parseLine = (bgmId) => `${(this.bgmidmap[bgmId] || `Unknown BGM #${bgmId}`).replace(/<br>/g, " - ").replace(/<i>/g, "*").replace(/<\/i>/g, "*")} [▶️](${global.data.getBGMLink(bgmId)})`
 exports.category = "Information"
 exports.help = "Gets BGM from a map."
-exports.usage = "bgm <map>"
+exports.usage = "bgm <map or id>"
 exports.prefix = global.config.prefix
 
 exports.bgmidmap = {
