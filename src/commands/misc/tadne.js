@@ -1,10 +1,5 @@
-const { Attachment } = require("discord.js")
-
 exports.run = (message, args) => {
-    if(!global.config.admins.includes(message.author.id)) return
-
-    const attachment = new Attachment(`https://flatisjustice.moe/TADNE/${args && args.length > 0 && !isNaN(parseInt(args[0])) ? args[0] : Math.floor(Math.random() * 1000)}.png`)
-    return message.channel.send(attachment)
+    return message.channel.send(`https://flatisjustice.moe/TADNE/${args && args.length > 0 && !isNaN(parseInt(args[0])) ? args[0] : Math.floor(Math.random() * 1000)}.png`)
 }
 
 exports.category = "hidden"

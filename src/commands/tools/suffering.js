@@ -130,4 +130,4 @@ exports.help = `Show suffering stats for a ship/attack or given HP/armor/attack 
 For more features, use the web version at <https://flatisjustice.moe/dmgsuffer>`
 exports.usage = "suffering <hp(/maxhp)> [armor] [attack] OR .suffering <ship> [attack]"
 exports.prefix = global.config.prefix
-exports.aliases = ["overkill"]
+exports.aliases = ["overkill", "suffer"]
