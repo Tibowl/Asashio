@@ -22,6 +22,8 @@ if(!fs.existsSync("./data/store.json")) {
 
 exports.mapInfoCache = {}
 
+exports.shipAliases = []
+exports.equipAliases = []
 exports.getMaxLevel = () => this.levels_exp.length
 exports.getServerIP = () => "http://203.104.209.23"
 exports.eventID = () => this.store.eventID || 46
@@ -39,12 +41,8 @@ exports.getShipByName = (name) => {
         })
     }
 
-    const aliases = [
-        [/^abruzzi/, "duca degli abruzzi"],
-        [/^ktkm/, "kitakami"]
-    ]
-    for(let alias of aliases)
-        name = name.replace(alias[0], alias[1])
+    for(let alias of this.shipAliases)
+        name = name.replace(new RegExp("^" + alias[0]), alias[1])
 
     let result = this.getShipById(name)
     if(result != undefined) return result
@@ -85,12 +83,8 @@ exports.getBirthdayByName = (name) => {
         })
     }
 
-    const aliases = [
-        [/^abruzzi/, "duca degli abruzzi"],
-        [/^ktkm/, "kitakami"]
-    ]
-    for(let alias of aliases)
-        name = name.replace(alias[0], alias[1])
+    for(let alias of this.shipAliases)
+        name = name.replace(new RegExp("^" + alias[0]), alias[1])
 
     let result = this.birthdays.find(ship => ship.id == name)
     if(result != undefined) return result
@@ -115,10 +109,7 @@ exports.getEquipByName = (name) => {
     let result = this.getEquipById(name)
     if(result != undefined) return result
 
-    const aliases = [
-        [/ lm/, " late model"],
-    ]
-    for(let alias of aliases)
+    for(let alias of this.equipAliases)
         name = name.replace(alias[0], alias[1]).trim()
 
     const firstWord = name.split(" ")[0]
@@ -300,5 +291,11 @@ exports.reloadShipData = async () => {
 
     this.levels_exp = require("../data/levels.json")
     Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
+
+    const aliases = require("../data/aliases.json")
+    this.shipAliases = Object.entries(aliases.shipAliases)
+    this.equipAliases = Object.entries(aliases.equipAliases)
+    Logger.info(`Loaded name aliases! ${this.shipAliases.length} ship and ${this.equipAliases.length} equipments!`)
+
     this.saveStore()
 }

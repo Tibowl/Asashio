@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "cd tests && node test",
-    "start": "cd src && node main"
+    "start": "cd src && node main",
+    "debug": "cd src && node --nolazy --inspect-brk=9229 main"
   },
   "author": "Tibi",
   "license": "ISC",

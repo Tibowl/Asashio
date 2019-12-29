@@ -1,0 +1,11 @@
+{
+    "shipAliases": {
+        "ktkm": "kitakami",
+        "abruzzi": "duca degli abruzzi",
+        "tibi": "asashio",
+        "bestdd": "asashio",
+        "poi": "yuudachi"
+    }, "equipAliases" : {
+        " lm": " late model"
+    }
+}
