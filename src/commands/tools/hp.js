@@ -10,8 +10,9 @@ exports.run = (message, args) => {
     // console.log(ship)
 
     return message.channel.send(`HP values of **${ship.full_name}**:\`\`\`
-unmaried: ${this.generateLine(ship, false)}
-married: ${this.generateLine(ship, true)}
+  unmaried: ${this.generateLine(ship, false)}
+
+   married: ${this.generateLine(ship, true)}
 \`\`\``)
 }
 
@@ -22,11 +23,11 @@ exports.generateLine = (ship, married) => {
         hp = Math.min(hp_max, hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(hp/10)])
 
     let maxMod = Math.min(hp_max - hp, 2)
-    let line = `${hp}(+${maxMod}) ${f(hp)}`
+    let line = `${hp} ${f(hp)}`
 
-    if(maxMod > 0)
+    for(let i = 1; i <= maxMod; i++)
         line += `
-modernized: ${hp + maxMod} ${f(hp + maxMod)}`
+modernized: ${hp + i} ${f(hp + i)}`
 
     return line
 }
