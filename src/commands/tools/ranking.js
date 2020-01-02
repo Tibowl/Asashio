@@ -11,7 +11,7 @@ exports.run = async (message, args) => {
     if(cached) return cached
     const reply = message.reply("Loading...")
 
-    fetch(`https://api.senka.com.ru/server/list?date=${Date.now()}`).then(async (api) => {
+    fetch(`https://api.kancolle.moe/server/list?date=${Date.now()}`).then(async (api) => {
         api = await api.json()
         this.cachedData.time = Date.now()
         this.cachedData.rankingData = api
@@ -54,7 +54,7 @@ exports.formatData = (api, args) => {
             ...serverData
         ],
         [Utils.PAD_START, Utils.PAD_END, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_END]
-    )}\`\`\`\nData provided by <https://senka.com.ru>`
+    )}\`\`\`\nData provided by <https://senka.su>`
 }
 exports.returnCached = (message, args) => {
     if(this.cachedData && this.cachedData.time + 15 * 60 * 1000 > Date.now())
@@ -62,6 +62,6 @@ exports.returnCached = (message, args) => {
 }
 
 exports.category = "Tools"
-exports.help = "Gets ranking data from https://senka.com.ru"
+exports.help = "Gets ranking data from https://senka.su"
 exports.usage = "ranking [server name/id]"
 exports.prefix = global.config.prefix
