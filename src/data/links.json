@@ -24,5 +24,6 @@
     "lbas": "@lb",
     "development": "@dev",
     "install": "@installation",
-    "fit": "@gunfits"
+    "fit": "@gunfits",
+    "lbaa": "@lb"
 }
