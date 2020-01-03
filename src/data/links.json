@@ -25,5 +25,6 @@
     "development": "@dev",
     "install": "@installation",
     "fit": "@gunfits",
-    "lbaa": "@lb"
+    "lbaa": "@lb",
+    "aa": "@aaresist"
 }
