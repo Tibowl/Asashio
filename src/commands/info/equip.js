@@ -75,3 +75,4 @@ exports.category = "Information"
 exports.help = "Get equip information."
 exports.usage = "equip <equip>"
 exports.prefix = global.config.prefix
+exports.aliases = ["item", "equipment"]
