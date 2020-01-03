@@ -3,7 +3,7 @@ exports.run = (message, args) => {
 }
 
 exports.category = "hidden"
-exports.help = "Random TADNE pic. Admins only."
+exports.help = "Random TADNE pic."
 exports.usage = "tadne"
 exports.prefix = global.config.prefix
 exports.aliases = ["asashio", "prpr"]
