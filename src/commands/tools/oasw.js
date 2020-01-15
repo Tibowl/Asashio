@@ -48,7 +48,7 @@ exports.run = (message, args) => {
 
 // https://github.com/KC3Kai/KC3Kai/blob/develop/src/library/objects/Ship.js#L2191
 exports.findAswRequired = (ship) => {
-    if([141, 478, 394, 681, 562, 689, 596, 692, 893].includes(ship.api_id)) return 0
+    if([141, 478, 394, 681, 562, 689, 596, 624, 692, 893].includes(ship.api_id)) return 0
     if(ship.type === 1) return 60
     if([2, 3, 4, 21].includes(ship.type)) return 100
 
@@ -72,7 +72,11 @@ exports.levelAtAsw = (ship, asw) => {
 }
 exports.aswEquip = (ship, aswOffset) => {
     const aswRequired = this.findAswRequired(ship)
-    const maxSlots = ship.equipment.length
+    let maxSlots = ship.equipment.length
+
+    // Yuubari 5th slot can't equip ASW
+    if([622, 623, 624].includes(ship.api_id))
+        maxSlots = 4
 
     let string = "```"
     for(let slots = maxSlots; slots > 0; slots--) {
