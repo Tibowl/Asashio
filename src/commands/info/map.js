@@ -1,30 +1,38 @@
-const { createCanvas } = require("canvas")
+const { createCanvas, Image } = require("canvas")
 const { Attachment } = require("discord.js")
+const fetch = require("node-fetch")
 const cachedMaps = {}
 
 exports.run = async (message, args) => {
-    if(!global.config.admins.includes(message.author.id)) return
     if(!args || args.length < 1) return message.reply("Must provide a map.")
 
-    const map = args[0]
-    if(!map.includes("-") || map.split("-").length !== 2 || map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
+    let map = args[0]
+    if(map.startsWith("E-")) map = map.replace("E", global.data.eventID())
+    if(map.startsWith("E")) map = map.replace("E", global.data.eventID() + "-")
+    if(map.split("-").length != 2) return message.reply("Invalid map!")
+
+    if(map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
+
 
     if(cachedMaps[map] !== undefined) return message.channel.send(cachedMaps[map])
-    const [worldid, mapid] = map.split("-").map(a => parseInt(a))
-    if(worldid < 0 || (worldid > 10 && worldid < 40) || worldid > 60 || mapid >= 10 || mapid < 0) return
 
-    const attachment = await this.genMap(map)
+    const mapInfo = await global.data.getMapInfo(map)
+    if(Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
+
+    const attachment = await this.genMap(map, mapInfo)
     return message.channel.send(attachment)
 }
 
-exports.genMap = async (map) => {
-    const apiParsed = await global.data.getMapInfo(map)
+exports.genMap = async (map, apiParsed) => {
+    const img = new Image
+    img.src = `http://kc.piro.moe/api/assets/images/backgrounds/${map}`
+    await new Promise((resolve) => img.onload = resolve)
+
+    const lbas = await (await fetch(`http://kc.piro.moe/api/routing/lbasdistance/${map}`)).json()
 
     const canvas = createCanvas(1200, 720)
     const ctx = canvas.getContext("2d")
-
-    ctx.fillStyle = "rgba(255, 255, 255, .5)"
-    ctx.fillRect(0, 0, 1200, 720)
+    ctx.drawImage(img, 0, 0)
 
     for(let edge in apiParsed.route) {
         const route = apiParsed.route[edge]
@@ -53,16 +61,19 @@ exports.genMap = async (map) => {
         ctx.miterLimit = 2
         ctx.lineJoin = "circle"
         ctx.lineWidth = 7
-        ctx.strokeText(node || "/", x, y - 10)
+
+        const text = lbas.result[node || "/"] ? `${node} (${lbas.result[node]})` : (node || "/")
+        ctx.strokeText(text, x, y - 10)
         ctx.lineWidth = 1
-        ctx.fillText(node || "/", x, y - 10)
+        ctx.fillText(text, x, y - 10)
     }
     const attachment = new Attachment(canvas.toBuffer(), `${map}.png`)
     cachedMaps[map] = attachment
     return attachment
 }
 
-exports.category = "hidden"
-exports.help = "Renders a map. WIP"
+exports.category = "Information"
+exports.help = "Renders a map, with ranges."
 exports.usage = "map <world-map>"
 exports.prefix = global.config.prefix
+exports.aliases = ["rangemap", "lbasmap", "ranges"]
