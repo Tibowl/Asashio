@@ -58,7 +58,7 @@ exports.returnCached = (message, args) => {
 }
 
 exports.category = "Tools"
-exports.help = "Gets ranking data from https://senka.su"
-exports.usage = "ranking [server name/id]"
+exports.help = "Lists open servers"
+exports.usage = "openserver [all?]"
 exports.prefix = global.config.prefix
 exports.aliases = ["open", "openkcservers", "openservers", "openkcserver"]
