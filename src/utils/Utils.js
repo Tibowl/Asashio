@@ -214,13 +214,13 @@ exports.queue = async (ship, rank, cached, db = "tsundb") => {
                 difficulty,
                 node,
                 rank,
-                "rate0": this.percentage(entry.drops_zero, entry.runs_zero),
-                "samples0": `[${entry.drops_zero}/${entry.runs_zero}]`,
-                "rate1": this.percentage(entry.drops_one, entry.runs_one),
-                "samples1": `[${entry.drops_one}/${entry.runs_one}]`,
-                "rateTotal": this.percentage(entry.drops, entry.runs),
-                "samplesTotal": `[${entry.drops}/${entry.runs}]`,
-                "totalDrops": entry.drops
+                "rate0": this.percentage(entry.drops_zero || 0, entry.runs_zero || 0),
+                "samples0": `[${entry.drops_zero || 0}/${entry.runs_zero || 0}]`,
+                "rate1": this.percentage(entry.drops_one || 0, entry.runs_one || 0),
+                "samples1": `[${entry.drops_one || 0}/${entry.runs_one || 0}]`,
+                "rateTotal": this.percentage(entry.drops || 0, entry.runs || 0),
+                "samplesTotal": `[${entry.drops || 0}/${entry.runs || 0}]`,
+                "totalDrops": entry.drops || 0
             }
         }
     } else if(db == "poi") {
@@ -272,7 +272,6 @@ exports.getDisplayDataString = (cached, message, db) => {
 
     const totalCount = drops.length
     drops = message.channel.type == "dm" ? drops.slice(0, 35) : drops.slice(0, 10)
-
 
     let dropTable = this.createTable(
         { 0: "Map", 4: "Rate" },
