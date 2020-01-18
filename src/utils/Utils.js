@@ -188,7 +188,7 @@ exports.dropTable = async (message, args, db = "tsundb") => {
 function getDropBaseLink(ship, rank, db) {
     switch (db) {
         case "tsundb":
-            return `http://kc.piro.moe/api/routing/droplocations/${ship.api_id}/${rank}`
+            return `http://kc.piro.moe/api/routing/quickdrops?shipId=${ship.api_id}&ranks=${rank}&includeOldEvents=false`
 
         case "poi":
         default:
@@ -199,24 +199,28 @@ exports.queue = async (ship, rank, cached, db = "tsundb") => {
     const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
 
     if(db == "tsundb") {
-        for(let entry of api.entries) {
-            let {map, node, difficulty, count} = entry
+        for(let entry of api.result) {
+            let {map, node, difficulty} = entry
 
-            if(parseInt(map.split("-")[0]) > 20)
+            if(parseInt(map.split("-")[0]) > 20) {
+                // Ignore old event IDs
+                if(map.split("-")[0] != global.data.eventID()) continue
                 map = "E-" + map.split("-")[1]
+            }
+            difficulty = difficulty || 0
 
             cached.dropData[entry.map + node + difficulty] = {
                 map,
                 difficulty,
                 node,
                 rank,
-                "rate0": this.percentage(entry.countZero, entry.totalZero),
-                "samples0": `[${entry.countZero}/${entry.totalZero}]`,
-                "rate1": this.percentage(entry.countOne, entry.totalOne),
-                "samples1": `[${entry.countOne}/${entry.totalOne}]`,
-                "rateTotal": this.percentage(entry.count, entry.total),
-                "samplesTotal": `[${entry.count}/${entry.total}]`,
-                "totalDrops": count
+                "rate0": this.percentage(entry.drops_zero, entry.runs_zero),
+                "samples0": `[${entry.drops_zero}/${entry.runs_zero}]`,
+                "rate1": this.percentage(entry.drops_one, entry.runs_one),
+                "samples1": `[${entry.drops_one}/${entry.runs_one}]`,
+                "rateTotal": this.percentage(entry.drops, entry.runs),
+                "samplesTotal": `[${entry.drops}/${entry.runs}]`,
+                "totalDrops": entry.drops
             }
         }
     } else if(db == "poi") {
