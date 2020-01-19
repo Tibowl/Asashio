@@ -58,7 +58,7 @@ exports.run = (message, args) => {
     return message.channel.send(embed)
 }
 exports.cleanText = (text) => {
-    return text.replace(/\[\[.*?\]\]/g, "").replace(/<.*?>/g, "")
+    return text == undefined ? "" : text.replace(/\[\[.*?\]\]/g, "").replace(/<.*?>/g, "")
 }
 exports.parseText = (text, guild) => {
     // console.log(text)
