@@ -4,10 +4,12 @@ const Utils = require("../../utils/Utils.js")
 exports.run = (message, args) => {
     if(!args || args.length < 1) return message.reply("Must provide a ship name.")
 
-    let aswOffset = 0, equipmentAsw = -1
-    if(args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop().slice(1))
-    if(args[args.length-1].match(/=[0-9]+/)) equipmentAsw = parseInt(args.pop().slice(1))
-    if(args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop().slice(1))
+    let aswOffset = 0, equipmentAsw = -1, level = 0
+    for(let i = 0; i < 3; i++) {
+        if(args[args.length-1].match(/@[0-9]+/)) level = parseInt(args.pop().slice(1))
+        if(args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop().slice(1))
+        if(args[args.length-1].match(/=[0-9]+/)) equipmentAsw = parseInt(args.pop().slice(1))
+    }
 
     const shipName = args.join(" ")
     const ship = global.data.getShipByName(shipName)
@@ -20,11 +22,17 @@ exports.run = (message, args) => {
         .setThumbnail(`https://raw.githubusercontent.com/KC3Kai/KC3Kai/develop/src/assets/img/ships/${ship.api_id}.png`)
 
     const aswRequired = this.findAswRequired(ship)
+    const addLevelRow = () => embed.addField("ASW at level", `\`\`\`
+At level ${level}${aswOffset > 0 ? `+${aswOffset} mod`:""}: ${this.aswAtLevel(ship, level) + aswOffset}${equipmentAsw > 0 ? `
+With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + equipmentAsw}` : ""}
+\`\`\``)
 
     if(aswRequired > 0) {
         embed.setColor("#0066ff")
             .addField("Opening ASW", `This ship requires ${aswRequired} ASW${ship.asw_max == null || ship.asw == null? ". Stats are not yet updated for this ship":""}`)
         if(ship.asw_max == null || ship.asw == null);
+        else if(level > 0)
+            addLevelRow()
         else if(equipmentAsw < 0)
             embed.addField("Equipment - Levels", this.aswEquip(ship, aswOffset))
         else
@@ -43,6 +51,30 @@ exports.run = (message, args) => {
     else
         embed.setColor("#ff0000")
             .addField("Opening ASW", "This ship is not supported or can't OASW")
+
+    if(aswRequired <= 0 && level > 0) addLevelRow()
+    if([
+        // T3 sonar
+        // (+3 ASW) Kamikaze, Harukaze, Shigure, Yamakaze, Maikaze, Asashimo
+        471, 476, 473, 363, 43, 243, 145, 457, 369, 122, 294, 425, 344,
+        // (+2 ASW) Ushio, Ikazuchi, Yamagumo, Isokaze, Hamakaze, Kishinami
+        16, 233, 407, 36, 236, 414, 328, 167, 320, 557, 170, 312, 558, 527, 686,
+
+        // T4 sonar
+        // (+1 ASW) Yuubari K2/T, Isuzu K2, Naka K2, Yura K2
+        622, 623, 141, 160, 488,
+        // (+3 ASW) Yuubari K2D
+        624,
+
+        // Type 3 Depth Charge Projector (Concentrated Deployment)
+        // (+1 ASW) Yuubari K2D, Isuzu K2, Naka K2, Yura K2
+        624, 141, 160, 488
+    ].includes(ship.api_id) || [
+        // T4 sonar (+1 ASW)
+        "Akizuki"
+    ].includes(ship.class))
+        embed.addField("Warning", "This ship has bonuses for certain ASW equipment. This command does **NOT** take these into account!")
+
     return message.channel.send(embed)
 }
 
@@ -140,6 +172,6 @@ exports.generateLine = (equipAsw, ship, aswRequired, aswOffset, maxSlots, force 
 }
 exports.category = "Tools"
 exports.help = "Gets levels when a ship can OASW with certain equipment."
-exports.usage = "oasw <ship> [+<asw mod>] [=<equipment ASW>]"
+exports.usage = "oasw <ship> [+<asw mod>] [=<equipment ASW>] [@<level>]"
 exports.prefix = global.config.prefix
 exports.aliases = ["asw"]
