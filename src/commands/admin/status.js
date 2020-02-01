@@ -44,6 +44,7 @@ Event ID: ${global.data.eventID()}
 Timer offset: ${global.config.timerOffsetms}ms
 Timer channels: ${global.config.timerChannels.map(id => `<#${id}>`).join(", ")}
 Birthday channels: ${global.config.birthdayChannels.map(id => `<#${id}>`).join(", ")}
+Maint channels: ${global.config.maintChannels.map(id => `<#${id}>`).join(", ")}
 Tweet channels: ${global.config.tweetChannels.map(id => `<#${id}>`).join(", ")}
 Tweeting: ${global.config.toTweet.length} users
 Admins: ${await getAdmins()}

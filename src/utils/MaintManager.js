@@ -35,5 +35,5 @@ exports.check = async () => {
     global.data.saveStore()
 
     Logger.info(this.getTimes())
-    Utils.sendToChannels(global.config.maintChannels, `Maint info: ${this.getTimes().join(" ~ ")}\n${line}`)
+    Utils.sendToChannels(global.config.maintChannels, `Maint info: ${this.getTimes().join(" ~ ")}\nMessage: ${line}`)
 }
