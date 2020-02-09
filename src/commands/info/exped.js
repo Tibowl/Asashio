@@ -59,6 +59,7 @@ exports.getItem = (item) => {
         case 10: return config.emoji.furniture_box_s
         case 11: return config.emoji.furniture_box_m
         case 12: return config.emoji.furniture_box_l
+        case 59: return config.emoji.irako
         default: return `Unknown item ${item}`
     }
 }
