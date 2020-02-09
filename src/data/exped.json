@@ -294,15 +294,19 @@
     },  {
         "id": "D1",
         "fs_lvl": 50,
+        "fleet": "1AV(FS) 4DD",
         "rsc": [0, 20, 20, 100],
         "misc_req": "200+ FP, 240+ ASW, 250+ AA, 300+ LoS"
     }, {
         "id": "D2",
         "fs_lvl": 55,
+        "fleet": "1AS(FS) 3(SS+SSV) 1DD?",
         "rsc": [0, 0, 400, 800],
-        "misc_req": "Unknown"
+        "misc_req": "Unknown stats"
     }, {
         "id": "45",
+        "fs_lvl": 60,
+        "fleet": "1CVL(FS) 4(DD+DE)?",
         "rsc": [40, 0, 0, 220],
         "misc_req": "190+ FP?, 300+ ASW, 240+ AA?, 180+ LoS"
     }
