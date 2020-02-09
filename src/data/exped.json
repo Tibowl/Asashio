@@ -290,7 +290,20 @@
         "rsc": [0, 0, 1200, 650],
         "fleet": "2CA 1CL 2DD 1SS(V)",
         "fs_lvl": 55,
-        "fleet_lvl": "??",
         "misc_req": "500+ FP, 280+ ASW"
+    },  {
+        "id": "D1",
+        "fs_lvl": 50,
+        "rsc": [0, 20, 20, 100],
+        "misc_req": "200+ FP, 240+ ASW, 250+ AA, 300+ LoS"
+    }, {
+        "id": "D2",
+        "fs_lvl": 55,
+        "rsc": [0, 0, 400, 800],
+        "misc_req": "Unknown"
+    }, {
+        "id": "45",
+        "rsc": [40, 0, 0, 220],
+        "misc_req": "190+ FP?, 300+ ASW, 240+ AA?, 180+ LoS"
     }
 ]
