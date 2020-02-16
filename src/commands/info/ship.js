@@ -28,7 +28,7 @@ exports.run = (message, args) => {
     ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
 
     ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)
-    ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${config.emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}`).join("\n")
+    ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${config.emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}${equip.stars > 0 ? ` ${config.emoji.star}+${equip.stars}`:""}`).join("\n")
 
     if(ship.remodel_level) {
         ship.remodel_text = "Remodel requires: "

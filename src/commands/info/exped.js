@@ -78,3 +78,4 @@ exports.category = "Information"
 exports.help = "Gets expedition info."
 exports.usage = "exped <exped ID>"
 exports.prefix = global.config.prefix
+exports.aliases = ["expedition"]
