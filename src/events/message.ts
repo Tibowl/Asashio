@@ -1,0 +1,106 @@
+import log4js from "log4js"
+import { Message, TextChannel } from "discord.js"
+import Command from "../utils/Command"
+import client from "../main"
+import config from "../data/config.json"
+
+const Logger = log4js.getLogger("message")
+
+interface ParsedCommand {
+    args: string[]
+    command: string
+    cmd: Command
+}
+
+function getCommand(message: Message): ParsedCommand | false {
+    const args = message.content.slice(1).trim().split(/ +/g)
+    const command = args.shift()?.toLowerCase()
+    if (!command) return false
+
+    let cmd = client.commands.get(command)
+
+    // If that command doesn't exist, silently exit and do nothing
+    if (!cmd) {
+        const newCommand = client.commands.find((cmd: Command) => cmd.aliases.includes(command))
+
+        if (!newCommand)
+            return false
+        cmd = newCommand
+    }
+    if (message.content.indexOf(config.prefix) !== 0) return false
+    return { args, command, cmd }
+}
+
+function addStats(msg: Message, cmdInfo: ParsedCommand): void {
+    const { command, cmd } = cmdInfo
+    const stats = client.data.store.stats || {}
+    const cmdStats = stats[cmd.commandName.toLowerCase()] || {}
+
+    cmdStats[command] = cmdStats[command] + 1 || 1
+
+    stats[cmd.commandName.toLowerCase()] = cmdStats
+    client.data.store.stats = stats
+    client.data.saveStore()
+}
+
+async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<boolean> {
+    const { args, command, cmd } = cmdInfo
+    try {
+        const msg = cmd.run(message, args, command)
+        if (!msg || message.channel.type !== "text") return true
+        const reply = await msg
+        if (!reply) return true
+        if (!(reply instanceof Message)) return true
+
+        try {
+            await reply.react("❌")
+            reply.awaitReactions(
+                (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || config.admins.includes(user.id)),
+                { max: 2, time: 60000, errors: ["time"] }
+            ).then((collected) => {
+                if(collected.size)
+                    reply.delete()
+            }).catch(() =>
+                reply.reactions.forEach((reaction) => reaction.me ? reaction.remove() : 0)
+            )
+            client.recentMessages.push(reply)
+            setTimeout(() => {
+                client.recentMessages.shift()
+            }, 65000)
+        } catch (error) {
+            if (reply.editable)
+                reply.edit(reply.content + "\n\nUnable to pre-add ❌ to remove reaction, please contact your local discord admins to fix bot permissions (tell them to enable ADD_REACTIONS for me).")
+            else
+                Logger.error(error)
+        }
+    } catch (error) {
+        Logger.error(error)
+    }
+    return true
+}
+
+export async function handle(message: Message): Promise<void> {
+    if (message.author.bot) return
+
+    const cmdInfo = await getCommand(message)
+
+    const attachStr = message.attachments && message.attachments.filter(k => k?.url !== undefined).map(k => k.url).join(", ") || ""
+    const attach = attachStr.length < 1 ? "" : (" +" + attachStr)
+
+    if (cmdInfo && cmdInfo.cmd && message.channel instanceof TextChannel) {
+        if (message.channel.type === "dm")
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type}${attach}: ${message.content}`)
+        else
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"})${attach}: ${message.content}`)
+
+        handleCommand(message, cmdInfo)
+        addStats(message, cmdInfo)
+    } else if (message.channel.type === "dm") {
+        Logger.info(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
+        // Gather information for new aliases
+        const channel = client.channels.get("658083473818517505")
+        if (channel && channel instanceof TextChannel)
+            channel.send(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
+    }
+    // Logger.info(message)
+}

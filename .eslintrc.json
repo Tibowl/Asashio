@@ -3,15 +3,24 @@
         "es6": true,
         "node": true
     },
-    "extends": "eslint:recommended",
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/eslint-recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
     },
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+        "@typescript-eslint"
+    ],
     "parserOptions": {
         "ecmaVersion": 2018
     },
     "rules": {
+        "prefer-const": "off",
         "no-trailing-spaces": "error",
         "indent": [
             "error",
@@ -19,8 +28,12 @@
             {
                 "SwitchCase": 1,
                 "VariableDeclarator": "first",
-                "FunctionExpression": {"parameters": "first"},
-                "CallExpression": {"arguments": "first"},
+                "FunctionExpression": {
+                    "parameters": "first"
+                },
+                "CallExpression": {
+                    "arguments": "first"
+                },
                 "ArrayExpression": "first",
                 "ObjectExpression": "first",
                 "ImportDeclaration": "first"
@@ -48,6 +61,16 @@
         ],
         "eol-last": "error",
         "no-unused-vars": "warn",
-        "no-console": "error"
+        "no-console": "error",
+        "@typescript-eslint/member-delimiter-style": ["error", {
+            "multiline": {
+                "delimiter": "none",
+                "requireLast": false
+            },
+            "singleline": {
+                "delimiter": "comma",
+                "requireLast": false
+            }
+        }]
     }
 }
