@@ -204,14 +204,15 @@
         "rsc": [0, 200, 0, 800],
         "fleet": "2(CV(L/B)/AV) 1AV 1CL 2DD",
         "fs_lvl": 45,
-        "fleet_lvl": "?",
-        "misc_req": "3 ships carrying at least 6 drums total"
+        "fleet_lvl": 300,
+        "misc_req": "200+ ASW, 3 ships carrying at least 6 drums total"
     }, {
         "id": "45",
-        "fs_lvl": 60,
-        "fleet": "1CVL(FS) 4(DD+DE)",
         "rsc": [40, 0, 0, 220],
-        "misc_req": "190+ FP?, 300+ ASW, 240+ AA?, 180+ LoS"
+        "fleet": "1CVL(FS) 4(DD+DE)",
+        "fs_lvl": 60,
+        "fleet_lvl": 240,
+        "misc_req": "300+ ASW, 240+ AA, 180+ LoS"
     }, {
         "id": "25",
         "rsc": [900, 0, 500, 0],
@@ -255,16 +256,16 @@
         "fs_lvl": 5
     }, {
         "id": "D1",
-        "fs_lvl": 50,
-        "fleet": "1AV(FS) 4(DD/DE)",
         "rsc": [0, 20, 20, 100],
-        "misc_req": "200+ FP, 240+ ASW, 250+ AA, 300+ LoS"
+        "fleet": "1AV(FS) 4(DD/DE)",
+        "fs_lvl": 50,
+        "fleet_lvl": 229,
+        "misc_req": "240+ ASW, 240+ AA, 300+ LoS"
     }, {
         "id": "D2",
-        "fs_lvl": 55,
-        "fleet": "1AS(FS) 3(SS+SSV) 1(DD/CL)",
         "rsc": [0, 0, 400, 800],
-        "misc_req": "Unknown stats"    
+        "fs_lvl": 55,
+        "fleet": "1AS(FS) 3(SS+SSV) 1(DD/CL)"
     }, {
         "id": "33",
         "rsc": [0, 0, 0, 0],
