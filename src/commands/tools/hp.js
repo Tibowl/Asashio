@@ -10,7 +10,7 @@ exports.run = (message, args) => {
     // console.log(ship)
 
     return message.channel.send(`HP values of **${ship.full_name}**:\`\`\`
-  unmaried: ${this.generateLine(ship, false)}
+ unmarried: ${this.generateLine(ship, false)}
 
    married: ${this.generateLine(ship, true)}
 \`\`\``)
