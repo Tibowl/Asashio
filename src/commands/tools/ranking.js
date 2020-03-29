@@ -25,13 +25,18 @@ exports.run = async (message, args) => {
 exports.formatData = (api, args) => {
     const serverData = []
 
+    const low = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a,b) => a-b)[2]
+    const high = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a,b) => a-b)[api.data.length - 3]
+
     for(let serverID in en_names) {
         let data = api.data.find(k => serverID == k.servernum)
         if(data && data.cutoff) {
             if(args && args.length > 0 && !(serverID == args[0] || en_names[serverID].toLowerCase().includes(args[0].toLowerCase())))
                 continue
 
-            serverData.push([serverID, en_names[serverID], ...ranks.map(rank => data.cutoff[rank].toString() + " |"), new Date(data.lastmodifided).toLocaleString("en-UK", {
+            const color = data.cutoff[500] <= low ? "+" : data.cutoff[500] >= high ? "-" : " "
+
+            serverData.push([color + serverID.padStart(2), en_names[serverID], ...ranks.map(rank => data.cutoff[rank].toString() + " |"), new Date(data.lastmodifided).toLocaleString("en-UK", {
                 timeZone: "Asia/Tokyo",
                 hour12: false,
                 hourCycle: "h24",
@@ -47,10 +52,10 @@ exports.formatData = (api, args) => {
     if(serverData.length == 0)
         return "Couldn't find a matching server!"
 
-    return `\`\`\`\n${Utils.createTable(
+    return `\`\`\`diff\n${Utils.createTable(
         undefined,
         [
-            ["ID", "Server", "T1 |", "T5 |", "T20 |", "T100 |", "T500 |", "Last updated"],
+            [" ID", "Server", "T1 |", "T5 |", "T20 |", "T100 |", "T500 |", "Last updated"],
             ...serverData
         ],
         [Utils.PAD_START, Utils.PAD_END, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_START, Utils.PAD_END]
