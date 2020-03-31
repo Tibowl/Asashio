@@ -1,7 +1,7 @@
 exports.run = (message, args) => {
+    const { commands } = global
     //if(message.channel.type !== "dm") return;
     if(!args || args.length < 1) {
-        let commands = global.commands.keyArray()
         let categorized = {
             "Information": [],
             "Tools": [],
@@ -9,8 +9,8 @@ exports.run = (message, args) => {
             "Links+": [],
             "Admin": []
         }
-        commands.forEach(cmd => {
-            let category = global.commands.get(cmd).category || "??"
+        commands.keyArray().forEach(cmd => {
+            let category = commands.get(cmd).category || "??"
             if(categorized[category] == undefined)
                 categorized[category] = []
             categorized[category].push(cmd)
@@ -25,7 +25,7 @@ ${Object.keys(categorized)
             (!global.config.admins.includes(message.author.id) && category.toLowerCase() == "admin")
             )
         ).map(category => `**${category}**
-    ${categorized[category].sort((a,b) => a.localeCompare(b)).map(cmd => `${global.commands.get(cmd).prefix}${cmd}`).join(", ")}`)
+    ${categorized[category].sort((a,b) => a.localeCompare(b)).map(cmd => `${commands.get(cmd).prefix}${cmd}`).join(", ")}`)
         .join("\n")}
 
 See \`${exports.prefix}help <command name>\` for more information`)
@@ -33,14 +33,23 @@ See \`${exports.prefix}help <command name>\` for more information`)
 
     let commandName = args[0]
 
-    if(!global.commands.has(commandName)) {
-        if(global.commands.has(commandName.slice(1)))
-            commandName = commandName.slice(1)
-        else
-            return message.reply("Command does not exist")
+    let command = commands.get(commandName)
+
+    // Check aliases
+    if(command == null)
+        command = commands.find(k => (k.aliases||[]).includes(commandName))
+
+    // Replace first char (could be some prefix)
+    if(command == null) {
+        commandName = commandName.slice(1)
+        command = commands.find(k => (k.aliases||[]).includes(commandName))
     }
 
-    const command = global.commands.get(commandName)
+    // Command not found
+    if(command == null)
+        return message.reply("Command does not exist")
+
+    commandName = command.commandName
     if(command.help == false)
         return
 

@@ -54,6 +54,7 @@ function addStats(msg, cmdInfo) {
     global.data.store.stats = stats
     global.data.saveStore()
 }
+
 async function handleCommand(message, cmdInfo) {
     const { args, command, cmd } = cmdInfo
     try {
