@@ -9,6 +9,57 @@ exports.getWiki = (page, guild) => {
     return `https://kancolle.fandom.com/wiki/${page.replace(/ /g, "_")}`
 }
 
+exports.handleShip = (ship) => {
+    const { data, config } = global
+
+    ship.hp_married = Math.min(ship.hp_max, ship.hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(ship.hp/10)])
+    ship.ship_type = `${data.misc.ShipTypes[ship.type]} (${data.misc.ShipCodes[ship.type]})`
+
+    for(let key of ["asw", "evasion", "los"]) {
+        if(ship[key] != undefined && ship[`${key}_max`] != undefined)
+            ship[`${key}_ring`] = ship[key] + Math.floor((ship[`${key}_max`] - ship[key]) / 99 * data.getMaxLevel())
+        else
+            ship[`${key}_ring`] = "??"
+        if(ship[key] == undefined) ship[key] = "??"
+        if(ship[`${key}_max`] == undefined) ship[`${key}_max`] = "??"
+    }
+
+    for (const key of ["firepower", "torpedo", "aa", "armor", "luck", "asw", "evasion", "los"]) {
+        if(ship[key] === false) ship[key] = 0
+        if(ship[`${key}_max`] === false) ship[`${key}_max`] = 0
+    }
+
+    ship.speed_name = data.misc.SpeedNames[ship.speed]
+    ship.range_name = data.misc.RangeNames[ship.range]
+    ship.rarity_name = data.misc.RarityNames[ship.rarity]
+
+    ship.mods = [ship.firepower_mod || 0, ship.torpedo_mod || 0, ship.aa_mod || 0, ship.armor_mod || 0].join("/")
+    ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
+
+    ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)
+    ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${config.emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}${equip.stars > 0 ? ` ${config.emoji.star}+${equip.stars}`:""}`).join("\n")
+
+    if(ship.remodel_level) {
+        ship.remodel_text = "Remodel requires: "
+        let requirements = [`Lv.${ship.remodel_level}.`]
+        const k = (remodel) => remodel == true ? 1 : remodel
+
+        if(ship.remodel_ammo) requirements.push(`${ship.remodel_ammo}×${config.emoji.ammo}`)
+        if(ship.remodel_steel) requirements.push(`${ship.remodel_steel}×${config.emoji.steel}`)
+        if(ship.remodel_development_material) requirements.push(`${k(ship.remodel_development_material)}×${config.emoji.devmat}`)
+        if(ship.remodel_blueprint) requirements.push(`${k(ship.remodel_blueprint)}×${config.emoji.blueprint}`)
+        if(ship.remodel_report) requirements.push(`${k(ship.remodel_report)}×${config.emoji.action_report}`)
+        if(ship.remodel_catapult) requirements.push(`${k(ship.remodel_catapult)}×${config.emoji.catapult}`)
+        if(ship.remodel_gunmat) requirements.push(`${k(ship.remodel_gunmat)}×${config.emoji.gun_mat}`)
+
+        ship.remodel_text += requirements.join(", ")
+    } else
+        ship.remodel_text = "Lv.1"
+
+    ship.class_description = `${ship.class}${ship.class_number === false ? "" : ` Class #${ship.class_number}`}`
+    return ship
+}
+
 exports.displayShip = (ship, guild = false) => {
     const embed = new Discord.RichEmbed()
         .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`,ship.full_name, ship.japanese_name, /*ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
@@ -41,7 +92,7 @@ Scrap     :: ${ship.scraps}
     if(ship.equipment)
         embed.addField("Equipment", ship.equipment_text ? ship.equipment_text : "No equipment slots")
 
-    if(ship.remodel_text)
+    if(ship.remodel_text && ship.remodel_text !== "Lv.1")
         embed.addField("Remodel", ship.remodel_text)
 
     return embed
