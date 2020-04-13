@@ -1,11 +1,13 @@
 import fetch from "node-fetch"
-import fs from "fs"
 import log4js from "log4js"
-import client from "../main"
+import { exists, unlink, move, writeFile, existsSync, readFileSync } from "fs-extra"
 import { join } from "path"
+
+import client from "../main"
 import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
+const existsP = (path: string): Promise<boolean> => new Promise((resolve) => exists(path, resolve))
 
 const defaultMisc: MiscDB = {
     "RangeNames": {
@@ -93,6 +95,10 @@ const defaultMisc: MiscDB = {
     },
 }
 
+const path = join(__dirname, "../../src/data/")
+const store = join(path, "store.json")
+const oldstore = join(path, "store.json.old")
+
 export default class DataManager {
     ships: ShipDB = {}
     quests: QuestDB = {}
@@ -107,11 +113,27 @@ export default class DataManager {
     store: Store = { maintInfo: {} }
 
     constructor() {
-        const store = join(__dirname, "../data/store.json")
-        if (!fs.existsSync(store)) {
-            fs.writeFileSync(store, JSON.stringify(this.store))
-        } else {
-            this.store = JSON.parse(fs.readFileSync(store).toString())
+        try {
+            if (existsSync(store))
+                try {
+                    this.store = JSON.parse(readFileSync(store).toString())
+                    return
+                } catch (error) {
+                    Logger.error("Failed to read/parse store.json")
+                }
+
+            if (existsSync(oldstore))
+                try {
+                    this.store = JSON.parse(readFileSync(oldstore).toString())
+                    Logger.error("Restored from old store!")
+                    return
+                } catch (error) {
+                    Logger.error("Failed to read/parse store.json.old")
+                }
+
+            // writeFileSync(store, JSON.stringify(this.store))
+        } catch (error) {
+            Logger.error("Failed to open store.json", error)
         }
     }
 
@@ -329,8 +351,24 @@ export default class DataManager {
         return row[a.length]
     }
 
-    saveStore = (): void => {
-        fs.writeFile(join(__dirname, "../data/store.json"), JSON.stringify(this.store, undefined, 4), (err) => { if (err) Logger.error(err) })
+    lastStore: number | NodeJS.Timeout | undefined = undefined
+    saveStore(): void {
+        if (this.lastStore == undefined) {
+            this.lastStore = setTimeout(async () => {
+                try {
+                    if (await existsP(oldstore))
+                        await unlink(oldstore)
+
+                    if (await existsP(store))
+                        await move(store, oldstore)
+
+                    await writeFile(store, JSON.stringify(this.store, undefined, 4))
+                } catch (error) {
+                    Logger.error("Failed to save", error)
+                }
+                this.lastStore = undefined
+            }, 1000)
+        }
     }
 
     reloadShipData = async (): Promise<void> => {
