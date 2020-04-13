@@ -1,5 +1,6 @@
+import { Message } from "discord.js"
+
 import Command from "../../utils/Command"
-import Discord from "discord.js"
 import { dropTable } from "../../utils/Utils"
 
 export default class DropPoi extends Command {
@@ -12,7 +13,7 @@ export default class DropPoi extends Command {
         })
     }
 
-    run(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
+    run(message: Message, args: string[]): Promise<Message | Message[]> {
         return dropTable(message, args, "poi")
     }
 }

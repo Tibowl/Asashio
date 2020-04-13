@@ -56,7 +56,7 @@ export interface Ship {
     implementation_date: number[]
     voice_actor: string
     artist: string
-    availability: any
+    availability: unknown
     wikipedia?: string
     buildable?: boolean
     buildable_lsc?: boolean
@@ -100,6 +100,7 @@ export interface ShipExtended extends Ship {
     remodel_text?: string
     ship_type: string
     rarity_name: string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any
 }
 
@@ -129,7 +130,7 @@ export interface Equipment {
     gun_fit_group?: string
     icon: number
     id: number
-    improvements?: any
+    improvements?: unknown
     info?: string
     japanese_name: string
     los: boolean | number

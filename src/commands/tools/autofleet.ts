@@ -1,8 +1,9 @@
-import client from "../../main"
-import Discord from "discord.js"
-import Command from "../../utils/Command"
+import { Message } from "discord.js"
 import fetch from "node-fetch"
 import log4js from "log4js"
+
+import client from "../../main"
+import Command from "../../utils/Command"
 
 const Logger = log4js.getLogger("autofleet")
 
@@ -55,7 +56,7 @@ Uses <http://kc.piro.moe> API`,
         })
     }
 
-    async run(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1 || args.length > 2) return message.reply(`Usage: \`${this.usage}\``)
         const { data } = client
 

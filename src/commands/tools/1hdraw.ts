@@ -1,6 +1,7 @@
+import { Message } from "discord.js"
+
 import Command from "../../utils/Command"
 import client from "../../main"
-import Discord from "discord.js"
 
 export default class OneHourDraw extends Command {
     constructor(name: string) {
@@ -12,7 +13,7 @@ export default class OneHourDraw extends Command {
         })
     }
 
-    run(message: Discord.Message): Promise<Discord.Message | Discord.Message[]> {
+    run(message: Message): Promise<Message | Message[]> {
         const { cachedShips } = client.tweetManager
 
         if(!cachedShips.date) {
