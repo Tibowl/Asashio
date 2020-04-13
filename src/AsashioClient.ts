@@ -1,6 +1,7 @@
-import Discord from "discord.js"
+import Discord, { ClientEvents } from "discord.js"
 import Enmap from "enmap"
 import fs from "fs"
+import { join } from "path"
 
 import LinkManager from "./utils/LinkManager"
 import TimerManager from "./utils/TimerManager"
@@ -29,18 +30,18 @@ export default class AsashioClient extends Discord.Client {
     }
 
     init(): void {
-        fs.readdir("./events/", (err, files) => {
+        fs.readdir(join(__dirname, "./events/"), (err, files) => {
             if (err) return Logger.error(err)
             files.forEach(file => {
                 // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const event = require(`./events/${file}`)
-                const eventName = file.split(".")[0]
+                const eventName = file.split(".")[0] as keyof ClientEvents
                 this.on(eventName, event.handle)
             })
         })
 
         const readDir = (dir: string): void => {
-            fs.readdir(dir, (err, files) => {
+            fs.readdir(join(__dirname, dir), (err, files) => {
                 if (err) return Logger.error(err)
                 files.forEach(file => {
                     if (!(file.endsWith(".js") || file.endsWith(".ts"))) return readDir(dir + file + "/")

@@ -1,5 +1,5 @@
 import log4js from "log4js"
-import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js"
+import { Message, TextChannel, MessageAttachment } from "discord.js"
 import Command from "../utils/Command"
 import client from "../main"
 import config from "../data/config.json"
@@ -56,12 +56,12 @@ async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<
             await reply.react("❌")
             reply.awaitReactions(
                 (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || config.admins.includes(user.id)),
-                { max: 2, time: 60000, errors: ["time"] }
+                { max: 1, time: 60000, errors: ["time"] }
             ).then((collected) => {
-                if(collected.size)
+                if(collected)
                     reply.delete()
             }).catch(() =>
-                reply.reactions.forEach((reaction) => reaction.me ? reaction.remove() : 0)
+                reply.reactions.removeAll()
             )
             client.recentMessages.push(reply)
             setTimeout(() => {
@@ -84,7 +84,9 @@ export async function handle(message: Message): Promise<void> {
 
     const cmdInfo = await getCommand(message)
 
-    const attachStr = message.attachments && message.attachments.filter(k => k?.url !== undefined).map(k => k.url).join(", ") || ""
+    const attachStr = (message.attachments && message.attachments
+        .filter((k: MessageAttachment) => k?.url !== undefined)
+        .map((k: MessageAttachment) => k.url).join(", ")) ?? ""
     const attach = attachStr.length < 1 ? "" : (" +" + attachStr)
 
     if (cmdInfo && cmdInfo.cmd) {
@@ -98,7 +100,7 @@ export async function handle(message: Message): Promise<void> {
     } else if (message.channel.type === "dm") {
         Logger.info(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
         // Gather information for new aliases
-        const channel = client.channels.get("658083473818517505")
+        const channel = await client.channels.fetch("658083473818517505")
         if (channel && channel instanceof TextChannel)
             channel.send(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
     }

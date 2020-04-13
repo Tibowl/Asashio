@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import fetch from "node-fetch"
-import { Guild, Message, TextChannel, StringResolvable, RichEmbed, Attachment } from "discord.js"
+import { Guild, Message, TextChannel, StringResolvable, MessageEmbed, MessageAttachment } from "discord.js"
 import log4js from "log4js"
 import client from "./../main"
 import { Rank, Cached, DBType, Cache, DropData, NameTable, padding, DamageType, Damages, Stages, Ship, ShipExtended } from "./Types"
@@ -98,8 +98,8 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     return ship
 }
 
-export function displayShip(ship: ShipExtended, guild?: Guild): RichEmbed {
-    const embed = new RichEmbed()
+export function displayShip(ship: ShipExtended, guild?: Guild): MessageEmbed {
+    const embed = new MessageEmbed()
         .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`, ship.full_name, ship.japanese_name, /*ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
 
     if (typeof ship.api_id == "number")
@@ -413,12 +413,12 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
 }
 
 
-export function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: RichEmbed | Attachment): Promise<(Message | Message[])[]> {
+export async function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment): Promise<(Message | Message[])[]> {
     const messages = []
     if (!channels) return Promise.all([])
 
     for (const channel of channels) {
-        const chanObj = client.channels.get(channel)
+        const chanObj = await client.channels.fetch(channel)
         if (chanObj && chanObj instanceof TextChannel)
             messages.push(chanObj.send(content, embed))
     }

@@ -2,6 +2,7 @@ import fetch from "node-fetch"
 import fs from "fs"
 import log4js from "log4js"
 import client from "../main"
+import { join } from "path"
 import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, Ship, AssetCategory, AssetType, Extension, Equipment, MapInfo } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
@@ -95,10 +96,11 @@ export default class DataManager {
     store: Store = { maintInfo: {} }
 
     constructor() {
-        if (!fs.existsSync("./data/store.json")) {
-            fs.writeFileSync("./data/store.json", JSON.stringify(this.store))
+        const store = join(__dirname, "../data/store.json")
+        if (!fs.existsSync(store)) {
+            fs.writeFileSync(store, JSON.stringify(this.store))
         } else {
-            this.store = JSON.parse(fs.readFileSync("./data/store.json").toString())
+            this.store = JSON.parse(fs.readFileSync(store).toString())
         }
     }
 
@@ -317,7 +319,7 @@ export default class DataManager {
     }
 
     saveStore = (): void => {
-        fs.writeFile("./data/store.json", JSON.stringify(this.store, undefined, 4), (err) => { if (err) Logger.error(err) })
+        fs.writeFile(join(__dirname, "../data/store.json"), JSON.stringify(this.store, undefined, 4), (err) => { if (err) Logger.error(err) })
     }
 
     reloadShipData = async (): Promise<void> => {
@@ -379,7 +381,8 @@ export default class DataManager {
         this.levels_exp = require("../data/levels.json")
         Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
 
-        const aliases = JSON.parse(fs.readFileSync("./data/aliases.json").toString())
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const aliases = require("../data/aliases.json")
         this.shipAliases = Object.entries(aliases.shipAliases)
         this.equipAliases = Object.entries(aliases.equipAliases)
         Logger.info(`Loaded name aliases! ${this.shipAliases.length} ship and ${this.equipAliases.length} equipments!`)

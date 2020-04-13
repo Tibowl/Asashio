@@ -5,16 +5,17 @@ const Logger = log4js.getLogger("ready")
 
 let alreadyLoaded = false
 export async function handle(): Promise<void> {
-    Logger.info(`In ${client.channels.size} channels on ${client.guilds.size} servers, for a total of ${client.users.size} users.`)
+    Logger.info(`In ${(client.channels.cache).size} channels on ${(client.guilds.cache).size} servers, for a total of ${(client.users.cache).size} users.`)
 
     if(alreadyLoaded) return
     alreadyLoaded = true
-
-    client.user.setStatus("online")
 
     client.linkManager.loadLinks()
     client.timerManager.init()
     client.tweetManager.init()
     client.data.reloadShipData()
     client.maintManager.init()
+
+    if(client.user == null) return
+    client.user.setStatus("online")
 }

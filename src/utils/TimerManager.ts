@@ -26,13 +26,6 @@ export default class TimerManager {
 
         const updateActivity = (): void => {
             const now = new Date()
-            client.user.setActivity(config.activity.replace("%t", now.toLocaleString("en-UK", {
-                timeZone: "Asia/Tokyo",
-                hour12: false,
-                hour: "2-digit",
-                minute: "2-digit"
-            })))
-
             const nextMinute = new Date()
             nextMinute.setUTCSeconds(0, 0)
             shiftMinute(nextMinute, 1)
@@ -42,6 +35,16 @@ export default class TimerManager {
                 delay += 60000
             this.activityTimer = setTimeout(updateActivity, delay + 500)
 
+            if(client.user == undefined)
+                return
+
+            client.user.setActivity(config.activity.replace("%t", now.toLocaleString("en-UK", {
+                timeZone: "Asia/Tokyo",
+                hour12: false,
+                hour: "2-digit",
+                minute: "2-digit"
+            })))
+
             const time = now.getTime() - 24 * 60 * 60 * 1000
             const midnight = new Date(time)
             midnight.setUTCHours(15, 0, 0, 0)
@@ -49,9 +52,13 @@ export default class TimerManager {
 
             const birthdays = this.getShipsOnBirthday(midnight)
             if (birthdays.includes("Asashio"))
-                client.guilds.forEach(k => (k.me.nickname == null || k.me.nickname == "Asashio") ? k.me.setNickname("Asashio 🎉") : false)
+                client.guilds.cache
+                    .filter(k => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"))
+                    .forEach(k => k.me != null && k.me.setNickname("Asashio 🎉"))
             else
-                client.guilds.forEach(k => k.me.nickname == "Asashio 🎉" ? k.me.setNickname("Asashio") : false)
+                client.guilds.cache
+                    .filter(k => k != null && k.me != null && k.me.nickname == "Asashio 🎉")
+                    .forEach(k => k.me != null && k.me.setNickname("Asashio"))
         }
 
         if (this.activityTimer == undefined)

@@ -5,7 +5,7 @@
     "main": "dist/main.js",
     "scripts": {
         "start": "node dist/main.js",
-        "dev": "cd src/ && nodemon --ignore data/*.json main.ts",
+        "dev": "nodemon --ignore src/data/*.json src/main.ts",
         "build": "tsc -p ."
     },
     "repository": {
@@ -20,7 +20,7 @@
     "homepage": "https://github.com/Tibowl/Asashio#readme",
     "dependencies": {
         "canvas": "^2.6.1",
-        "discord.js": "11.5.1",
+        "discord.js": "^12.1.1",
         "enmap": "^5.2.4",
         "html-to-text": "^5.1.1",
         "log4js": "^6.1.2",
@@ -28,6 +28,7 @@
         "twit": "^2.2.11"
     },
     "devDependencies": {
+        "@types/ws": "^7.2.3",
         "@types/html-to-text": "^1.4.31",
         "@types/node": "^13.7.7",
         "@types/node-fetch": "^2.5.5",

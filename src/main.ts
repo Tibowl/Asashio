@@ -1,6 +1,7 @@
 import log4js from "log4js"
 import AsashioClient from "./AsashioClient"
 import fs from "fs"
+import { join } from "path"
 
 log4js.configure({
     appenders: {
@@ -13,7 +14,7 @@ log4js.configure({
 const Logger = log4js.getLogger("main")
 
 const client = new AsashioClient()
-if (!fs.existsSync("./data/config.json")) {
+if (!fs.existsSync(join(__dirname, "./data/config.json"))) {
     Logger.error("Config does not exist!")
 } else {
     client.init()
