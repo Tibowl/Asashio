@@ -8,8 +8,8 @@ import emoji from "../data/emoji.json"
 
 const Logger = log4js.getLogger("Utils")
 
-const PAD_START = 0
-const PAD_END = 1
+export const PAD_START = 0
+export const PAD_END = 1
 
 
 export function getWiki(page: string, guild?: Guild): string {
@@ -19,7 +19,7 @@ export function getWiki(page: string, guild?: Guild): string {
     return `https://kancolle.fandom.com/wiki/${page.replace(/ /g, "_")}`
 }
 
-const createTable = (names: NameTable, rows: StringResolvable[], pads: padding[] = [PAD_END]): string => {
+export function createTable(names: NameTable, rows: StringResolvable[], pads: padding[] = [PAD_END]): string {
     const maxColumns = Math.max(...rows.map(row => row.length))
     let title = "", currentInd = 0
 
@@ -301,7 +301,7 @@ const getDropBaseLink = (ship: Ship, rank: string, db: DBType): string => {
     }
 }
 
-const percentage = (count: number, total: number): string => {
+export function percentage(count: number, total: number): string {
     if (total === 0) return "?.???%"
     return (count / total * 100).toFixed(3) + "%"
 }

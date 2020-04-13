@@ -20,6 +20,8 @@
         "ecmaVersion": 2018
     },
     "rules": {
+        "camelcase": "off",
+        "@typescript-eslint/camelcase": "off",
         "prefer-const": "off",
         "no-trailing-spaces": "error",
         "indent": [
