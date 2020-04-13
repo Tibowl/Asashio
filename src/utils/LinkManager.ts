@@ -1,9 +1,11 @@
 import cprocess from "child_process"
 import fs from "fs"
 import log4js from "log4js"
+import { join } from "path"
+import { Message } from "discord.js"
+
 import Command from "./Command"
 import client from "../main"
-import Discord from "discord.js"
 
 const Logger = log4js.getLogger("LinkManager")
 
@@ -34,7 +36,7 @@ export default class LinkManager extends Command {
 ${printLines.join("\n")}`)
     }
 
-    async setLink(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
+    async setLink(message: Message, args: string[]): Promise<Message | Message[]> {
         if (args.length < 1) return await message.reply("Not enough arguments")
         let command = args[0]
         if (args.length == 1) {
@@ -70,11 +72,12 @@ ${printLines.join("\n")}`)
     }
 
     async updateDb(id: string): Promise<void> {
-        fs.writeFileSync("../src/data/links.json", JSON.stringify(this.links, null, 4))
-        cprocess.execSync(`git add ../src/data/links.json && git commit -m "Link updated by ${id}" && git push`)
+        const file = join(__dirname, "../../src/data/links.json")
+        fs.writeFileSync(file, JSON.stringify(this.links, null, 4))
+        cprocess.execSync(`git add ${file} && git commit -m "Link updated by ${id}" && git push`)
     }
 
-    run(message: Discord.Message, args: string[], command: string): Promise<Discord.Message | Discord.Message[]> {
+    run(message: Message, args: string[], command: string): Promise<Message | Message[]> {
         let toSend = this.links[command]
 
         let tries = 0
