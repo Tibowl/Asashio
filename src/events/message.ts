@@ -1,5 +1,5 @@
 import log4js from "log4js"
-import { Message, TextChannel } from "discord.js"
+import { Message, TextChannel, DMChannel, GroupDMChannel } from "discord.js"
 import Command from "../utils/Command"
 import client from "../main"
 import config from "../data/config.json"
@@ -87,11 +87,11 @@ export async function handle(message: Message): Promise<void> {
     const attachStr = message.attachments && message.attachments.filter(k => k?.url !== undefined).map(k => k.url).join(", ") || ""
     const attach = attachStr.length < 1 ? "" : (" +" + attachStr)
 
-    if (cmdInfo && cmdInfo.cmd && message.channel instanceof TextChannel) {
+    if (cmdInfo && cmdInfo.cmd) {
         if (message.channel.type === "dm")
-            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type}${attach}: ${message.content}`)
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel instanceof TextChannel ? message.channel.name : message.channel.type}${attach}: ${message.content}`)
         else
-            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel.name || message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"})${attach}: ${message.content}`)
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel instanceof TextChannel ? message.channel.name : message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"})${attach}: ${message.content}`)
 
         handleCommand(message, cmdInfo)
         addStats(message, cmdInfo)
