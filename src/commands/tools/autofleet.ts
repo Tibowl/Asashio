@@ -38,7 +38,6 @@ const shipsCache: { [key: string]: { [key: string]: { [key: string]: ShipCandida
       constants = "difficulty=4&useMainFs=true&useEscortFs=true&allComp=&start="
 
 export default class AutoFleet extends Command {
-
     constructor(name: string) {
         super({
             name,
@@ -92,7 +91,6 @@ Uses <http://kc.piro.moe> API`,
             2. Grab top ships from fleets
             3. Fill top fleet spots with top ships randomly
         */
-
 
         const allComps = await this.getAllComps(map, edges)
         if (allComps.length == 0) return "Couldn't find a comp!"

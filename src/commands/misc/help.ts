@@ -65,6 +65,6 @@ See \`${config.prefix}help <command name>\` for more information`)
         return message.channel.send(`${command.commandName} - ${command.help}
 
 Usage: \`${config.prefix}${command.usage}\`${command.aliases ? `
-Aliases: ${command.aliases.map(k => `\`${k}\``).join(", ")}` : ""}`)
+Aliases: ${command.aliases.map(k => `\`${k}\``).join(", ")}` : "None"}`)
     }
 }
