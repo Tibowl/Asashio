@@ -100,6 +100,7 @@ export interface ShipExtended extends Ship {
     remodel_text?: string
     ship_type: string
     rarity_name: string
+    [key: string]: any
 }
 
 interface Gunfitproperties {
@@ -189,6 +190,34 @@ export type Route = [null | string, string, number, number]
 export interface Routes {
     [key: string]: Route
 }
+
+export interface MiscDB {
+    EquipmentCompatibility?: { [key: string]: [] | EquipmentCompatibilityClass }
+    EquipmentIcons?: { [key: string]: string }
+    EquipmentRarityNames?: { [key: string]: string }
+    EquipmentTypes?: { [key: string]: string }
+    EquipmentTypesPlural?: { [key: string]: string }
+    GunFitGroups?: GunFitGroups
+    RangeNames: { [key: string]: string }
+    RarityNames: { [key: string]: string }
+    ShipCodes: { [key: string]: string }
+    ShipTypes: { [key: string]: string }
+    SpeedNames: { [key: string]: string }
+    StatIcons?: { [key: string]: string }
+}
+
+export interface EquipmentCompatibilityClass {
+    [key: string]: {
+        code: string
+        note: string
+        value: number
+    }
+}
+
+export interface GunFitGroups {
+    large_caliber: string[]
+}
+
 
 export interface Birthday {
     id?: number

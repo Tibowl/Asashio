@@ -16,8 +16,8 @@ export default class Help extends Command {
 
     run(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
         //if(message.channel.type !== "dm") return;
+        const { commands } = client
         if (!args || args.length < 1) {
-            let commands = client.commands.keyArray()
             let categorized: { [a in CommandCategory]: string[] } = {
                 "Hidden": [],
                 "Information": [],
@@ -28,8 +28,8 @@ export default class Help extends Command {
                 "Admin": []
             }
             commands.forEach(cmd => {
-                let category = client.commands.get(cmd)?.category ?? "Misc"
-                categorized[category].push(cmd)
+                let category = cmd?.category ?? "Misc"
+                categorized[category].push(cmd.commandName)
             })
             categorized.Links = client.linkManager.getLinks()
 
@@ -48,16 +48,21 @@ See \`${config.prefix}help <command name>\` for more information`)
         let commandName = args[0]
 
         let command = client.commands.get(commandName)
-        if (!command) {
-            command = client.commands.get(commandName = commandName.slice(1))
-            if (!command)
-                return message.reply("Command does not exist")
-        }
+        // Check aliases
+        if(command == null)
+            command = commands.find(k => (k.aliases||[]).includes(commandName))
+
+        // Replace first char (could be some prefix)
+        if(command == null)
+            command = commands.find(k => (k.aliases||[]).includes(commandName.slice(1)))
+
+        if(command == null)
+            return message.reply("Command does not exist")
 
         if (command.help == false)
-            return message.channel.send(`${commandName}`)
+            return message.channel.send(`${command.commandName}`)
 
-        return message.channel.send(`${commandName} - ${command.help}
+        return message.channel.send(`${command.commandName} - ${command.help}
 
 Usage: \`${config.prefix}${command.usage}\`${command.aliases ? `
 Aliases: ${command.aliases.map(k => `\`${k}\``).join(", ")}` : ""}`)

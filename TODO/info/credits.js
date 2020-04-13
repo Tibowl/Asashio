@@ -1,5 +1,5 @@
 exports.run = (message) => {
-    return message.channel.send(`This is an open-source bot created by @Tibo#8271 - contact him in case there are any problems or if you want to donate slots/asashio rings.
+    return message.channel.send(`This is an open-source bot created by @${global.client.users.get("127393188729192448").tag} - contact him in case there are any problems or if you want to donate slots/asashio rings.
 The source-code is hosted on GitHub: <https://github.com/Tibowl/Asashio>
 
 Ship/Quest data provided by wikia.

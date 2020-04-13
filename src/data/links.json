@@ -26,5 +26,6 @@
     "fit": "@gunfits",
     "lbaa": "@lb",
     "aa": "@aaresist",
-    "dlc": "https://i.imgur.com/rLAwMQV.png"
+    "dlc": "https://i.imgur.com/rLAwMQV.png",
+    "cache": "**KCCacheProxy**: <https://github.com/Tibowl/KCCacheProxy/releases/>\n**Full cache dumps** (optional): <https://mega.nz/#F!sOwClABa!yHldyYZr2MBqhTNYEupztg>\n\n**Installation** (v2 or later, windows): Get latest setup exe from releases, open it, set browser/viewer proxy to `localhost:8081` (see <https://github.com/Tibowl/KCCacheProxy/blob/master/ReadMe.md#browserviewer-setup> for more information).\n**Using full cache dumps** (optional): Download the most recent zip from the MEGA linked above, extract zip somewhere, set path to where you extracted in UI and click on the Save button.\n**Upgrading to v2 from v1.x**: Delete any auto-startup things, install v2 like usual (see above), set cache path to old cache folder (don't forget to save, can be moved first if wanted). Other files from old version can be deleted."
 }

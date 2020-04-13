@@ -2,14 +2,89 @@ import fetch from "node-fetch"
 import fs from "fs"
 import log4js from "log4js"
 import client from "../main"
-import { QuestDB, ShipDB, EquipmentDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, Ship, AssetCategory, AssetType, Extension, Equipment, MapInfo } from "./Types"
+import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, Ship, AssetCategory, AssetType, Extension, Equipment, MapInfo } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
 
+const defaultMisc: MiscDB = {
+    "RangeNames": {
+        "0": "None",
+        "1": "Short",
+        "2": "Medium",
+        "3": "Long",
+        "4": "Very Long",
+        "5": "Very Long+"
+    },
+    "RarityNames": {
+        "1": "Very Common",
+        "2": "Common",
+        "3": "Uncommon",
+        "4": "Rare",
+        "5": "Very Rare",
+        "6": "Holo",
+        "7": "S Holo",
+        "8": "SS Holo",
+    },
+    "SpeedNames": {
+        "0": "None",
+        "5": "Slow",
+        "10": "Fast",
+        "15": "Fast+",
+        "20": "Fastest"
+    },
+    "ShipCodes": {
+        "1": "DE",
+        "2": "DD",
+        "3": "CL",
+        "4": "CLT",
+        "5": "CA",
+        "6": "CAV",
+        "7": "CVL",
+        "8": "FBB",
+        "9": "BB",
+        "10": "BBV",
+        "11": "CV",
+        "12": "B",
+        "13": "SS",
+        "14": "SSV",
+        "15": "AP",
+        "16": "AV",
+        "17": "LHA",
+        "18": "CVB",
+        "19": "AR",
+        "20": "AS",
+        "21": "CT",
+        "22": "AO"
+    },
+    "ShipTypes": {
+        "1": "Coastal Defense Ship",
+        "2": "Destroyer",
+        "3": "Light Cruiser",
+        "4": "Torpedo Cruiser",
+        "5": "Heavy Cruiser",
+        "6": "Aviation Cruiser",
+        "7": "Light Carrier",
+        "8": "Fast Battleship",
+        "9": "Battleship",
+        "10": "Aviation Battleship",
+        "11": "Standard Aircraft Carrier",
+        "12": "Super Dreadnought",
+        "13": "Submarine",
+        "14": "Aircraft Carrying Submarine",
+        "15": "Transport Ship",
+        "16": "Seaplane Tender",
+        "17": "Amphibious Assault Ship",
+        "18": "Armored Carrier",
+        "19": "Repair Ship",
+        "20": "Submarine Tender",
+        "21": "Training Cruiser",
+        "22": "Fleet Oiler"
+    },
+}
 export default class DataManager {
     ships: ShipDB = {}
     quests: QuestDB = {}
-    misc = {}
+    misc: MiscDB = defaultMisc
     equips: EquipmentDB = {}
     expeds: Expedition[] = []
 
@@ -266,10 +341,8 @@ export default class DataManager {
         })
         Logger.info(`Loaded quest data! ${Object.keys(this.quests).length} quests loaded`)//, this.quests["B100"])
 
-        const miscData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/misc.json")).json()
-        this.misc = miscData
-
-        Logger.info(`Loaded misc ${Object.keys(miscData).join(", ")} data`)
+        this.misc = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/misc.json")).json()
+        Logger.info(`Loaded misc ${Object.keys(this.misc).join(", ")} data`)
 
         const equipmentData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/equipment.json")).json()
 
