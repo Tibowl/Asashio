@@ -62,7 +62,7 @@
             }
         ],
         "eol-last": "error",
-        "no-unused-vars": "warn",
+        "no-unused-vars": "off",
         "no-console": "error",
         "@typescript-eslint/member-delimiter-style": ["error", {
             "multiline": {

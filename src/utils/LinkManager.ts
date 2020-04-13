@@ -23,7 +23,7 @@ export default class LinkManager extends Command {
 
     links: LinksDB = {}
     loadLinks = async (): Promise<void> => {
-        this.links = require("../data/links.json")
+        this.links = require("../../src/data/links.json")
 
         const printLines = []
         for (let link of Object.entries(this.links)) {

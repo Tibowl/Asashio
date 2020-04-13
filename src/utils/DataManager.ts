@@ -3,7 +3,7 @@ import fs from "fs"
 import log4js from "log4js"
 import client from "../main"
 import { join } from "path"
-import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, Ship, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended } from "./Types"
+import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
 
@@ -370,19 +370,19 @@ export default class DataManager {
         }
         Logger.info(`Loaded api_start2! Last event ID: ${this.eventID()}`)
 
-        this.birthdays = require("../data/kcbirthday.json")
+        this.birthdays = require("../../src/data/kcbirthday.json")
         Logger.info(`Loaded birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
         client.timerManager.scheduleNextBirthday()
 
-        this.expeds = require("../data/exped.json")
+        this.expeds = require("../../src/data/exped.json")
         Logger.info(`Loaded expeds! ${this.expeds.length} expeds!`)
 
         // eslint-disable-next-line @typescript-eslint/camelcase
-        this.levels_exp = require("../data/levels.json")
+        this.levels_exp = require("../../src/data/levels.json")
         Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
 
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        const aliases = require("../data/aliases.json")
+        const aliases = require("../../src/data/aliases.json")
         this.shipAliases = Object.entries(aliases.shipAliases)
         this.equipAliases = Object.entries(aliases.equipAliases)
         Logger.info(`Loaded name aliases! ${this.shipAliases.length} ship and ${this.equipAliases.length} equipments!`)
