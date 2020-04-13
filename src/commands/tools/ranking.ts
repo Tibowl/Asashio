@@ -34,7 +34,7 @@ export default class Ranking extends Command {
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
         const cached = this.returnCached(message, args)
-        if(cached) return cached
+        if (cached) return cached
         const reply = message.reply("Loading...")
 
         fetch(`https://api.kancolle.moe/server/list?date=${Date.now()}`).then(async (fetched) => {
@@ -56,11 +56,11 @@ export default class Ranking extends Command {
 
         for (let serverID in en_names) {
             const found = api.data.find(k => +serverID == k.servernum)
-            if(!(found && found.cutoff))
+            if (!(found && found.cutoff))
                 continue
             const data = found
 
-            if(args && args.length > 0 && !(serverID == args[0] || en_names[serverID].toLowerCase().includes(args[0].toLowerCase())))
+            if (args && args.length > 0 && !(serverID == args[0] || en_names[serverID].toLowerCase().includes(args[0].toLowerCase())))
                 continue
 
             const color = data.cutoff[500] <= low ? "+" : data.cutoff[500] >= high ? "-" : " "
@@ -76,7 +76,7 @@ export default class Ranking extends Command {
             }).replace(",", "")])
         }
 
-        if(serverData.length == 0)
+        if (serverData.length == 0)
             return "Couldn't find a matching server!"
 
         return `\`\`\`diff\n${createTable(
@@ -89,7 +89,7 @@ export default class Ranking extends Command {
         )}\`\`\`\nData provided by <https://senka.su>`
     }
     returnCached(message: Message, args: string[]): Promise<Message> | undefined {
-        if((cachedData?.time ?? 0) + 15 * 60 * 1000 > Date.now() && cachedData.rankingData !== undefined)
+        if ((cachedData?.time ?? 0) + 15 * 60 * 1000 > Date.now() && cachedData.rankingData !== undefined)
             return message.channel.send(this.formatData(cachedData.rankingData, args))
     }
 }

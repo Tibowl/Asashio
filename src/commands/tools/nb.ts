@@ -50,16 +50,16 @@ export default class NB extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\`
+        if (!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\`
 Available types: ${Object.keys(cutins).map(k => `\`${k}\``).join(", ")}`)
         const { data } = client
 
         const cutinType = args[0].toLowerCase()
         const cutin = cutins[cutinType]
 
-        if(cutin == undefined) return message.reply("Unknown cutin")
+        if (cutin == undefined) return message.reply("Unknown cutin")
 
-        if(args.length == 1) {
+        if (args.length == 1) {
             const format = (base: number): string => (base / cutin.value * 100).toFixed(2).padStart(5)
             return message.channel.send(`For level/luck specific stats use \`nb ${cutinType} <level> <luck>\`
 
@@ -78,16 +78,16 @@ Penalties:
 -${format(10)}% | Enemy Star Shell \`\`\``)
         }
 
-        if(args.length < 3) return message.reply(`Usage: \`nb ${cutinType} <level> <luck>\``)
+        if (args.length < 3) return message.reply(`Usage: \`nb ${cutinType} <level> <luck>\``)
 
         const level = parseInt(args[1])
         const luck = parseInt(args[2])
 
-        if(isNaN(level) || level < 0 || level > data.getMaxLevel() + 50) return message.reply("Invalid/unrealistic level.")
-        if(isNaN(luck) || luck < 0 || luck > 200) return message.reply("Invalid/unrealistic luck.")
+        if (isNaN(level) || level < 0 || level > data.getMaxLevel() + 50) return message.reply("Invalid/unrealistic level.")
+        if (isNaN(luck) || luck < 0 || luck > 200) return message.reply("Invalid/unrealistic luck.")
 
         let base = 0
-        if(luck < 50)
+        if (luck < 50)
             base = Math.floor(15 + luck + 0.75 * Math.sqrt(level))
         else
             base = Math.floor(65 + Math.sqrt(luck - 50) + 0.8 * Math.sqrt(level))

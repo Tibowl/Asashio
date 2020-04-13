@@ -58,11 +58,13 @@ async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<
                 (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || config.admins.includes(user.id)),
                 { max: 1, time: 60000, errors: ["time"] }
             ).then((collected) => {
-                if(collected)
+                if (collected)
                     reply.delete()
-            }).catch(() =>
-                reply.reactions.removeAll()
-            )
+            }).catch(() => {
+                const user = client.user
+                if (user == undefined) return
+                reply?.reactions?.cache.map((reaction) => reaction.me ? reaction.users.remove(user) : undefined)
+            })
             client.recentMessages.push(reply)
             setTimeout(() => {
                 client.recentMessages.shift()

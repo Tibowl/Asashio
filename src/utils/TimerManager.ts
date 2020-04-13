@@ -35,7 +35,7 @@ export default class TimerManager {
                 delay += 60000
             this.activityTimer = setTimeout(updateActivity, delay + 500)
 
-            if(client.user == undefined)
+            if (client.user == undefined)
                 return
 
             client.user.setActivity(config.activity.replace("%t", now.toLocaleString("en-UK", {
@@ -237,10 +237,10 @@ export default class TimerManager {
 
     toDeleteMessages: (Message | Message[])[] = []
 
-    update = async(newMessage: string): Promise<unknown[]> => {
+    update = async(newMessage?: string): Promise<unknown[]> => {
         let deletion = this.toDeleteMessages.map(td => {
             try {
-                if(td instanceof Message)
+                if (td instanceof Message)
                     return td.delete()
             } catch (error) {
                 Logger.info(error)

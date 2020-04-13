@@ -17,21 +17,21 @@ export default class OASW extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length < 1) return message.reply("Must provide a ship name.")
+        if (!args || args.length < 1) return message.reply("Must provide a ship name.")
         const { data } = client
 
         let aswOffset = 0, equipmentAsw = -1, level = 0
-        for(let i = 0; i < 3; i++) {
-            if(args[args.length-1].match(/@[0-9]+/)) level = parseInt(args.pop()?.slice(1) ?? "0")
-            else if(args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop()?.slice(1) ?? "0")
-            else if(args[args.length-1].match(/=[0-9]+/)) equipmentAsw = parseInt(args.pop()?.slice(1) ?? "0")
-            if(args.length == 0) return message.reply("No ship entered")
+        for (let i = 0; i < 3; i++) {
+            if (args[args.length-1].match(/@[0-9]+/)) level = parseInt(args.pop()?.slice(1) ?? "0")
+            else if (args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop()?.slice(1) ?? "0")
+            else if (args[args.length-1].match(/=[0-9]+/)) equipmentAsw = parseInt(args.pop()?.slice(1) ?? "0")
+            if (args.length == 0) return message.reply("No ship entered")
         }
 
         const shipName = args.join(" ")
         const ship = data.getShipByName(shipName)
 
-        if(ship == undefined) return message.reply("Unknown ship")
+        if (ship == undefined) return message.reply("Unknown ship")
 
         const embed = new MessageEmbed()
             .setTitle(`${ship.full_name} ${aswOffset > 0 ? `+${aswOffset} ASW` : ""}`)
@@ -44,14 +44,14 @@ At level ${level}${aswOffset > 0 ? `+${aswOffset} mod`:""}: ${this.aswAtLevel(sh
 With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + equipmentAsw}` : ""}
 \`\`\``)
 
-        if(aswRequired > 0) {
+        if (aswRequired > 0) {
             embed.setColor("#0066ff")
                 .addField("Opening ASW", `This ship requires ${aswRequired} ASW`)
-            if(ship.asw_max == null || ship.asw == null)
+            if (ship.asw_max == null || ship.asw == null)
                 embed.addField("No data available", "ASW stats are not yet updated for this ship")
-            else if(level > 0)
+            else if (level > 0)
                 addLevelRow()
-            else if(equipmentAsw < 0)
+            else if (equipmentAsw < 0)
                 embed.addField("Equipment - Levels", this.aswEquip(ship, aswOffset))
             else
                 embed.addField("Equipment - Levels", `\`\`\`
@@ -70,8 +70,8 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
             embed.setColor("#ff0000")
                 .addField("Opening ASW", "This ship is not supported or can't OASW")
 
-        if(aswRequired <= 0 && level > 0) addLevelRow()
-        if([
+        if (aswRequired <= 0 && level > 0) addLevelRow()
+        if ([
         // T3 sonar
         // (+3 ASW) Kamikaze, Harukaze, Shigure, Yamakaze, Maikaze, Asashimo
             471, 476, 473, 363, 43, 243, 145, 457, 369, 122, 294, 425, 344,
@@ -98,24 +98,24 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
 
     // https://github.com/KC3Kai/KC3Kai/blob/develop/src/library/objects/Ship.js#L2191
     findAswRequired(ship: Ship): number {
-        if([141, 478, 394, 681, 562, 689, 596, 624, 692, 893].includes(ship.api_id)) return 0
-        if(ship.type === 1) return 60
-        if([2, 3, 4, 21].includes(ship.type)) return 100
+        if ([141, 478, 394, 681, 562, 689, 596, 624, 692, 893].includes(ship.api_id)) return 0
+        if (ship.type === 1) return 60
+        if ([2, 3, 4, 21].includes(ship.type)) return 100
 
-        if(ship.type === 7 && ship.asw > 0) return -2
-        if(ship.full_name == "Hyuuga Kai Ni") return -3
-        if([6, 10, 16, 17].includes(ship.type)) return -3
+        if (ship.type === 7 && ship.asw > 0) return -2
+        if (ship.full_name == "Hyuuga Kai Ni") return -3
+        if ([6, 10, 16, 17].includes(ship.type)) return -3
 
         return -99
     }
     aswAtLevel(ship: Ship, level: number): number {
-        if(ship.asw_max == false) return 0
+        if (ship.asw_max == false) return 0
         return Math.floor(ship.asw + ((ship.asw_max - ship.asw) * level / 99))
     }
     levelAtAsw(ship: Ship, asw: number): number {
-        if(ship.asw_max == false) return ship.asw
+        if (ship.asw_max == false) return ship.asw
         let aswPerLevel = (ship.asw_max - ship.asw) / 99
-        if(aswPerLevel <= 0) return -1
+        if (aswPerLevel <= 0) return -1
         let level = Math.ceil((asw - ship.asw) / aswPerLevel)
         if (typeof ship.remodel_level == "number" && level < ship.remodel_level)
             level = ship.remodel_level
@@ -127,12 +127,12 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
         let maxSlots = ship.equipment == false ? 4 : ship.equipment.length
 
         // Yuubari 5th slot can't equip ASW
-        if([622, 623, 624].includes(ship.api_id))
+        if ([622, 623, 624].includes(ship.api_id))
             maxSlots = 4
 
         let string = "```"
-        for(let slots = maxSlots; slots > 0; slots--) {
-            if(slots == 1) {
+        for (let slots = maxSlots; slots > 0; slots--) {
+            if (slots == 1) {
                 string += this.generateLine([15], ship, aswRequired, aswOffset, maxSlots)
                 string += this.generateLine([13], ship, aswRequired, aswOffset, maxSlots)
                 string += this.generateLine([12], ship, aswRequired, aswOffset, maxSlots)
@@ -141,15 +141,15 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
             }
 
             let equipAsw = []
-            for(let i = 0; i < slots; i++)
+            for (let i = 0; i < slots; i++)
                 equipAsw.push(12)
 
             let allLinesT3 = false
-            while(!allLinesT3) {
+            while (!allLinesT3) {
                 string += this.generateLine(equipAsw, ship, aswRequired, aswOffset, maxSlots)
 
-                for(let i = slots - 1; i >= 0; i--) {
-                    if(equipAsw[i] == 12) {
+                for (let i = slots - 1; i >= 0; i--) {
+                    if (equipAsw[i] == 12) {
                         equipAsw[i] = 10
                         break
                     } else if (equipAsw[i] == 10 && i == slots - 1) {
@@ -160,7 +160,7 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
                 allLinesT3 = equipAsw.filter(val => val == 12).length == 0
             }
 
-            if(slots > 2) {
+            if (slots > 2) {
                 string += this.generateLine(equipAsw, ship, aswRequired, aswOffset, maxSlots)
                 equipAsw[equipAsw.length - 1] = 7
                 equipAsw[equipAsw.length - 2] = 8
@@ -174,7 +174,7 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
         let equipmentAsw = equipAsw.reduce((a,b) => a+b)
         let level = this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw)
 
-        if(this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw + 2) <= ship.remodel_level && !force)
+        if (this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw + 2) <= ship.remodel_level && !force)
             return ""
 
         return `${equipAsw.map(val => {

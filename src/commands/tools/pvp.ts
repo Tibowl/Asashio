@@ -57,7 +57,7 @@ export default class PvP extends Command {
     }
 
     postcap(precap: number): number {
-        if(precap <= 500)
+        if (precap <= 500)
             return precap
         return Math.floor(500 + Math.sqrt(precap - 500))
     }

@@ -7,7 +7,7 @@ let alreadyLoaded = false
 export async function handle(): Promise<void> {
     Logger.info(`In ${(client.channels.cache).size} channels on ${(client.guilds.cache).size} servers, for a total of ${(client.users.cache).size} users.`)
 
-    if(alreadyLoaded) return
+    if (alreadyLoaded) return
     alreadyLoaded = true
 
     client.linkManager.loadLinks()
@@ -16,6 +16,6 @@ export async function handle(): Promise<void> {
     client.data.reloadShipData()
     client.maintManager.init()
 
-    if(client.user == null) return
+    if (client.user == null) return
     client.user.setStatus("online")
 }

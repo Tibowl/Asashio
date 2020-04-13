@@ -1,6 +1,6 @@
 import Discord from "discord.js"
 
-export type CommandCategory = "Admin" | "Links" | "Links+" | "Tools" | "Information" | "Misc" | "Hidden"
+export type CommandCategory = "Admin" | "Links" | "Links+" | "Tools" | "Information" | "Hidden"
 export interface CommandOptions {
     name: string
     help: false | string

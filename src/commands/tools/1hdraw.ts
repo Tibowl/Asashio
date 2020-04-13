@@ -17,14 +17,14 @@ export default class OneHourDraw extends Command {
     run(message: Message): Promise<Message | Message[]> {
         const { cachedShips } = client.tweetManager
 
-        if(!cachedShips.date) {
+        if (!cachedShips.date) {
             return message.channel.send("No 1h draw loaded :(")
         }
 
         return message.channel.send(`Today's 1h draw ships: ${cachedShips.ships
             .map((name) => {
                 const candidate = client.data.getShipByName(name)
-                if(candidate && (name == candidate.japanese_name || name == candidate.reading))
+                if (candidate && (name == candidate.japanese_name || name == candidate.reading))
                     return candidate.name
                 return name
             })

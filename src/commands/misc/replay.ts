@@ -17,7 +17,7 @@ export default class OneHourDraw extends Command {
 
         const found = message.attachments?.find(k => !!k.url)
         let link = baseLink
-        if(args && args.length > 0 && (args[0].startsWith("http") || args[0].startsWith("<http")))
+        if (args && args.length > 0 && (args[0].startsWith("http") || args[0].startsWith("<http")))
             link = `${baseLink}?fromImg=${args[0].replace(/^</, "").replace(/>$/, "")}`
         else if (found)
             link = `${baseLink}?fromImg=${found.url}`

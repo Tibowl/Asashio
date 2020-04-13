@@ -16,7 +16,7 @@ export default class ShipCompare extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length < 1 || args.join(" ").split(",").length != 2) return message.reply("Must provide two ship names.")
+        if (!args || args.length < 1 || args.join(" ").split(",").length != 2) return message.reply("Must provide two ship names.")
         const { data } = client
 
         const shipNameA = args.join(" ").split(",")[0].trim()
@@ -25,15 +25,15 @@ export default class ShipCompare extends Command {
         const shipNameB = args.join(" ").split(",")[1].trim()
         const shipB = data.getShipByName(shipNameB)
 
-        if(shipA == undefined) return message.reply("Unknown first ship")
-        if(shipB == undefined) return message.reply("Unknown second ship")
+        if (shipA == undefined) return message.reply("Unknown first ship")
+        if (shipB == undefined) return message.reply("Unknown second ship")
 
         handleShip(shipA)
         handleShip(shipB)
 
         const ship: ShipExtended = Object.assign({}, shipA, shipB)
-        for(let key of Object.keys(ship))
-            if(shipA[key] !== shipB[key])
+        for (let key of Object.keys(ship))
+            if (shipA[key] !== shipB[key])
                 ship[key] = shipA[key] + "→" + shipB[key]
             else
                 ship[key] = shipA[key]

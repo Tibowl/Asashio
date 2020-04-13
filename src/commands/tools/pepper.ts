@@ -13,14 +13,14 @@ export default class Pepper extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length !== 2) return message.reply(`Usage: \`${this.usage}\``)
+        if (!args || args.length !== 2) return message.reply(`Usage: \`${this.usage}\``)
 
         let [dropRateStr, chanceStr] = args
         dropRateStr = dropRateStr.replace(/%$/, "")
         chanceStr = chanceStr.replace(/%$/, "")
 
-        if(!dropRateStr.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: \`${this.usage}\``)
-        if(!chanceStr.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: \`${this.usage}\``)
+        if (!dropRateStr.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: \`${this.usage}\``)
+        if (!chanceStr.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: \`${this.usage}\``)
 
         const dropRate = parseFloat(dropRateStr)
         const chance = parseFloat(chanceStr)

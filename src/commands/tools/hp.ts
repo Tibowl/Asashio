@@ -17,12 +17,12 @@ export default class HP extends Command {
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
         const { data } = client
-        if(!args || args.length < 1) return message.reply("Must provide a ship name.")
+        if (!args || args.length < 1) return message.reply("Must provide a ship name.")
 
         const shipName = args.join(" ")
         const ship = data.getShipByName(shipName)
 
-        if(ship == undefined) return message.reply("Unknown ship")
+        if (ship == undefined) return message.reply("Unknown ship")
         // console.log(ship)
 
         return message.channel.send(`HP values of **${ship.full_name}**:\`\`\`
@@ -35,13 +35,13 @@ export default class HP extends Command {
     generateLine(ship: Ship, married: boolean): string {
         const f = (hp: number): string => `${hp%12?`4N+${hp%4}`:"12N+0"} (Overkill: ${(calculatePostCap(9999, hp, hp, 1).taiha * 100).toFixed(1)}% Taiha)`
         let {hp, hp_max} = ship
-        if(married)
+        if (married)
             hp = Math.min(hp_max, hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(hp/10)])
 
         let maxMod = Math.min(hp_max - hp, 2)
         let line = `${hp} ${f(hp)}`
 
-        for(let i = 1; i <= maxMod; i++)
+        for (let i = 1; i <= maxMod; i++)
             line += `
 modernized: ${hp + i} ${f(hp + i)}`
 

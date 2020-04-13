@@ -17,7 +17,7 @@ export default class Dupes extends Command {
     }
 
     async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length < 2) return message.reply(`Invalid amount of arguments! Usage: \`${this.usage}\``)
+        if (!args || args.length < 2) return message.reply(`Invalid amount of arguments! Usage: \`${this.usage}\``)
         const { data } = client
 
         let map: string | undefined
@@ -25,10 +25,10 @@ export default class Dupes extends Command {
         let difficulty: string | undefined = "H"
         let rank: string | undefined = "S"
 
-        for(let i = args.length - 1; i > 0; i--) {
+        for (let i = args.length - 1; i > 0; i--) {
             args[i] = args[i].replace(/^E(\d[a-zA-Z0-9]+)$/i, "E-$1")
 
-            if(args[i].includes("-")) {
+            if (args[i].includes("-")) {
                 if (!args[i].match(/-\d$/)) {
                     args[i] = args[i].replace(/-\d/,"$& ")
                     args = args.join(" ").split(" ")
@@ -38,7 +38,7 @@ export default class Dupes extends Command {
                     rank = args.pop()?.toUpperCase()
                 if (args.length == i + 3) {
                     const arg = args.pop()?.toUpperCase()
-                    if(arg == "S" || arg == "A")
+                    if (arg == "S" || arg == "A")
                         rank = arg
                     else
                         difficulty = arg
@@ -53,36 +53,36 @@ export default class Dupes extends Command {
                 break
             }
         }
-        if(map == undefined) return message.reply("Invalid arguments!")
-        if(rank == undefined) return message.reply("Invalid arguments!")
-        if(node == undefined) return message.reply("Invalid arguments!")
-        if(difficulty == undefined) return message.reply("Invalid arguments!")
+        if (map == undefined) return message.reply("Invalid arguments!")
+        if (rank == undefined) return message.reply("Invalid arguments!")
+        if (node == undefined) return message.reply("Invalid arguments!")
+        if (difficulty == undefined) return message.reply("Invalid arguments!")
 
-        if(map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
-        if(map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
-        if(map.split("-").length != 2) return message.reply("Invalid map!")
+        if (map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
+        if (map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
+        if (map.split("-").length != 2) return message.reply("Invalid map!")
 
         const isEvent = map.split("-")[0].length > 1
 
         let difficultyID = ["/", "C", "E", "M", "H"].indexOf(difficulty)
-        if(difficultyID <= 0 && isEvent) return message.reply("Invalid difficulty!")
-        if(!isEvent) difficultyID = 0
+        if (difficultyID <= 0 && isEvent) return message.reply("Invalid difficulty!")
+        if (!isEvent) difficultyID = 0
 
-        if(!["S", "A", "B"].includes(rank)) return message.reply("Invalid rank!")
+        if (!["S", "A", "B"].includes(rank)) return message.reply("Invalid rank!")
 
 
         const shipName = args.join(" ")
         let ship = data.getShipByName(shipName)
 
-        if(ship == undefined) return message.reply("Unknown ship")
+        if (ship == undefined) return message.reply("Unknown ship")
 
-        if(typeof ship.remodel_from == "string")
+        if (typeof ship.remodel_from == "string")
             ship = data.getShipByName(ship.remodel_from.replace("/", "")) || ship
         ship = data.getShipByName(ship.name)
 
 
         const mapInfo = await data.getMapInfo(map)
-        if(Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
+        if (Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
 
         const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
         const api = await (await fetch(`http://kc.piro.moe/api/routing/drops?map=${map}&edges=${edges.join(",")}${isEvent ? `&minDiff=${difficultyID}&maxDiff=${difficultyID}`:""}&cleared=-1&ranks=${rank}&ship=${ship.api_id}`)).json()
@@ -90,10 +90,10 @@ export default class Dupes extends Command {
         let dupes = api.dupes.map((dupe: { owned: number, drops: number, total: number }) => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
         let msg = ""
 
-        if(message.channel.type != "dm" && dupes.length > 5) {
+        if (message.channel.type != "dm" && dupes.length > 5) {
             dupes = dupes.slice(0, 5)
             msg = "\nLimited to 5 entries, repeat command in DM for full table."
-        } else if(dupes.length > 25) {
+        } else if (dupes.length > 25) {
             dupes = dupes.slice(0, 25)
             msg = "\nLimited to 25 entries."
         }

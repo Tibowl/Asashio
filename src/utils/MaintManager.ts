@@ -19,11 +19,11 @@ export default class MaintManager{
 
     getTimes(): string[] | null {
         const {maintInfo} = client.data.store
-        if(!maintInfo || !maintInfo.lastLine) return []
+        if (!maintInfo || !maintInfo.lastLine) return []
 
         const line = maintInfo.lastLine
         const times: RegExpMatchArray | null = line.match(/【.*?】/g)
-        if(times && times.length == 3)
+        if (times && times.length == 3)
             return times.slice(1).map(k => k.replace(/[【|】]/g, ""))
 
         return times
@@ -33,7 +33,7 @@ export default class MaintManager{
         const {maintInfo} = client.data.store
         const html = await (await fetch("http://203.104.209.7/kcscontents/news/post.html")).text()
         const line = htmlToText.fromString(html)
-        if(maintInfo.lastLine == line) return
+        if (maintInfo.lastLine == line) return
 
         Logger.info(line)
 

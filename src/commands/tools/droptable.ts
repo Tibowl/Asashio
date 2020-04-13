@@ -16,13 +16,13 @@ export default class DropTable extends Command {
     }
 
     async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length != 1) return message.reply(`Usage: \`${this.usage}\``)
+        if (!args || args.length != 1) return message.reply(`Usage: \`${this.usage}\``)
         const { data } = client
 
         let map = args[0].toUpperCase()
-        if(map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
-        else if(map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
-        if(map.split("-").length != 2) return message.author.send("Invalid map!")
+        if (map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
+        else if (map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
+        if (map.split("-").length != 2) return message.author.send("Invalid map!")
 
         const isEventMap = map.split("-")[0].length > 1
 
@@ -38,16 +38,16 @@ export default class DropTable extends Command {
             .replace(/(C|N|E|H) *(S|A)/g, "$1 $2")
             .replace(/\| {5} +/g, "|     ")
 
-        if(!isEventMap)
+        if (!isEventMap)
             table = table.replace(/\| {2}/g, "| ")
 
         const rows = table.split("\n")
         rows[1] = ""
         table = rows.filter(k => k.length).map(k => k.trim()).join("\n")
 
-        if(table.length > 1800)
+        if (table.length > 1800)
             return message.author.send("Table too long!")
-        else if(table.length < 5)
+        else if (table.length < 5)
             return message.author.send("No notable drops found!")
 
         return message.author.send(`Drop table of ${map}\`\`\`\n${table}\n\`\`\`\nData provided by TsunDB.`)

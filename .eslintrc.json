@@ -61,6 +61,7 @@
                 "maxEOF": 0
             }
         ],
+        "keyword-spacing": ["warn", { "before": true, "after": true }],
         "eol-last": "error",
         "no-unused-vars": "off",
         "no-console": "error",

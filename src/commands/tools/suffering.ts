@@ -26,12 +26,12 @@ export default class ShipCompare extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length < 1) return message.channel.send("Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
+        if (!args || args.length < 1) return message.channel.send("Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
         const { data } = client
 
         let [hpStr, armorStr, attackStr]: (string | undefined)[] = args
         let maxHpStr = hpStr
-        if(hpStr.includes("/"))
+        if (hpStr.includes("/"))
             [hpStr, maxHpStr] = hpStr.split("/")
 
         let ship: undefined | ShipExtended = undefined
@@ -39,8 +39,8 @@ export default class ShipCompare extends Command {
         let hp = parseInt(hpStr)
         let maxhp = parseInt(maxHpStr)
         let armor = parseInt(armorStr)
-        if(isNaN(hp)) {
-            if(!isNaN(+args[args.length - 1]))
+        if (isNaN(hp)) {
+            if (!isNaN(+args[args.length - 1]))
                 attackStr = args.pop() ?? ""
 
             ship = data.getShipByName(args.join(" "))
@@ -48,25 +48,25 @@ export default class ShipCompare extends Command {
             armor = ship.armor_max
         }
 
-        if(isNaN(hp) || hp <= 4 || (hp > 1000 || (hp > 200 && armor == undefined))) return message.reply("Invalid/unrealistic hp.")
-        if(isNaN(maxhp) || maxhp <= 4 || (maxhp > 1000 || (maxhp > 200 && armor == undefined)) || hp > maxhp) return message.reply("Invalid/unrealistic maximum hp.")
+        if (isNaN(hp) || hp <= 4 || (hp > 1000 || (hp > 200 && armor == undefined))) return message.reply("Invalid/unrealistic hp.")
+        if (isNaN(maxhp) || maxhp <= 4 || (maxhp > 1000 || (maxhp > 200 && armor == undefined)) || hp > maxhp) return message.reply("Invalid/unrealistic maximum hp.")
 
         // Create overkill bar
-        if(armor == undefined) {
+        if (armor == undefined) {
             const calculated = calculatePostCap(9999, hp, maxhp, 1)
             return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, this.createBar(calculated))
         }
 
-        if(isNaN(armor) || armor <= 4 || armor > 450) return message.reply("Invalid/unrealistic armor.")
+        if (isNaN(armor) || armor <= 4 || armor > 450) return message.reply("Invalid/unrealistic armor.")
 
         // Create suffering chart
-        if(attackStr == undefined)
+        if (attackStr == undefined)
             return message.channel.send(maxhp >= 200 ? "**Assuming abyssal**" : `${ship ? `Suffering chart for **${ship.full_name}** (unmarried)` : ""}`, this.createGraph(hp, maxhp, armor))
 
         let attack = parseInt(attackStr)
 
-        if(isNaN(attack) || attack < 0 || attack > 10000) return message.reply("Invalid/unrealistic attack.")
+        if (isNaN(attack) || attack < 0 || attack > 10000) return message.reply("Invalid/unrealistic attack.")
 
         // Create attack bar
         const calculated = calculatePostCap(attack, hp, maxhp, armor)
@@ -110,7 +110,7 @@ ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
         context.fillStyle = "rgba(255, 255, 255, .5)"
         context.fillRect(0, 0, canvas.width, canvas.height)
 
-        for(let val = graphmin; val < graphmax; val++) {
+        for (let val = graphmin; val < graphmax; val++) {
             const stages = calculatePostCap(val, hp, maxhp, armor)
 
             // console.log(stages);
@@ -128,7 +128,7 @@ ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
             context.fillStyle = "#e51616"
             context.fillRect(width / (graphmax - graphmin) * (val - graphmin), prev, width / (graphmax - graphmin), stages.taiha * height)
             prev += stages.taiha * height
-            if(val % 5 == 0) {
+            if (val % 5 == 0) {
                 context.fillStyle = "#000000"
                 context.save()
                 context.translate(width / (graphmax - graphmin) * (val - graphmin) + (width / (graphmax - graphmin)) / 2, height + 14)
@@ -142,7 +142,7 @@ ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
         }
         context.fillStyle = "#000000"
         context.fillRect(width, 0, 1, height+1)
-        for(let percentage of [1, .75, .5, .25, 0]) {
+        for (let percentage of [1, .75, .5, .25, 0]) {
             context.fillRect(0, percentage * height, width, 1)
             context.fillText(percentage * 100 + "%", width + 3, (1-percentage) * height)
         }

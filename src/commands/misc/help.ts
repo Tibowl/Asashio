@@ -24,7 +24,6 @@ export default class Help extends Command {
                 "Tools": [],
                 "Links": [],
                 "Links+": [],
-                "Misc": [],
                 "Admin": []
             }
             commands.forEach(cmd => {
@@ -49,14 +48,14 @@ See \`${config.prefix}help <command name>\` for more information`)
 
         let command = client.commands.get(commandName)
         // Check aliases
-        if(command == null)
+        if (command == null)
             command = commands.find(k => (k.aliases||[]).includes(commandName))
 
         // Replace first char (could be some prefix)
-        if(command == null)
+        if (command == null)
             command = commands.find(k => (k.aliases||[]).includes(commandName.slice(1)))
 
-        if(command == null)
+        if (command == null)
             return message.reply("Command does not exist")
 
         if (command.help == false)

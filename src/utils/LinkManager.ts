@@ -22,7 +22,7 @@ export default class LinkManager extends Command {
     }
 
     links: LinksDB = {}
-    loadLinks = async (): Promise<void> => {
+    async loadLinks(): Promise<void> {
         this.links = require("../../src/data/links.json")
 
         const printLines = []
@@ -34,7 +34,7 @@ export default class LinkManager extends Command {
 ${printLines.join("\n")}`)
     }
 
-    setLink = async (message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> => {
+    async setLink(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
         if (args.length < 1) return await message.reply("Not enough arguments")
         let command = args[0]
         if (args.length == 1) {
@@ -65,13 +65,13 @@ ${printLines.join("\n")}`)
         return await message.reply(`Updated \`${command}\` from \`${oldValue}\` -> \`${link}\``)
     }
 
-    getLinks = (): string[] => {
+    getLinks(): string[] {
         return Object.keys(this.links).filter(k => !this.links[k].startsWith("@"))
     }
 
-    updateDb = async (id: string): Promise<void> => {
-        fs.writeFileSync("./data/links.json", JSON.stringify(this.links, null, 4))
-        cprocess.execSync(`git add ./data/links.json && git commit -m "Link updated by ${id}" && git push`)
+    async updateDb(id: string): Promise<void> {
+        fs.writeFileSync("../src/data/links.json", JSON.stringify(this.links, null, 4))
+        cprocess.execSync(`git add ../src/data/links.json && git commit -m "Link updated by ${id}" && git push`)
     }
 
     run(message: Discord.Message, args: string[], command: string): Promise<Discord.Message | Discord.Message[]> {

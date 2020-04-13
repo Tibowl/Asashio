@@ -119,7 +119,7 @@ export default class Tweetmanager {
         if (tweet.extended_tweet?.entities) {
             const entities = tweet.extended_tweet.entities
 
-            if(entities.urls)
+            if (entities.urls)
                 for (const url of entities.urls)
                     text = text.replace(url.url, url.expanded_url)
 
@@ -132,7 +132,7 @@ export default class Tweetmanager {
                     embed.setImage(entities.media[0].media_url_https)
             }
 
-        } else if(tweet.entities?.urls) {
+        } else if (tweet.entities?.urls) {
             for (const url of tweet.entities.urls)
                 text = text.replace(url.url, url.expanded_url)
         }

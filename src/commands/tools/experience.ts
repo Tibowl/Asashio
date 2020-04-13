@@ -14,25 +14,25 @@ export default class Experience extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\``)
+        if (!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\``)
         const { data } = client
 
         let [currentLevel, targetLevel]: number[] | string[] = args
         let xpOffset = 0
         try {
-            if(currentLevel.includes("+") || currentLevel.includes("-")) {
+            if (currentLevel.includes("+") || currentLevel.includes("-")) {
                 const split = currentLevel.split(/[+-]/)
-                if(split.length > 2) return message.reply("Invalid arguments")
+                if (split.length > 2) return message.reply("Invalid arguments")
                 const [lvl, offset] = split
                 xpOffset = parseInt(offset)
-                if(currentLevel.includes("-") && xpOffset > 0)
+                if (currentLevel.includes("-") && xpOffset > 0)
                     xpOffset = -xpOffset
 
                 currentLevel = parseInt(lvl)
             } else
                 currentLevel = parseInt(currentLevel)
 
-            if(targetLevel)
+            if (targetLevel)
                 targetLevel = parseInt(targetLevel)
             else if (currentLevel > 99)
                 targetLevel = data.getMaxLevel()
@@ -41,24 +41,24 @@ export default class Experience extends Command {
         } catch (e) {
             return message.reply("Not a number")
         }
-        if(!isFinite(xpOffset))
+        if (!isFinite(xpOffset))
             return message.reply("Invalid offset")
 
-        if(!isFinite(currentLevel))
+        if (!isFinite(currentLevel))
             return message.reply("Current level is not a number")
-        if(currentLevel > data.getMaxLevel())
+        if (currentLevel > data.getMaxLevel())
             return message.reply(`Current level is too large (max: ${data.getMaxLevel()})`)
-        if(currentLevel < 1)
+        if (currentLevel < 1)
             return message.reply("Current level too small")
 
-        if(!isFinite(targetLevel))
+        if (!isFinite(targetLevel))
             return message.reply("Target level is not a number")
-        if(targetLevel > data.getMaxLevel())
+        if (targetLevel > data.getMaxLevel())
             return message.reply(`Target level is too large (max: ${data.getMaxLevel()})`)
-        if(targetLevel < 1)
+        if (targetLevel < 1)
             return message.reply("Target level too small")
 
-        if(currentLevel > targetLevel)
+        if (currentLevel > targetLevel)
             [currentLevel, targetLevel] = [targetLevel, currentLevel]
 
         const currentXP = data.levels_exp[currentLevel - 1] + xpOffset

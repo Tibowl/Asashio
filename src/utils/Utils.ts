@@ -51,18 +51,18 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     ship.hp_married = Math.min(ship.hp_max, ship.hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(ship.hp/10)])
     ship.ship_type = `${data.misc.ShipTypes[ship.type]} (${data.misc.ShipCodes[ship.type]})`
 
-    for(let key of ["asw", "evasion", "los"]) {
-        if(ship[key] != undefined && ship[`${key}_max`] != undefined)
+    for (let key of ["asw", "evasion", "los"]) {
+        if (ship[key] != undefined && ship[`${key}_max`] != undefined)
             ship[`${key}_ring`] = ship[key] + Math.floor((ship[`${key}_max`] - ship[key]) / 99 * data.getMaxLevel())
         else
             ship[`${key}_ring`] = "??"
-        if(ship[key] == undefined) ship[key] = "??"
-        if(ship[`${key}_max`] == undefined) ship[`${key}_max`] = "??"
+        if (ship[key] == undefined) ship[key] = "??"
+        if (ship[`${key}_max`] == undefined) ship[`${key}_max`] = "??"
     }
 
     for (const key of ["firepower", "torpedo", "aa", "armor", "luck", "asw", "evasion", "los"]) {
-        if(ship[key] === false) ship[key] = 0
-        if(ship[`${key}_max`] === false) ship[`${key}_max`] = 0
+        if (ship[key] === false) ship[key] = 0
+        if (ship[`${key}_max`] === false) ship[`${key}_max`] = 0
     }
 
     ship.speed_name = data.misc.SpeedNames[ship.speed]
@@ -72,23 +72,23 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     ship.mods = [ship.firepower_mod || 0, ship.torpedo_mod || 0, ship.aa_mod || 0, ship.armor_mod || 0].join("/")
     ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
 
-    if(ship.equipment) {
+    if (ship.equipment) {
         ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)
         ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}${(equip.stars && equip.stars > 0) ? ` ${emoji.star}+${equip.stars}`:""}`).join("\n")
     }
 
-    if(ship.remodel_level) {
+    if (ship.remodel_level) {
         ship.remodel_text = "Remodel requires: "
         let requirements = [`Lv.${ship.remodel_level}.`]
         const k = (remodel: number|true): number => remodel == true ? 1 : remodel
 
-        if(ship.remodel_ammo) requirements.push(`${ship.remodel_ammo}×${emoji.ammo}`)
-        if(ship.remodel_steel) requirements.push(`${ship.remodel_steel}×${emoji.steel}`)
-        if(ship.remodel_development_material) requirements.push(`${k(ship.remodel_development_material)}×${emoji.devmat}`)
-        if(ship.remodel_blueprint) requirements.push(`${k(ship.remodel_blueprint)}×${emoji.blueprint}`)
-        if(ship.remodel_report) requirements.push(`${k(ship.remodel_report)}×${emoji.action_report}`)
-        if(ship.remodel_catapult) requirements.push(`${k(ship.remodel_catapult)}×${emoji.catapult}`)
-        if(ship.remodel_gunmat) requirements.push(`${k(ship.remodel_gunmat)}×${emoji.gun_mat}`)
+        if (ship.remodel_ammo) requirements.push(`${ship.remodel_ammo}×${emoji.ammo}`)
+        if (ship.remodel_steel) requirements.push(`${ship.remodel_steel}×${emoji.steel}`)
+        if (ship.remodel_development_material) requirements.push(`${k(ship.remodel_development_material)}×${emoji.devmat}`)
+        if (ship.remodel_blueprint) requirements.push(`${k(ship.remodel_blueprint)}×${emoji.blueprint}`)
+        if (ship.remodel_report) requirements.push(`${k(ship.remodel_report)}×${emoji.action_report}`)
+        if (ship.remodel_catapult) requirements.push(`${k(ship.remodel_catapult)}×${emoji.catapult}`)
+        if (ship.remodel_gunmat) requirements.push(`${k(ship.remodel_gunmat)}×${emoji.gun_mat}`)
 
         ship.remodel_text += requirements.join(", ")
     } else

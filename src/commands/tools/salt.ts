@@ -13,13 +13,13 @@ export default class Salt extends Command {
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if(!args || args.length !== 2) return message.reply(`Usage: ${this.usage}`)
+        if (!args || args.length !== 2) return message.reply(`Usage: ${this.usage}`)
 
         let [dropRateStr, runsStr] = args
         dropRateStr = dropRateStr.replace(/%$/, "")
 
-        if(!dropRateStr.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage}`)
-        if(!runsStr.match(/^[0-9]{0,6}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage}`)
+        if (!dropRateStr.match(/^[0-9]{0,2}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage}`)
+        if (!runsStr.match(/^[0-9]{0,6}(|\.[0-9]+)$/)) return message.reply(`Usage: ${this.usage}`)
 
         const dropRate = parseFloat(dropRateStr)
         const runs = parseFloat(runsStr)

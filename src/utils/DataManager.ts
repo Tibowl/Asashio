@@ -354,7 +354,7 @@ export default class DataManager {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const equipNew: any = {}
             Object.keys(equip).map(key => equipNew[key.replace("_", "")] = equip[key])
-            if(equipNew.reading == false) delete equipNew.reading
+            if (equipNew.reading == false) delete equipNew.reading
             this.equips[equipNew.id] = equipNew
         })
         Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)//, this.equips[1])
