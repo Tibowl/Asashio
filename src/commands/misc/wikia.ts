@@ -3,7 +3,7 @@ import fetch from "node-fetch"
 
 import Command from "../../utils/Command"
 
-export default class OneHourDraw extends Command {
+export default class Wikia extends Command {
     constructor(name: string) {
         super({
             name,

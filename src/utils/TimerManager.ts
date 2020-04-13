@@ -3,25 +3,14 @@ import client from "../main"
 import config from "../data/config.json"
 import log4js from "log4js"
 import { Message } from "discord.js"
+import { TimeStamps } from "./Types"
 
 const Logger = log4js.getLogger("TimerManager")
-
-interface TimeStamps {
-    quest: number
-    weeklyQuest?: number
-    monthlyQuest?: number
-    quarterlyQuest?: number
-    pvp: number
-    rank: number
-    monthlyRank: number
-    eoReset: number
-    monthlyExped: number
-}
 
 export default class TimerManager {
     activityTimer: NodeJS.Timeout | undefined = undefined
 
-    init = (): void => {
+    init(): void {
         this.scheduleNextMessages()
 
         const updateActivity = (): void => {
@@ -65,7 +54,7 @@ export default class TimerManager {
             updateActivity()
     }
 
-    scheduleNextMessages = (now = Date.now() + 60000): void => {
+    scheduleNextMessages(now = Date.now() + 60000): void {
         const nextTimeStamps = this.nextResetsTimestamp(now)
         const nextTimeStampsFull = this.nextResetsTimestamp(now, true)
         const nextEntry = Object.entries(nextTimeStamps).sort((a,b) => a[1] - b[1])[0]
@@ -114,7 +103,7 @@ export default class TimerManager {
         }, nextTimeStamp - Date.now() + config.timerOffsetms)
     }
 
-    getNextBirthdayDate = (now = Date.now()): Date => {
+    getNextBirthdayDate(now = Date.now()): Date {
         const midnight = new Date(now)
         midnight.setUTCHours(15, 0, 0, 0)
         if (midnight.getTime() < now) shiftDate(midnight, 1)
@@ -131,7 +120,7 @@ export default class TimerManager {
         return midnight
     }
 
-    getShipsOnBirthday = (date: number | Date): string[] => {
+    getShipsOnBirthday(date: number | Date): string[] {
         const dateJapan = new Date(date)
         shiftDate(dateJapan, 1)
         return client.data.birthdays
@@ -141,7 +130,7 @@ export default class TimerManager {
     }
 
     nextBirthday: undefined | NodeJS.Timeout = undefined
-    scheduleNextBirthday = (now = Date.now()): void => {
+    scheduleNextBirthday(now = Date.now()): void {
         if (this.nextBirthday) clearTimeout(this.nextBirthday)
 
         const midnight = this.getNextBirthdayDate(now)
@@ -156,7 +145,7 @@ export default class TimerManager {
         }, midnight.getTime() - Date.now() + config.timerOffsetms)
     }
     // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443
-    nextResetsTimestamp = (now = Date.now(), extraQuest = false): TimeStamps => {
+    nextResetsTimestamp(now = Date.now(), extraQuest = false): TimeStamps {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const timeStamps: any = {}
 
@@ -237,7 +226,7 @@ export default class TimerManager {
 
     toDeleteMessages: (Message | Message[])[] = []
 
-    update = async(newMessage?: string): Promise<unknown[]> => {
+    async update(newMessage?: string): Promise<unknown[]> {
         let deletion = this.toDeleteMessages.map(td => {
             try {
                 if (td instanceof Message)

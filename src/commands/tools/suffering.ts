@@ -7,7 +7,7 @@ import emoji from "../../data/emoji.json"
 import { calculatePostCap } from "../../utils/Utils"
 import { ShipExtended, Stages } from "../../utils/Types"
 
-export default class ShipCompare extends Command {
+export default class Suffering extends Command {
     constructor(name: string) {
         super({
             name,

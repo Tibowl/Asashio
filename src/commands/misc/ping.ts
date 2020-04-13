@@ -3,7 +3,7 @@ import { Message } from "discord.js"
 import Command from "../../utils/Command"
 import client from "../../main"
 
-export default class OneHourDraw extends Command {
+export default class Ping extends Command {
     constructor(name: string) {
         super({
             name,

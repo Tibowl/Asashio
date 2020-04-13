@@ -98,7 +98,7 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     return ship
 }
 
-export function displayShip(ship: ShipExtended, guild?: Guild): MessageEmbed {
+export function displayShip(ship: ShipExtended, guild?: Guild | null): MessageEmbed {
     const embed = new MessageEmbed()
         .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`, ship.full_name, ship.japanese_name, /*ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
 

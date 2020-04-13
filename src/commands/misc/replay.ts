@@ -2,7 +2,7 @@ import { Message } from "discord.js"
 
 import Command from "../../utils/Command"
 
-export default class OneHourDraw extends Command {
+export default class Replay extends Command {
     constructor(name: string) {
         super({
             name,

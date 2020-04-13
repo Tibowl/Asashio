@@ -118,6 +118,14 @@ export interface ShipDB {
     [key: string]: ShipExtended
 }
 
+export interface Improvements {
+    _ammo: number
+    _bauxite: number
+    _fuel: number
+    _steel: number
+    _products: {[key: string]: unknown}
+}
+
 export interface Equipment {
     aa: boolean | number
     armor: boolean | number
@@ -130,14 +138,14 @@ export interface Equipment {
     gun_fit_group?: string
     icon: number
     id: number
-    improvements?: unknown
+    improvements?: Improvements | false
     info?: string
     japanese_name: string
     los: boolean | number
     luck: boolean
     name: string
     page?: boolean
-    range: boolean | number
+    range: false | number
     rarity: number
     reading?: string
     scrap_ammo: boolean | number
@@ -195,7 +203,7 @@ export interface Routes {
 export interface MiscDB {
     EquipmentCompatibility?: { [key: string]: [] | EquipmentCompatibilityClass }
     EquipmentIcons?: { [key: string]: string }
-    EquipmentRarityNames?: { [key: string]: string }
+    EquipmentRarityNames: { [key: string]: string }
     EquipmentTypes?: { [key: string]: string }
     EquipmentTypesPlural?: { [key: string]: string }
     GunFitGroups?: GunFitGroups
@@ -233,25 +241,28 @@ export interface Birthday {
 }
 
 export interface Quest {
-    id?: null | string
-    detail_en?: string
-    label: string
-    letter?: string
-    note?: string
-    reward_fuel?: number
-    reward_ammo?: number
-    reward_steel?: number
+    detail_en?:      string
+    label:           string
+    letter?:         QuestLetter
+    note?:           string
+    reward_ammo?:    number
     reward_bauxite?: number
-    reward_other?: string
-    title?: string
-    title_en?: string
-    category?: null | string
-    detail?: null | string
-    requires?: null | string
-    type?: null | string
-    unlocks?: null | string
-    alias_of?: string
+    reward_fuel?:    number
+    reward_other?:   string
+    reward_steel?:   number
+    title?:          string
+    title_en?:       null | string
+    category?:       null
+    detail?:         null
+    id?:             null
+    requires?:       null
+    type?:           null
+    unlocks?:        null
+    alias_of?:       string
 }
+
+export type QuestLetter = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+
 export interface QuestDB {
     [key: string]: Quest
 }
@@ -610,4 +621,16 @@ export interface Stages {
     maxhp: number
     maxdmg: number
     mindmg: number
+}
+
+export interface TimeStamps {
+    quest: number
+    weeklyQuest?: number
+    monthlyQuest?: number
+    quarterlyQuest?: number
+    pvp: number
+    rank: number
+    monthlyRank: number
+    eoReset: number
+    monthlyExped: number
 }

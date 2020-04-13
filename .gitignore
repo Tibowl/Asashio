@@ -87,7 +87,7 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
-dist/*
+dist/
 .vscode
 **/config.json
 **/store.json
