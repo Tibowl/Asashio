@@ -3,7 +3,7 @@ import fs from "fs"
 import log4js from "log4js"
 import client from "../main"
 import { join } from "path"
-import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, Ship, AssetCategory, AssetType, Extension, Equipment, MapInfo } from "./Types"
+import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, Ship, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
 
@@ -112,12 +112,12 @@ export default class DataManager {
     getServerIP = (): string => "http://203.104.209.23"
     eventID = (): number => this.store.eventID || 46
 
-    getShipByName = (name: string): Ship => {
+    getShipByName(name: string): ShipExtended {
         name = name.toLowerCase()
 
-        const findShip = (toSearch: string): Ship | undefined => {
+        const findShip = (toSearch: string): ShipExtended | undefined => {
             toSearch = toSearch.toLowerCase().trim()
-            return Object.values(this.ships).find((ship: Ship) => {
+            return Object.values(this.ships).find((ship: ShipExtended) => {
                 return ship.full_name?.toLowerCase() == toSearch
                     || ship.japanese_name?.toLowerCase() == toSearch
                     || ship.nick?.toLowerCase() == toSearch
@@ -148,7 +148,7 @@ export default class DataManager {
             if (result != undefined) return result
         }
 
-        let shipList: Ship[] = Object.values(this.ships).filter(k => k.full_name.toLowerCase().includes(name))
+        let shipList: ShipExtended[] = Object.values(this.ships).filter(k => k.full_name.toLowerCase().includes(name))
         if (shipList.length == 0)
             shipList = Object.values(this.ships)
 
@@ -217,7 +217,7 @@ export default class DataManager {
         return this.mapInfoCache[map]
     }
 
-    getShipById = (id: number | string): Ship | undefined => {
+    getShipById = (id: number | string): ShipExtended | undefined => {
         return this.ships[id]
     }
 

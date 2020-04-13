@@ -8,7 +8,7 @@ export interface Ship {
     armor_max: number
     armor_mod: boolean | number
     asw: number
-    asw_max: boolean | number
+    asw_max: false | number
     cg_damaged_reference?: string
     cg_reference?: string
     class: string
@@ -38,7 +38,7 @@ export interface Ship {
     remodel_catapult?: boolean | number
     remodel_development_material?: boolean | number
     remodel_from: boolean | string
-    remodel_level: boolean | number
+    remodel_level: false | number
     remodel_steel?: number
     remodel_to: boolean | string
     scrap_ammo: boolean | number
@@ -115,7 +115,7 @@ interface ShipEquipment {
 }
 
 export interface ShipDB {
-    [key: string]: Ship
+    [key: string]: ShipExtended
 }
 
 export interface Equipment {

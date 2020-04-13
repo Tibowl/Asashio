@@ -12,14 +12,14 @@ export const PAD_START = 0
 export const PAD_END = 1
 
 
-export function getWiki(page: string, guild?: Guild): string {
+export function getWiki(page: string, guild?: Guild|null): string {
     if (guild && guild.id == "165107190980542464")
         return `https://en.kancollewiki.net/${page.replace(/ /g, "_")}`
 
     return `https://kancolle.fandom.com/wiki/${page.replace(/ /g, "_")}`
 }
 
-export function createTable(names: NameTable, rows: StringResolvable[], pads: padding[] = [PAD_END]): string {
+export function createTable(names: NameTable | undefined, rows: StringResolvable[], pads: padding[] = [PAD_END]): string {
     const maxColumns = Math.max(...rows.map(row => row.length))
     let title = "", currentInd = 0
 
