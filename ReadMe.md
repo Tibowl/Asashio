@@ -6,11 +6,11 @@ Development
 ------------
 1. Install dependencies with `npm i`
 2. Set up config in `src/config.json`. An example can be found in `src/config-example.json`. See [Configuration](#Configuration) for more information
-3. Develop with `npm dev`
+3. Develop with `npm run-script dev`
 
 Running
 -------
-1. Build bot with `npm build`.
+1. Build bot with `npm run-script build`.
 2. Start bot with `npm start`.
 
 Configuration
