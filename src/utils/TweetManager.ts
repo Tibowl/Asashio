@@ -49,6 +49,7 @@ interface User {
 }
 
 interface ShipCache {
+    screen_name: string
     ships: string[]
     date: string
 }
@@ -65,7 +66,7 @@ export default class Tweetmanager {
         this.stream.on("tweet", this.handleTweet)
 
         // eslint-disable-next-line @typescript-eslint/camelcase
-        T.get("search/tweets", { q: "お題は from:kancolle_1draw", result_type: "recent", count: 1 }, (err, data: { statuses?: Tweet[] }) => {
+        T.get("search/tweets", { q: "お題は (from:kancolle_1draw OR from:kancolle_1draw2)", result_type: "recent", count: 1 }, (err, data: { statuses?: Tweet[] }) => {
             if (err || !data.statuses || data.statuses.length == 0) return
 
             this.set1hrDrawTweet(data.statuses[0])
@@ -89,8 +90,8 @@ export default class Tweetmanager {
             return
         }
 
-        // @kancolle_1draw
-        if (tweet.user.id_str == "3098155465") {
+        // @kancolle_1draw || @kancolle_1draw2
+        if (tweet.user.id_str == "3098155465" || tweet.user.id_str == "1242879824445624320") {
             if (text.includes("お題は"))
                 this.set1hrDrawTweet(tweet)
 
@@ -148,6 +149,7 @@ export default class Tweetmanager {
     }
 
     cachedShips: ShipCache = {
+        screen_name: "?",
         ships: [],
         date: ""
     }
@@ -161,6 +163,7 @@ export default class Tweetmanager {
             const ships = match[1].trim().split(" ")
 
             this.cachedShips = {
+                screen_name: tweet.user.screen_name,
                 ships,
                 date: new Date(tweet.created_at).toLocaleString("en-UK", {
                     timeZone: "Asia/Tokyo",

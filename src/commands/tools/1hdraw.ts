@@ -32,6 +32,6 @@ export default class OneHourDraw extends Command {
             .join(", ")
             .replace(/,([^,]*)$/, " and$1")}
 
-Based on @kancolle_1draw tweet on: ${cachedShips.date}`)
+Based on @${cachedShips.screen_name} tweet on: ${cachedShips.date}`)
     }
 }
