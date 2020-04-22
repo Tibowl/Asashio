@@ -1,6 +1,8 @@
 Asashio
 =======
-Asashio is a discord bot with mainly KanColle related commands. An invite link to this bot can be found [here](https://discordapp.com/oauth2/authorize?client_id=621009359627091968&scope=bot&permissions=0).
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/A0A81MOVN)
+
+Asashio is a discord bot with mainly KanColle related commands. An invite link for this bot can be found [here](https://discordapp.com/oauth2/authorize?client_id=621009359627091968&scope=bot&permissions=0).
 
 Development
 ------------

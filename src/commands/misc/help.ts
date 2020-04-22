@@ -41,7 +41,8 @@ ${Object.entries(categorized)
     ${items.sort((a, b) => a.localeCompare(b)).map(cmd => `${config.prefix}${cmd}`).join(", ")}`)
         .join("\n")}
 
-See \`${config.prefix}help <command name>\` for more information`)
+See \`${config.prefix}help <command name>\` for more information
+See \`${config.prefix}credits\` for contact information`)
         }
 
         let commandName = args[0]
