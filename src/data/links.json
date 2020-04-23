@@ -28,5 +28,6 @@
     "aa": "@aaresist",
     "dlc": "https://i.imgur.com/rLAwMQV.png",
     "cache": "**KCCacheProxy**: <https://github.com/Tibowl/KCCacheProxy/releases/>\n**Full cache dumps** (optional): <https://mega.nz/#F!sOwClABa!yHldyYZr2MBqhTNYEupztg>\n\n**Installation video**: <90s video showing how to install (& setup for Chrome) <https://youtu.be/Dog1zKAAWeI>\n**Installation** (v2 or later, windows): Get latest setup exe from releases, open it, set browser/viewer proxy to `localhost:8081` (see <https://github.com/Tibowl/KCCacheProxy/blob/master/ReadMe.md#browserviewer-setup> for more information).\n**Using full cache dumps** (optional): Download the most recent zip from the MEGA linked above, extract zip somewhere, set path to where you extracted in UI and click on the Save button.\n**Upgrading to v2 from v1.x**: Delete any auto-startup things, install v2 like usual (see above), set cache path to old cache folder (don't forget to save, can be moved first if wanted). Other files from old version can be deleted.",
-    "proxy": "@cache"
+    "proxy": "@cache",
+    "gotsheep": "The gotsheep minigame can be started in the item menu, by clicking on the three flowers.\nTo advance to the next phase you need to meet a point requirement, these are: 2500 -> 5000 -> 15000 -> 50000 -> (final wave, requirement used for S rank) 70000"
 }
