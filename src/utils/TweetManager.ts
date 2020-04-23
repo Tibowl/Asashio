@@ -65,7 +65,6 @@ export default class Tweetmanager {
         this.stream = T.stream("statuses/filter", { follow: this.toFollow })
         this.stream.on("tweet", this.handleTweet)
 
-        // eslint-disable-next-line @typescript-eslint/camelcase
         T.get("search/tweets", { q: "お題は (from:kancolle_1draw OR from:kancolle_1draw2)", result_type: "recent", count: 1 }, (err, data: { statuses?: Tweet[] }) => {
             if (err || !data.statuses || data.statuses.length == 0) return
 

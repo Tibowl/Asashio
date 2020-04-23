@@ -16,6 +16,6 @@ export default class Links extends Command {
     run(message: Message): Promise<Message | Message[]> {
         return message.reply(`<https://github.com/Tibowl/Asashio/blob/master/src/data/links.json>
 All links (including redirects that are hidden from help):
-${Object.keys(client.linkManager.links).join(", ")}`)
+${client.linkManager.getLinks(true).join(", ")}`)
     }
 }
