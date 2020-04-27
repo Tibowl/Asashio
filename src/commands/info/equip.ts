@@ -74,7 +74,7 @@ ${equipStats.map(stat => `${stat[0].padEnd(longestName, " ")} :: ${stat[1]}`).jo
 \`\`\``)
 
         if (equip.improvements !== false && equip.improvements !== undefined) {
-            const into = Object.keys(equip.improvements._products).filter(k => k != "false").map(k => `• ${k}`).join("\n")
+            const into = Object.keys(equip.improvements._products).filter(k => k != "false").map(k => `→ ${k}`).join("\n")
             let text = into.length > 1 ? into : ""
             text += `\nCheck [akashi-list](https://akashi-list.me/#w${String(equip.id).padStart(3, "0")}) for more information`
             embed.addField("Improvements", text.trim())

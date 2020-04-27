@@ -125,7 +125,7 @@ Fuel      :: ${ship.fuel}
 Ammo      :: ${ship.ammo}
 Mod       :: ${ship.mods}
 Scrap     :: ${ship.scraps}
-    \`\`\``)
+\`\`\``)
 
     if (ship.equipment)
         embed.addField("Equipment", ship.equipment_text ? ship.equipment_text : "No equipment slots")
