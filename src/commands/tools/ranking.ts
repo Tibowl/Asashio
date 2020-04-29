@@ -29,6 +29,7 @@ export default class Ranking extends Command {
             category: "Tools",
             help: "Gets ranking data from https://senka.su",
             usage: "ranking [server name/id]",
+            aliases: ["senka", "points", "stonks"]
         })
     }
 
