@@ -10,7 +10,8 @@ export default class Help extends Command {
             name,
             category: "Hidden",
             help: "Gets help.",
-            usage: "help [command]"
+            usage: "help [command]",
+            aliases: ["command", "commands"]
         })
     }
 
@@ -32,7 +33,8 @@ export default class Help extends Command {
             })
             categorized.Links = client.linkManager.getLinks()
 
-            return message.channel.send(`Commands: 
+            return message.channel.send(`**Commands**: 
+
 ${Object.entries(categorized)
         .filter(([category]) =>
             !(category.toLowerCase() == "hidden" ||
@@ -41,8 +43,9 @@ ${Object.entries(categorized)
     ${items.sort((a, b) => a.localeCompare(b)).map(cmd => `${config.prefix}${cmd}`).join(", ")}`)
         .join("\n")}
 
-See \`${config.prefix}help <command name>\` for more information
-See \`${config.prefix}credits\` for contact information`)
+*Use \`${config.prefix}help <command name>\` for more information about a command specific.*
+*See \`${config.prefix}credits\` for how to contact the developer.*
+*You can invite this bot to your server with \`${config.prefix}invite\`.*`)
         }
 
         let commandName = args[0]
