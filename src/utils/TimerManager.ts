@@ -22,6 +22,9 @@ export default class TimerManager {
             let delay = nextMinute.getTime() - now.getTime()
             if (delay < 15000)
                 delay += 60000
+
+            if (client.user == undefined)
+                delay = 1000
             this.activityTimer = setTimeout(updateActivity, delay + 500)
 
             if (client.user == undefined)
@@ -32,7 +35,9 @@ export default class TimerManager {
                 hour12: false,
                 hour: "2-digit",
                 minute: "2-digit"
-            })))
+            })), {
+                type: "LISTENING"
+            })
 
             const time = now.getTime() - 24 * 60 * 60 * 1000
             const midnight = new Date(time)
