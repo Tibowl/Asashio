@@ -43,7 +43,7 @@ ${Object.entries(categorized)
     ${items.sort((a, b) => a.localeCompare(b)).map(cmd => `${config.prefix}${cmd}`).join(", ")}`)
         .join("\n")}
 
-*Use \`${config.prefix}help <command name>\` for more information about a command specific.*
+*Use \`${config.prefix}help <command name>\` for more information about a specific command.*
 *See \`${config.prefix}credits\` for how to contact the developer.*
 *You can invite this bot to your server with \`${config.prefix}invite\`.*`)
         }
