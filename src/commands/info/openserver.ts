@@ -20,7 +20,8 @@ export default class OpenServer extends Command {
     constructor(name: string) {
         super({
             name,
-            category: "Information",
+            // category: "Information",
+            category: "Hidden",
             help: "Lists open servers",
             usage: "openserver [all?]",
             aliases: ["open", "openkcservers", "openservers", "openkcserver"],
@@ -47,7 +48,7 @@ export default class OpenServer extends Command {
 
     formatData(data: CacheData, args: string[]): string {
         if (cachedData.errors != undefined) {
-            return "An error occured while fetching data"
+            return "An error occured while fetching data from external API."
         }
 
         const serverData = []
