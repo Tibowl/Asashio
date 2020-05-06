@@ -71,7 +71,7 @@ async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<
             }, 65000)
         } catch (error) {
             if (reply.editable)
-                reply.edit(reply.content + "\n\nUnable to pre-add ❌ to remove reaction, please contact your local discord admins to fix bot permissions (tell them to enable ADD_REACTIONS for me).")
+                reply.edit(reply.content + "\n\nUnable to add ❌ reaction, please contact admins of this discord guild to give this bot the ability to add reactions. Doing so, will allow users to delete bot replies within some time.")
             else
                 Logger.error(error)
         }
