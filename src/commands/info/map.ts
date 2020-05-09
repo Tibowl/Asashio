@@ -80,7 +80,7 @@ export default class Map extends Command {
             ctx.lineJoin = "round"
             ctx.lineWidth = 7
 
-            const text = lbas.result[node || "/"] ? `${node} (${lbas.result[node]})` : (node || "/")
+            const text = lbas.result[node ?? "/"] ? `${node} (${lbas.result[node]})` : (node ?? "/")
             ctx.strokeText(text, x, y - 10)
             ctx.lineWidth = 1
             ctx.fillText(text, x, y - 10)

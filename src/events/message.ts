@@ -13,19 +13,19 @@ interface ParsedCommand {
 }
 
 function getCommand(message: Message): ParsedCommand | false {
-    const args = message.content.slice(1).trim().split(/ +/g)
+    const args = message.content.slice(config.prefix.length).trim().split(/ +/g)
     const command = args.shift()?.toLowerCase()
     if (!command) return false
 
     let cmd = client.commands.get(command)
 
-    // If that command doesn't exist, silently exit and do nothing
+    // If that command doesn't exist, try to find an alias
     if (!cmd) {
-        const newCommand = client.commands.find((cmd: Command) => cmd.aliases.includes(command))
+        cmd = client.commands.find((cmd: Command) => cmd.aliases.includes(command))
 
-        if (!newCommand)
+        // If that command doesn't exist, silently exit and do nothing
+        if (!cmd)
             return false
-        cmd = newCommand
     }
     if (message.content.indexOf(config.prefix) !== 0) return false
     return { args, command, cmd }
@@ -33,10 +33,10 @@ function getCommand(message: Message): ParsedCommand | false {
 
 function addStats(msg: Message, cmdInfo: ParsedCommand): void {
     const { command, cmd } = cmdInfo
-    const stats = client.data.store.stats || {}
-    const cmdStats = stats[cmd.commandName.toLowerCase()] || {}
+    const stats = client.data.store.stats ?? {}
+    const cmdStats = stats[cmd.commandName.toLowerCase()] ?? {}
 
-    cmdStats[command] = cmdStats[command] + 1 || 1
+    cmdStats[command] = (cmdStats[command] + 1) ?? 1
 
     stats[cmd.commandName.toLowerCase()] = cmdStats
     client.data.store.stats = stats

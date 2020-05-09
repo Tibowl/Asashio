@@ -1,6 +1,7 @@
 dependencies:
   '@types/fs-extra': 8.1.0
   canvas: 2.6.1
+  dblapi.js: 2.4.0
   discord.js: 12.1.1
   enmap: 5.2.4
   fs-extra: 9.0.0
@@ -591,6 +592,10 @@ packages:
       node: '>=4.0'
     resolution:
       integrity: sha512-eyTcpKOcamdhWJXj56DpQMo1ylSQpcGtGKXcU0Tb97+K56/CF5amAqqqNj0+KvA0iw2ynxtHWFsPDSClCxe48w==
+  /dblapi.js/2.4.0:
+    dev: false
+    resolution:
+      integrity: sha512-SqDYVcV1DBQnyhySTjd+Qvzu7jFr+4eKwl56fGpIti7OlXGF5dmDPeo3jQfRlOXTRn5/I5997MDIJukoDxE3Mg==
   /debug/2.6.9:
     dependencies:
       ms: 2.0.0
@@ -2602,6 +2607,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^2.21.0
   '@typescript-eslint/parser': ^2.21.0
   canvas: ^2.6.1
+  dblapi.js: ^2.4.0
   discord.js: ^12.1.1
   enmap: ^5.2.4
   eslint: ^6.8.0

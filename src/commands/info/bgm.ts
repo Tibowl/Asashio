@@ -59,7 +59,7 @@ export default class BGM extends Command {
     }
 
     parseLine(bgmId: number): string {
-        return `${(this.bgmidmap[bgmId] || `Unknown BGM #${bgmId}`).replace(/<br>/g, " - ").replace(/<i>/g, "*").replace(/<\/i>/g, "*")} [▶️](${client.data.getBGMLink(bgmId)})`
+        return `${(this.bgmidmap[bgmId] ?? `Unknown BGM #${bgmId}`).replace(/<br>/g, " - ").replace(/<i>/g, "*").replace(/<\/i>/g, "*")} [▶️](${client.data.getBGMLink(bgmId)})`
     }
 
     bgmidmap: {[key: number]: string} = {

@@ -143,7 +143,7 @@ export default class DataManager {
     equipAliases: Alias[] = []
     getMaxLevel = (): number => this.levels_exp.length
     getServerIP = (): string => "http://203.104.209.23"
-    eventID = (): number => this.store.eventID || 46
+    eventID = (): number => this.store.eventID ?? 46
 
     getShipByName(name: string): ShipExtended {
         name = name.toLowerCase()
@@ -196,7 +196,7 @@ export default class DataManager {
         const findShip = (toSearch: string): Birthday | undefined => {
             toSearch = toSearch.toLowerCase().trim()
             return this.birthdays.find(ship => {
-                return (ship.name || "").toLowerCase() == toSearch
+                return ship.name?.toLowerCase() == toSearch
             })
         }
 

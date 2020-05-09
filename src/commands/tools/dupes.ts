@@ -77,7 +77,7 @@ export default class Dupes extends Command {
         if (ship == undefined) return message.reply("Unknown ship")
 
         if (typeof ship.remodel_from == "string")
-            ship = data.getShipByName(ship.remodel_from.replace("/", "")) || ship
+            ship = data.getShipByName(ship.remodel_from.replace("/", "")) ?? ship
         ship = data.getShipByName(ship.name)
 
 

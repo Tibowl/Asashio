@@ -9,7 +9,7 @@ import config from "../data/config.json"
 const Logger = log4js.getLogger("MaintManager")
 export default class MaintManager{
     init(): void {
-        client.data.store.maintInfo = client.data.store.maintInfo || {}
+        client.data.store.maintInfo = client.data.store.maintInfo ?? {}
 
         this.check()
         setInterval(() => {

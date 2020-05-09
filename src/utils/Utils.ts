@@ -27,7 +27,7 @@ export function createTable(names: NameTable | undefined, rows: StringResolvable
         if (names && names[i])
             title = title.padEnd(currentInd) + names[i]
 
-        const maxLength = Math.max(...rows.map(row => row.length > i ? (row[i].toString() || "").length : 0), (names && names[i + 1]) ? (title.length - currentInd) : 0)
+        const maxLength = Math.max(...rows.map(row => row.length > i ? (row[i]?.toString() ?? "").length : 0), (names && names[i + 1]) ? (title.length - currentInd) : 0)
         currentInd += 1 + maxLength
 
         rows.forEach(row => {
@@ -69,8 +69,8 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     ship.range_name = data.misc.RangeNames[ship.range]
     ship.rarity_name = data.misc.RarityNames[ship.rarity]
 
-    ship.mods = [ship.firepower_mod || 0, ship.torpedo_mod || 0, ship.aa_mod || 0, ship.armor_mod || 0].join("/")
-    ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
+    ship.mods = [ship.firepower_mod ?? 0, ship.torpedo_mod ?? 0, ship.aa_mod ?? 0, ship.armor_mod ?? 0].join("/")
+    ship.scraps = [ship.scrap_fuel ?? 0, ship.scrap_ammo ?? 0, ship.scrap_steel ?? 0, ship.scrap_bauxite ?? 0].join("/")
 
     if (ship.equipment) {
         ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)
@@ -168,18 +168,18 @@ const calculateDamagesDone = (atk: number, currenthp: number, armor: number, max
             for (let hpRoll = 0; hpRoll < currenthp; hpRoll++)
                 possibledmg.push(Math.floor(0.5 * currenthp + 0.3 * hpRoll))
             for (const posdmg of possibledmg)
-                damages[posdmg] = (damages[posdmg] || 0) + (1.0 / possibledmg.length)
-            dmgtype.overkill = (dmgtype.overkill || 0) + 1.0
+                damages[posdmg] = (damages[posdmg] ?? 0) + (1.0 / possibledmg.length)
+            dmgtype.overkill = (dmgtype.overkill ?? 0) + 1.0
         } else if (dmg < 1) { // Scratch
             const possibledmg = []
             for (let hpRoll = 0; hpRoll < currenthp; hpRoll++)
                 possibledmg.push(Math.floor(0.06 * currenthp + 0.08 * hpRoll))
             for (const posdmg of possibledmg)
-                damages[posdmg] = (damages[posdmg] || 0) + (1.0 / possibledmg.length)
-            dmgtype.scratch = (dmgtype.scratch || 0) + 1.0
+                damages[posdmg] = (damages[posdmg] ?? 0) + (1.0 / possibledmg.length)
+            dmgtype.scratch = (dmgtype.scratch ?? 0) + 1.0
         } else {
-            damages[dmg] = (damages[dmg] || 0) + 1.0
-            dmgtype.normal = (dmgtype.normal || 0) + 1.0
+            damages[dmg] = (damages[dmg] ?? 0) + 1.0
+            dmgtype.normal = (dmgtype.normal ?? 0) + 1.0
         }
     }
     dmgtype.damages = damages
@@ -318,20 +318,20 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
                 if (map.split("-")[0] != client.data.eventID()) continue
                 map = "E-" + map.split("-")[1]
             }
-            difficulty = difficulty || 0
+            difficulty = difficulty ?? 0
 
             const dropData: DropData = {
                 map,
                 difficulty,
                 node,
                 rank,
-                "rate0": percentage(entry.drops_zero || 0, entry.runs_zero || 0),
-                "samples0": `[${entry.drops_zero || 0}/${entry.runs_zero || 0}]`,
-                "rate1": percentage(entry.drops_one || 0, entry.runs_one || 0),
-                "samples1": `[${entry.drops_one || 0}/${entry.runs_one || 0}]`,
-                "rateTotal": percentage(entry.drops || 0, entry.runs || 0),
-                "samplesTotal": `[${entry.drops || 0}/${entry.runs || 0}]`,
-                "totalDrops": entry.drops || 0
+                "rate0": percentage(entry.drops_zero ?? 0, entry.runs_zero ?? 0),
+                "samples0": `[${entry.drops_zero ?? 0}/${entry.runs_zero ?? 0}]`,
+                "rate1": percentage(entry.drops_one ?? 0, entry.runs_one ?? 0),
+                "samples1": `[${entry.drops_one ?? 0}/${entry.runs_one ?? 0}]`,
+                "rateTotal": percentage(entry.drops ?? 0, entry.runs ?? 0),
+                "samplesTotal": `[${entry.drops ?? 0}/${entry.runs ?? 0}]`,
+                "totalDrops": entry.drops ?? 0
             }
             cached.dropData[entry.map + node + difficulty] = dropData
         }
@@ -382,7 +382,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     if (ship == undefined) return message.reply("Unknown ship")
 
     if (ship.remodel_from && typeof ship.remodel_from == "string")
-        ship = client.data.getShipByName(ship.remodel_from.replace("/", "")) || ship
+        ship = client.data.getShipByName(ship.remodel_from.replace("/", "")) ?? ship
     ship = client.data.getShipByName(ship.name)
 
     // Check if cached, if so show cached reply.

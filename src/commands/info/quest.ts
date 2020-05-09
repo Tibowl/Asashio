@@ -98,7 +98,7 @@ export default class Quest extends Command {
                     [target, title] = clean.split("|").map(a => a.trim())
 
                 if (target.startsWith("File:")) {
-                // title = clean.split("|").find(a => a.startsWith("link=")).replace("link=", "").replace(/_/g, " ") || title
+                // title = clean.split("|").find(a => a.startsWith("link=")).replace("link=", "").replace(/_/g, " ") ?? title
 
                     const fileName = target.replace(/ /g, "_").trim()
                     text = text.replace(match, this.getEmoji(fileName))

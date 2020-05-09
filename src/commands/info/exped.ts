@@ -26,16 +26,16 @@ export default class Exped extends Command {
         if (exped == undefined) return message.reply("Unknown expedition.")
 
         const extraExpedData = data.getExpedByID(exped.api_disp_no)
-        const [fuel, ammo, steel, bauxite] = (extraExpedData && extraExpedData.rsc) || (exped.api_win_mat_level.map(this.winmatlevel))
+        const [fuel, ammo, steel, bauxite] = (extraExpedData?.rsc) ?? (exped.api_win_mat_level.map(this.winmatlevel))
 
         const embed = new MessageEmbed()
             .setURL(getWiki("Expedition#/Expedition_Tables", message.guild))
             .setTitle(`${exped.api_disp_no} ${exped.api_reset_type == 1 ? "[M] " : ""}${exped.api_damage_type == 1 ? "[D] " : ""}- ${exped.api_name} - ${this.getTime(exped.api_time)}`)
 
-        let req = (extraExpedData && extraExpedData.fleet) || `${exped.api_deck_num} ships required, details unknown`
-        if (extraExpedData && extraExpedData.fs_lvl) req += `\n${extraExpedData.fs_lvl} Lv. FS`
-        if (extraExpedData && extraExpedData.fleet_lvl) req += `\n${extraExpedData.fleet_lvl} total Lv.`
-        if (extraExpedData && extraExpedData.misc_req) req += `\n${extraExpedData.misc_req}`
+        let req = (extraExpedData?.fleet) ?? `${exped.api_deck_num} ships required, details unknown`
+        if (extraExpedData?.fs_lvl) req += `\n${extraExpedData.fs_lvl} Lv. FS`
+        if (extraExpedData?.fleet_lvl) req += `\n${extraExpedData.fleet_lvl} total Lv.`
+        if (extraExpedData?.misc_req) req += `\n${extraExpedData.misc_req}`
         embed.addField("Fleet requirements", req)
 
         let rewards = `${emoji.fuel}×${fuel} ${emoji.ammo}×${ammo} ${emoji.steel}×${steel} ${emoji.bauxite}×${bauxite}\n`
