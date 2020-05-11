@@ -71,7 +71,10 @@ async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<
             }, 65000)
         } catch (error) {
             if (reply.editable)
-                reply.edit(reply.content + "\n\nUnable to add ❌ reaction, please contact admins of this discord guild to give this bot the ability to add reactions. Doing so, will allow users to delete bot replies within some time.")
+                reply.edit(`${reply.content}
+
+Unable to add ❌ reaction, please contact admins of this discord guild to give this bot the ability to add reactions.
+Doing so, will allow users to delete bot replies within some time.`)
             else
                 Logger.error(error)
         }
@@ -92,10 +95,11 @@ export async function handle(message: Message): Promise<void> {
     const attach = attachStr.length < 1 ? "" : (" +" + attachStr)
 
     if (cmdInfo && cmdInfo.cmd) {
+        const channel = message.channel instanceof TextChannel ? message.channel.name : message.channel.type
         if (message.channel.type === "dm")
-            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel instanceof TextChannel ? message.channel.name : message.channel.type}${attach}: ${message.content}`)
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${channel}${attach}: ${message.content}`)
         else
-            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${message.channel instanceof TextChannel ? message.channel.name : message.channel.type} (guild ${message.guild ? message.guild.id : "NaN"})${attach}: ${message.content}`)
+            Logger.info(`${message.author.id} (${message.author.username}) executes command in ${channel} (guild ${message.guild ? message.guild.id : "NaN"})${attach}: ${message.content}`)
 
         handleCommand(message, cmdInfo)
         addStats(message, cmdInfo)
