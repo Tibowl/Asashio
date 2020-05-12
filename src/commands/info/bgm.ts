@@ -87,7 +87,7 @@ export default class BGM extends Command {
         "15" : "強襲！空母機動部隊<br><i>Assault! Aircraft Carrier Task Force</i>",
         "16" : "MI作戦<br><i>Operation MI</i>",
         "17" : "シズメシズメ<br><i>Sink Sink</i>",
-        // "18" : "作戦発動<br><i>Commence Operation</i>",
+        "18" : "作戦発動<br><i>Commence Operation</i>",
 
         "19" : "士魂の護り<br><i>Protection of the Warrior Spirit</i>",
         "20" : "眼下の伊号<br><i>The I-Class Below Us</i>",
@@ -134,8 +134,10 @@ export default class BGM extends Command {
         "49" : "アイアンボトムサウンド<br><i>Ironbottom Sound</i>",
         "50" : "激突！夜間砲撃戦！<br><i>Clash! Exchanging Fire at Night!</i>",
 
+        // 2015 Fall Mini-event
+        // "51" : "鎮守府秋刀魚祭り<br><i>Mackerel Pike Festival</i>",
+
         // 2015 Fall Event
-        //"51" : "鎮守府秋刀魚祭り<br><i>Mackerel Pike Festival</i>",
         "51" : "艦隊集結<br><i>Fleet Gathering</i>",
         "52" : "海上輸送作戦<br><i>Marine Transport Operation</i>",
         "53" : "水雷戦隊の反撃<br><i>The Torpedo Squadron's Counterattack</i>",
@@ -270,5 +272,18 @@ export default class BGM extends Command {
         "142": "地中海の潮風<br><i>A sea breeze in the Mediterranean Sea</i>",
         "143": "佐世保の時雨 (インストver.)<br><i>Shigure of Sasebo</i>",
         "144": "アンツィオ沖の戦い<br><i>Battle of Anzio</i>",
+
+        // 2019 Fall Event
+        "145": "Fall 2019 Event: Main Operation Map Screen",
+        "146": "八駆の迎撃<br><i>DesDiv 8's Interception</i>",
+        "147": "Fall 2019 Event: E-3, E-4 Boss, E-5 Battle",
+        "148": "Fall 2019 Event: E-1, E-2 Boss, E-4 Battle",
+        "149": "Fall 2019 Event: Extra Operation Map Screen",
+        "150": "Fall 2019 Event: E-5 Boss, E-6 Battle",
+        "151": "比叡と霧島の夜<br><i>Nights of Hiei and Kirishima</i>",
+
+        // 2020 Doll Fes. Event
+        "152": "令和桃の節句<br><i>Reiwa's Doll Festival</i>",
+        "153": "沖に立つ波<br><i>Waves in the Offing</i>",
     }
 }
