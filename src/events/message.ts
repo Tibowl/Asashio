@@ -36,7 +36,7 @@ function addStats(msg: Message, cmdInfo: ParsedCommand): void {
     const stats = client.data.store.stats ?? {}
     const cmdStats = stats[cmd.commandName.toLowerCase()] ?? {}
 
-    cmdStats[command] = (cmdStats[command] + 1) ?? 1
+    cmdStats[command] = (cmdStats[command] || 0) + 1
 
     stats[cmd.commandName.toLowerCase()] = cmdStats
     client.data.store.stats = stats
