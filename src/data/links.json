@@ -32,5 +32,6 @@
     "gotsheep": "The gotsheep minigame can be started in the item menu, by clicking on the three flowers.\nFlick the sheep to move it. To advance to the next phase you need to meet a point requirement. \nAt the end of every wave you get one Shuusui, these stack, so use them when you can't meet point requirement / during final round.\nThere are 5 waves:\n```\nWave | Border | Time | Score/E. | E. Size | E. Hits Required\n1    |   2500 |   30 |       10 |      70 | 250\n2    |   5000 |   35 |       20 |     100 | 250\n3    |  15000 |   40 |       40 |      80 | 375\n4    |  50000 |   45 |       80 |      90 | 625\n5    |  70000 |   50 |      100 |     120 | 700\n```\nTo get an S rank, you'll need to reach wave 5 and get 70000 points.\n\nExample of S rank playthrough; <https://youtu.be/tERzplgdU1U>",
     "fixkc3": "When chrome updates to version 83 and breaks KC3, do one of the following:\nA) go to `about:flags/#site-isolation-trial-opt-out` in chrome and set the 'Disable site isolation' option to \"Disabled (not recommended)\"\nor B) install a version of chrome v81 that doesn't have auto-updating, e.g. Chromium\nor C) use any of taskmgr/msconfig/services.msc/regedit/etc to disable the GoogleUpdate.exe service.\nMore information: <https://github.com/planetarian/KCDocumentation/blob/master/Chrome83KC3Fix.md>",
     "kc3fix": "@fixkc3",
-    "touchattacks": "https://i.imgur.com/NRuzt7H.png"
+    "touchattacks": "https://i.imgur.com/NRuzt7H.png",
+    "touch": "@touchattacks"
 }
