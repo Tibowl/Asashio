@@ -12,7 +12,7 @@ export interface CommandOptions {
 export default abstract class Command {
     public readonly commandName: string
     public readonly aliases: string[]
-    public readonly usage: string | false
+    public usage: string | false
     public readonly help: string | false
     public readonly category: CommandCategory
 

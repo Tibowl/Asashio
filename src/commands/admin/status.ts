@@ -61,10 +61,6 @@ Image server: <${data.getServerIP()}>
 Event ID: ${data.eventID()}
 
 Timer offset: ${config.timerOffsetms}ms
-Timer channels: ${config.timerChannels.map(id => `<#${id}>`).join(", ")}
-Birthday channels: ${config.birthdayChannels.map(id => `<#${id}>`).join(", ")}
-Maint channels: ${config.maintChannels.map(id => `<#${id}>`).join(", ")}
-Tweet channels: ${config.tweetChannels.map(id => `<#${id}>`).join(", ")}
 Tweeting: ${config.toTweet.length} users
 Admins: ${await getAdmins()}
 `:""}`)

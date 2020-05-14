@@ -13,6 +13,7 @@ import DataManager from "./utils/DataManager"
 import config from "./data/config.json"
 import log4js from "log4js"
 import Command from "./utils/Command"
+import FollowManager from "./utils/FollowManager"
 
 const Logger = log4js.getLogger("main")
 
@@ -22,6 +23,7 @@ export default class AsashioClient extends Discord.Client {
     timerManager: TimerManager = new TimerManager()
     tweetManager: TweetManager = new TweetManager()
     maintManager: MaintManager = new MaintManager()
+    followManager: FollowManager = new FollowManager()
 
     commands: Enmap<string, Command> = new Enmap()
     recentMessages: Discord.Message[] = []

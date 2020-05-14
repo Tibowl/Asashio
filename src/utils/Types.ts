@@ -276,6 +276,15 @@ export interface Expedition {
     misc_req?: string
 }
 
+export type FollowCategory = "birthday" | "1hrdraw" | "maint" | "twitter" | "timers"
+export interface Follower {
+    channelID: string
+    category: FollowCategory
+    filter: string
+    addedOn: number
+    addedBy: string
+}
+
 export type AssetCategory = "ship" | "slot" | "bgm"
 export type AssetType = "full" | "full_dmg" | "battle" | "card"
 export type Extension = "png" | "json" | "mp3"
@@ -540,10 +549,17 @@ export interface APIMstUseitem {
     api_usetype: number
 }
 
+interface ShipCache {
+    screen_name: string
+    ships: string[]
+    date: string
+}
+
 export interface Store {
     maintInfo: MaintInfo
     eventID?: number
     stats?: Stats
+    cachedShips?: ShipCache
 }
 
 export interface Stats {

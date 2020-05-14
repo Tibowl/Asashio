@@ -107,6 +107,7 @@ export default class DataManager {
     expeds: Expedition[] = []
 
     birthdays: Birthday[] = []
+    oneHourDrawOverides: {[x: string]: string} = {}
     api_start2: APIStart2 = {}
     levels_exp: number[] = [0]
 
@@ -218,6 +219,16 @@ export default class DataManager {
         return shipList[dists.indexOf(minDist)]
     }
 
+    get1HrDrawName = (name: string): string | undefined => {
+        const override = Object.entries(this.oneHourDrawOverides).find(([k, v]) => k.toLowerCase() == name.toLowerCase() || v.toLowerCase() == name.toLowerCase())
+        if (override)
+            return override[1]
+
+        const candidate = client.data.getShipByName(name)
+        if (candidate && (name == candidate.japanese_name || name == candidate.reading || name.toLowerCase() == candidate.name.toLowerCase()))
+            return candidate.name
+        return undefined
+    }
 
     normalizeName = (name: string): string => name.toLowerCase().replace(/\./g, " ").trim()
     getEquipByName = (name: string): Equipment | undefined => {
@@ -422,6 +433,9 @@ export default class DataManager {
         this.birthdays = require("../../src/data/kcbirthday.json")
         Logger.info(`Loaded birthdays! ${Object.keys(this.birthdays).length} birthdays!`)
         client.timerManager.scheduleNextBirthday()
+
+        this.oneHourDrawOverides = require("../../src/data/oneHourDrawOverides.json")
+        Logger.info(`Loaded oneHourDrawOverides! ${Object.keys(this.oneHourDrawOverides).length} overrides!`)
 
         this.expeds = require("../../src/data/exped.json")
         Logger.info(`Loaded expeds! ${this.expeds.length} expeds!`)

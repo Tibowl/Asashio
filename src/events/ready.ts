@@ -10,11 +10,11 @@ export async function handle(): Promise<void> {
     if (alreadyLoaded) return
     alreadyLoaded = true
 
+    await client.data.reloadShipData()
     client.linkManager.loadLinks()
-    client.timerManager.init()
     client.tweetManager.init()
-    client.data.reloadShipData()
     client.maintManager.init()
+    client.timerManager.init()
 
     if (client.user == null) return
     client.user.setStatus("online")

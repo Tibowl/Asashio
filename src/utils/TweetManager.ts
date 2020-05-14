@@ -1,8 +1,9 @@
 import Twit from "twit"
-import Discord from "discord.js"
+import Discord, { TextChannel } from "discord.js"
 import log4js from "log4js"
+
 import config from "../data/config.json"
-import { sendToChannels } from "./Utils"
+import client from "../main"
 
 const Logger = log4js.getLogger("TweetManager")
 
@@ -48,16 +49,9 @@ interface User {
     [key: string]: unknown
 }
 
-interface ShipCache {
-    screen_name: string
-    ships: string[]
-    date: string
-}
-
 export default class Tweetmanager {
     stream: Twit.Stream | undefined = undefined
     toFollow = config.toTweet
-
 
     init(): void {
         const T = new Twit(config.twitter)
@@ -79,12 +73,12 @@ export default class Tweetmanager {
         const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
         if (tweet.retweeted_status && this.toFollow.includes(tweet.retweeted_status.user.id_str)) return Logger.debug(`Skipping RT ${tweetLink}`)
 
-        let text = tweet.extended_tweet?.full_text ?? tweet.text
+        let text = (tweet.extended_tweet?.full_text ?? tweet.text).replace("&gt;", ">").replace("&lt;", "<")
 
         // @KCServerWatcher
         if (tweet.user.id_str == "980204936687489025") {
             if (text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
-                sendToChannels(config.tweetChannels, text.replace("&gt;", ">"))
+                client.followManager.send("maint", text)
 
             return
         }
@@ -109,7 +103,7 @@ export default class Tweetmanager {
         // Tweet has media, don't embed it
         if (tweet.extended_entities?.media) {
             if (tweet.extended_entities.media[0].type != "photo") {
-                sendToChannels(config.tweetChannels, tweetLink)
+                client.followManager.send("twitter", tweetLink)
                 return
             } else
                 embed.setImage(tweet.extended_entities.media[0].media_url_https)
@@ -126,7 +120,7 @@ export default class Tweetmanager {
             // Tweet has media, don't embed it
             if (entities.media) {
                 if (entities.media[0].type != "photo") {
-                    sendToChannels(config.tweetChannels, tweetLink)
+                    client.followManager.send("twitter", tweetLink)
                     return
                 } else
                     embed.setImage(entities.media[0].media_url_https)
@@ -139,18 +133,12 @@ export default class Tweetmanager {
 
         embed.setDescription(text)
 
-        sendToChannels(config.tweetChannels, `<${tweetLink}>`, embed)
+        client.followManager.send("twitter", `<${tweetLink}>`, embed)
     }
 
     shutdown = (): void => {
         if (this.stream !== undefined)
             this.stream.stop()
-    }
-
-    cachedShips: ShipCache = {
-        screen_name: "?",
-        ships: [],
-        date: ""
     }
 
     set1hrDrawTweet(tweet: Tweet): void {
@@ -159,24 +147,49 @@ export default class Tweetmanager {
         Logger.info(`Received new tweet: ${text}`)
         let match = text.match(/お題は(.*)(になります|となります)/)
         if (match) {
-            const ships = match[1].trim().split(" ")
+            const ships = match[1].trim().replace(" (龍鳳)", "").split(" ").map((name) => {
+                const candidate = client.data.get1HrDrawName(name)
+                if (candidate)
+                    return candidate
 
-            this.cachedShips = {
-                screen_name: tweet.user.screen_name,
-                ships,
-                date: new Date(tweet.created_at).toLocaleString("en-UK", {
-                    timeZone: "Asia/Tokyo",
-                    timeZoneName: "short",
-                    hour12: false,
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit"
-                })
+                client.channels.fetch("658083473818517505").then(channel => {
+                    if (channel && channel instanceof TextChannel)
+                        channel.send(`Unknown ship 1 hour draw ship! - ${name} <@127393188729192448>`)
+                }).catch(e => Logger.error("While fetching channel", e))
+
+                return name
+            })
+
+            if (client.data.store.cachedShips?.ships.join(", ") != ships.join(", ")) {
+                Logger.info("Changed ships!")
+                client.followManager.send(
+                    "1hrdraw",
+                    `Today's 1h draw ships: ${
+                        ships.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")
+                    }`,
+                    undefined,
+                    ships)
             }
 
-            Logger.info(`Cached data set to: ${this.cachedShips.ships.join(", ")} at ${this.cachedShips.date}`)
+            const date = new Date(tweet.created_at).toLocaleString("en-UK", {
+                timeZone: "Asia/Tokyo",
+                timeZoneName: "short",
+                hour12: false,
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            })
+
+            client.data.store.cachedShips = {
+                screen_name: tweet.user.screen_name,
+                ships,
+                date
+            }
+            client.data.saveStore()
+
+            Logger.info(`Cached data set to: ${ships.join(", ")} at ${date}`)
         }
     }
 }

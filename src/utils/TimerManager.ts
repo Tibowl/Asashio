@@ -146,7 +146,7 @@ export default class TimerManager {
             this.scheduleNextBirthday(Date.now() + 60 * 60000)
 
             const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
-            sendToChannels(config.birthdayChannels, newMessage)
+            client.followManager.send("birthday", newMessage, undefined, shipList)
         }, midnight.getTime() - Date.now() + config.timerOffsetms)
     }
     // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443
@@ -244,7 +244,7 @@ export default class TimerManager {
         this.toDeleteMessages = []
         if (!newMessage) return Promise.all(deletion)
 
-        this.toDeleteMessages = await sendToChannels(config.timerChannels, newMessage)
+        this.toDeleteMessages = await client.followManager.send("timers", newMessage)
         Logger.info(`Send ${newMessage}`)
 
         return Promise.all(deletion)

@@ -1,10 +1,8 @@
-import { sendToChannels } from "./Utils"
 import log4js from "log4js"
 import htmlToText from "html-to-text"
 import fetch from "node-fetch"
 
 import client from "../main"
-import config from "../data/config.json"
 
 const Logger = log4js.getLogger("MaintManager")
 export default class MaintManager{
@@ -41,6 +39,6 @@ export default class MaintManager{
         client.data.saveStore()
 
         Logger.info(this.getTimes())
-        sendToChannels(config.maintChannels, `Maint info: ${this.getTimes()?.join(" ~ ")}\nMessage: ${line}`)
+        client.followManager.send("maint", `Maint info: ${this.getTimes()?.join(" ~ ")}\nMessage: ${line}`)
     }
 }
