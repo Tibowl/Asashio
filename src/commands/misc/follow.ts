@@ -24,7 +24,7 @@ export default class Follow extends Command {
         this.filterRequirements = {
             "1hrdraw": {
                 words: "Enter a shipname or * for all",
-                filter: client.data.get1HrDrawName
+                filter: (name: string): string | undefined=> name == "*" ? "*" : client.data.get1HrDrawName(name)
             },
             birthday: {
                 words: "Enter a shipname or * for all",
