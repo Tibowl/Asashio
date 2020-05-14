@@ -91,7 +91,7 @@ export default class FollowManager {
 
     private dropChannelCategoryStatement: SQLite.Statement
     dropChannelCategory(channelID: string, category: FollowCategory): void {
-        Logger.info(`Removing channel ${channelID}`)
+        Logger.info(`Removing channel ${category} for ${channelID}`)
         this.dropChannelCategoryStatement.run({
             channelID,
             category
