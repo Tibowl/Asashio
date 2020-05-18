@@ -59,7 +59,7 @@ export default class LinkManager extends Command {
         if (args.length < 1) return await message.reply("Not enough arguments")
         let command = args[0]
         if (args.length == 1) {
-            if (linkMap.has(command))
+            if (!linkMap.has(command))
                 return await message.reply("That is not a link!")
 
             client.commands.delete(command)
