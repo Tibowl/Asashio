@@ -303,10 +303,10 @@ export interface APIStart2 {
     api_mst_mapinfo?: APIMstMapinfo[]
     api_mst_mission?: APIMstMission[]
     api_mst_payitem?: APIMstPayitem[]
-    api_mst_ship?: APIMstShip[]
+    api_mst_ship: APIMstShip[]
     api_mst_shipgraph?: APIMstShipgraph[]
     api_mst_shipupgrade?: APIMstShipupgrade[]
-    api_mst_slotitem?: APIMstSlotitem[]
+    api_mst_slotitem: APIMstSlotitem[]
     api_mst_slotitem_equiptype?: APIMstSlotitemEquiptype[]
     api_mst_stype?: APIMstStype[]
     api_mst_useitem?: APIMstUseitem[]
@@ -425,37 +425,39 @@ export interface APIMstPayitem {
     api_type: number
 }
 
+export type Range = 0 | 1 | 2 | 3 | 4;
+export type Speed = 0 | 5 | 10 | 15 | 20;
+
 export interface APIMstShip {
-    api_afterbull?: number
-    api_afterfuel?: number
-    api_afterlv?: number
-    api_aftershipid?: string
-    api_backs?: number
-    api_broken?: number[]
-    api_buildtime?: number
-    api_bull_max?: number
-    api_ctype: number
-    api_fuel_max?: number
-    api_getmes?: string
-    api_houg?: number[]
     api_id: number
-    api_leng?: number
-    api_luck?: number[]
-    api_maxeq?: number[]
-    api_name: string
-    api_powup?: number[]
-    api_raig?: number[]
-    api_slot_num: number
-    api_soku: number
+    api_sortno: number
     api_sort_id: number
-    api_sortno?: number
-    api_souk?: number[]
-    api_stype: number
-    api_taik?: number[]
-    api_tais?: number[]
-    api_tyku?: number[]
-    api_voicef?: number
+    api_name: string
     api_yomi: string
+    api_stype: number
+    api_ctype: number
+    api_afterlv: number
+    api_aftershipid: string
+    api_taik: number[]
+    api_souk: number[]
+    api_houg: number[]
+    api_raig: number[]
+    api_tyku: number[]
+    api_luck: number[]
+    api_soku: Speed
+    api_leng: Range
+    api_slot_num: number
+    api_maxeq: number[]
+    api_buildtime: number
+    api_broken: number[]
+    api_powup: number[]
+    api_backs: number
+    api_getmes: string
+    api_afterfuel: number
+    api_afterbull: number
+    api_fuel_max: number
+    api_bull_max: number
+    api_voicef: number
 }
 
 export interface APIMstShipgraph {
@@ -505,7 +507,7 @@ export interface APIMstSlotitem {
     api_houk: number
     api_houm: number
     api_id: number
-    api_leng: number
+    api_leng: Range
     api_luck: number
     api_name: string
     api_raig: number

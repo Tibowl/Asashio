@@ -108,7 +108,10 @@ export default class DataManager {
 
     birthdays: Birthday[] = []
     oneHourDrawOverides: {[x: string]: string} = {}
-    api_start2: APIStart2 = {}
+    api_start2: APIStart2 = {
+        api_mst_ship: [],
+        api_mst_slotitem: []
+    }
     levels_exp: number[] = [0]
 
     store: Store = { maintInfo: {} }

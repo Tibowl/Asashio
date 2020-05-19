@@ -112,7 +112,15 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
         const fleetData = await this.randomFleet(map, edges)
         if (fleetData == undefined) return message.channel.send("Not enough samples recently, again later")
 
-        const canvas = await generate(fleetData)
+        const canvas = await generate(fleetData, {
+            shipURL: "https://raw.githubusercontent.com/Nishisonic/gkcoi/master/static/ship",
+            start2URL: "https://raw.githubusercontent.com/Nishisonic/gkcoi/master/static/START2.json",
+            start2Data: {
+                api_result: 200,
+                api_result_msg: "OK",
+                api_data: client.data.api_start2
+            }
+        })
         const attachment = new MessageAttachment(canvas.toBuffer(), `${map}.png`)
 
         return message.channel.send(`Selected fleet for ${map} ${node}`, attachment)
