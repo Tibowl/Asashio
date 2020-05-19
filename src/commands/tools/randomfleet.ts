@@ -13,7 +13,7 @@ const Logger = log4js.getLogger("randomfleet")
 const path = join(__dirname, "../../../src/data/")
 const cache = join(path, "cache")
 configure({ cacheDir: cache })
-Logger.info(cache)
+Logger.info(`Caching in ${cache}`)
 
 const entriesCache: { [key: string]: Entry[] } = {}
 
@@ -54,6 +54,11 @@ export interface Entry {
     radars5los:      number
     radarShips5los:  number
     nodeInfo:        string
+    difficulty?:     number
+    gaugeType?:      number
+    gaugeNum?:       number
+    currentMapHp?:   number
+    maxMapHp?:       number
 }
 
 export interface FleetData {
@@ -115,7 +120,7 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
 
         const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
 
-        const fleetData = await this.randomFleet(map, edges)
+        const fleetData = await this.randomFleet(map, edges, node)
         if (fleetData == undefined) return message.channel.send("Not enough samples recently, again later")
 
         const canvas = await generate(fleetData, {
@@ -125,21 +130,51 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
                 api_data: client.data.api_start2
             }
         })
-        const attachment = new MessageAttachment(canvas.toBuffer(), `${map}.png`)
+        Logger.info(`Rendered image for ${map} ${node} `)
+        const attachment = new MessageAttachment(canvas.toBuffer(), `${map} ${node}.png`)
 
         return message.channel.send(`Selected fleet for ${map} ${node}`, attachment)
     }
 
-    async randomFleet(map: string, edges: string[]): Promise<DeckBuilder | undefined> {
+    getEventDescription(entry: Entry): string {
+        let description = ""
+
+        if (entry.difficulty !== undefined) description += `
+Difficulty: ${["/", "C", "E", "M", "H"][entry.difficulty]}
+`
+        if (entry.gaugeNum !== undefined) description += `Gauge #${entry.gaugeNum}
+`
+        // gaugeType: 2 = HP; 3 = TP
+        if (entry.currentMapHp !== undefined && entry.maxMapHp !== undefined && entry.gaugeType !== undefined)
+            description += `Gauge ${entry.gaugeType === 3 ? "TP" :"HP"}: ${entry.currentMapHp}/${entry.maxMapHp}
+`
+
+        return description
+    }
+
+    async randomFleet(map: string, edges: string[], node: string): Promise<DeckBuilder | undefined> {
         const entries = await this.getEntries(map, edges)
 
         if (entries.length == 0) return undefined
 
         const entry = entries[Math.floor(Math.random() * entries.length)]
         const data: DeckBuilder = {
-            "hqlv": entry.hqLvl,
-            "theme": "dark",
-            "lang": "en",
+            hqlv: entry.hqLvl,
+            theme: "dark",
+            lang: "en",
+            cmt: `Random fleet for ${map}${node}
+${this.getEventDescription(entry)}
+ID: ${entry.id}
+${new Date(entry.datetime).toLocaleString("en-UK", {
+        timeZone: "Asia/Tokyo",
+        hour12: false,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZoneName: "short"
+    })}`
         }
 
         const f1 = this.getFleet(entry.fleet1data)
