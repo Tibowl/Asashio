@@ -7,6 +7,7 @@ import { generate, configure, DeckBuilder, DeckBuilderFleet, DeckBuilderShip } f
 import client from "../../main"
 import Command from "../../utils/Command"
 import { aswAtLevel, evasionAtLevel, losAtLevel } from "../../utils/Utils"
+import { MapEntry, MapEntries, FleetData } from "../../utils/Types"
 
 const Logger = log4js.getLogger("randomfleet")
 
@@ -15,64 +16,10 @@ const cache = join(path, "cache")
 configure({ cacheDir: cache })
 Logger.info(`Caching in ${cache}`)
 
-const entriesCache: { [key: string]: Entry[] } = {}
+const entriesCache: { [key: string]: MapEntry[] } = {}
 
 type ShipID = "s1" | "s2" | "s3" | "s4" | "s5" | "s6" | "s7"
 type ItemID = "i1" | "i2" | "i3" | "i4" | "i5"
-
-export interface MapEntries {
-    entryCount: number
-    pageCount:  number
-    perPage:    number
-    entries:    Entry[]
-}
-
-export interface Entry {
-    id:              number
-    map:             string
-    hqLvl:           number
-    cleared?:        boolean
-    fleet1:          string[]
-    fleet1data:      FleetData[]
-    fleet2:          string[]
-    fleet2data:      FleetData[]
-    sortiedFleet:    number
-    fleetSpeed:      number
-    edgeId:          number[]
-    los:             number[]
-    datetime:        string
-    fleetIds:        number[]
-    fleetLevel:      number
-    fleetOneEquips:  number[]
-    fleetOneExSlots: number[]
-    fleetOneTypes:   number[]
-    fleetTwoEquips:  number[]
-    fleetTwoExSlots: number[]
-    fleetTwoTypes:   number[]
-    radars:          number
-    radarShips:      number
-    radars5los:      number
-    radarShips5los:  number
-    nodeInfo:        string
-    difficulty?:     number
-    gaugeType?:      number
-    gaugeNum?:       number
-    currentMapHp?:   number
-    maxMapHp?:       number
-}
-
-export interface FleetData {
-    id:      number
-    name:    string
-    name_en: string
-    level:   number
-    type:    number
-    speed:   number
-    equip:   number[]
-    stars:   number[]
-    ace:     number[]
-    exslot:  number
-}
 
 export default class RandomFleet extends Command {
     constructor(name: string) {
@@ -123,6 +70,7 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
         const fleetData = await this.randomFleet(map, edges, node)
         if (fleetData == undefined) return message.channel.send("Not enough samples recently, again later")
 
+        Logger.info(`Rendering image for ${map} ${node}...`)
         const canvas = await generate(fleetData, {
             start2Data: {
                 api_result: 200,
@@ -130,13 +78,13 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
                 api_data: client.data.api_start2
             }
         })
-        Logger.info(`Rendered image for ${map} ${node} `)
+        Logger.info(`Rendered image for ${map} ${node}`)
         const attachment = new MessageAttachment(canvas.toBuffer(), `${map} ${node}.png`)
 
         return message.channel.send(`Selected fleet for ${map} ${node}`, attachment)
     }
 
-    getEventDescription(entry: Entry): string {
+    getEventDescription(entry: MapEntry): string {
         let description = ""
 
         if (entry.difficulty !== undefined) description += `
@@ -186,13 +134,13 @@ ${new Date(entry.datetime + "Z").toLocaleString("en-UK", {
         return data
     }
 
-    private async getEntries(map: string, edges: string[]): Promise<Entry[]> {
+    private async getEntries(map: string, edges: string[]): Promise<MapEntry[]> {
         const cached = entriesCache[map + edges.join(",")]
         if (cached) return cached
 
         const dateFilter = (+map.split("-")[0]) < 10 ? `&start=${this.recent()}` : ""
 
-        const entries: Entry[] = []
+        const entries: MapEntry[] = []
         for (const edge of edges) {
             Logger.info(`Caching entries of ${map} / ${edge}`)
             const comps: MapEntries = await (await fetch(`http://kc.piro.moe/api/routing/entries/${map}?edgeId=${edge}${dateFilter}&perPage=50`)).json()

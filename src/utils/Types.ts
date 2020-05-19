@@ -200,6 +200,60 @@ export interface Routes {
     [key: string]: Route
 }
 
+export interface MapEntries {
+    entryCount: number
+    pageCount:  number
+    perPage:    number
+    entries:    MapEntry[]
+}
+
+export interface MapEntry {
+    id:              number
+    map:             string
+    hqLvl:           number
+    cleared?:        boolean
+    fleet1:          string[]
+    fleet1data:      FleetData[]
+    fleet2:          string[]
+    fleet2data:      FleetData[]
+    sortiedFleet:    number
+    fleetSpeed:      number
+    edgeId:          number[]
+    los:             number[]
+    datetime:        string
+    fleetIds:        number[]
+    fleetLevel:      number
+    fleetOneEquips:  number[]
+    fleetOneExSlots: number[]
+    fleetOneTypes:   number[]
+    fleetTwoEquips:  number[]
+    fleetTwoExSlots: number[]
+    fleetTwoTypes:   number[]
+    radars:          number
+    radarShips:      number
+    radars5los:      number
+    radarShips5los:  number
+    nodeInfo:        string
+    difficulty?:     number
+    gaugeType?:      number
+    gaugeNum?:       number
+    currentMapHp?:   number
+    maxMapHp?:       number
+}
+
+export interface FleetData {
+    id:      number
+    name:    string
+    name_en: string
+    level:   number
+    type:    number
+    speed:   number
+    equip:   number[]
+    stars:   number[]
+    ace:     number[]
+    exslot:  number
+}
+
 export interface MiscDB {
     EquipmentCompatibility?: { [key: string]: [] | EquipmentCompatibilityClass }
     EquipmentIcons?: { [key: string]: string }
