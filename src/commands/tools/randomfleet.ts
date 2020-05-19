@@ -1,13 +1,19 @@
 import { Message, MessageAttachment } from "discord.js"
 import fetch from "node-fetch"
 import log4js from "log4js"
-import { generate, DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "@tibowl/node-gkcoi"
+import { join } from "path"
+import { generate, configure, DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "@tibowl/node-gkcoi"
 
 import client from "../../main"
 import Command from "../../utils/Command"
 import { aswAtLevel, evasionAtLevel, losAtLevel } from "../../utils/Utils"
 
 const Logger = log4js.getLogger("randomfleet")
+
+const path = join(__dirname, "../../../src/data/")
+const cache = join(path, "cache")
+configure({ cacheDir: cache })
+Logger.info(cache)
 
 const entriesCache: { [key: string]: Entry[] } = {}
 
@@ -113,8 +119,6 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
         if (fleetData == undefined) return message.channel.send("Not enough samples recently, again later")
 
         const canvas = await generate(fleetData, {
-            shipURL: "https://raw.githubusercontent.com/Nishisonic/gkcoi/master/static/ship",
-            start2URL: "https://raw.githubusercontent.com/Nishisonic/gkcoi/master/static/START2.json",
             start2Data: {
                 api_result: 200,
                 api_result_msg: "OK",
