@@ -165,7 +165,7 @@ Difficulty: ${["/", "C", "E", "M", "H"][entry.difficulty]}
             cmt: `Random fleet for ${map}${node}
 ${this.getEventDescription(entry)}
 ID: ${entry.id}
-${new Date(entry.datetime).toLocaleString("en-UK", {
+${new Date(entry.datetime + "Z").toLocaleString("en-UK", {
         timeZone: "Asia/Tokyo",
         hour12: false,
         year: "numeric",
