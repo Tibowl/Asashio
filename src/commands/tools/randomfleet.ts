@@ -19,7 +19,7 @@ Logger.info(`Caching in ${cache}`)
 const entriesCache: { [key: string]: MapEntry[] } = {}
 
 type ShipID = "s1" | "s2" | "s3" | "s4" | "s5" | "s6" | "s7"
-type ItemID = "i1" | "i2" | "i3" | "i4" | "i5"
+type ItemID = "i1" | "i2" | "i3" | "i4" | "i5" | "ix"
 
 export default class RandomFleet extends Command {
     constructor(name: string) {
@@ -158,8 +158,8 @@ ${new Date(entry.datetime + "Z").toLocaleString("en-UK", {
         if (fleetData == undefined || fleetData.length == 0) return undefined
 
         const fleet: DeckBuilderFleet = {}
-        for (const i in fleetData) {
-            const ship = fleetData[i]
+        for (const ind in fleetData) {
+            const ship = fleetData[ind]
             const shipData = client.data.getShipById(ship.id)
 
             const t: DeckBuilderShip = {
@@ -180,20 +180,26 @@ ${new Date(entry.datetime + "Z").toLocaleString("en-UK", {
                 items: {}
             }
 
-            for (const i in ship.equip.filter((k: number) => k > 0)) {
-                t.items["i" + (+i+1) as ItemID] = {
+            const keys: ItemID[] = ["i1", "i2", "i3", "i4", "i5", "ix"]
+
+            let i
+            for (i = 0; i < ((shipData?.equipment) ? shipData?.equipment.length : ship.equip.length); i++) {
+                if (ship.equip[i] < 0) continue
+                t.items[keys[i]] = {
                     id: ship.equip[i],
                     rf: ship.stars[i] <= 0 ? undefined : ship.stars[i],
                     mas: ship.ace[i] <= 0 ? undefined : ship.ace[i]
                 }
             }
+
             if (ship.exslot != -1) {
-                t.items.ix = {
+                Logger.info(shipData?.full_name, ship.exslot, i, keys[i])
+                t.items[keys[i]] = {
                     id: ship.exslot
                 }
             }
 
-            fleet["s"+(+i+1) as ShipID] = t
+            fleet["s"+(+ind+1) as ShipID] = t
         }
         return fleet
     }
