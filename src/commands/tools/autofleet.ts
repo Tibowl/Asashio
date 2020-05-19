@@ -51,7 +51,7 @@ How it works:
 - Nothing can be guaranteed on these fleets on how they will route/perform
 Uses <http://kc.piro.moe> API`,
             usage: "autofleet <map> <boss node>",
-            aliases: ["spoonfeed", "imretardedpleasehelp"]
+            aliases: ["spoonfeed", "imretardedpleasehelp", "imretardedplshelp"]
         })
     }
 

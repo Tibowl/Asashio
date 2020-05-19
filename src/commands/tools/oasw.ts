@@ -3,7 +3,7 @@ import { Message, MessageEmbed } from "discord.js"
 import Command from "../../utils/Command"
 import { Ship } from "../../utils/Types"
 import client from "../../main"
-import { getWiki } from "../../utils/Utils"
+import { getWiki, aswAtLevel } from "../../utils/Utils"
 
 export default class OASW extends Command {
     constructor(name: string) {
@@ -40,8 +40,8 @@ export default class OASW extends Command {
 
         const aswRequired = this.findAswRequired(ship)
         const addLevelRow = (): MessageEmbed => embed.addField("ASW at level", `\`\`\`
-At level ${level}${aswOffset > 0 ? `+${aswOffset} mod`:""}: ${this.aswAtLevel(ship, level) + aswOffset}${equipmentAsw > 0 ? `
-With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + equipmentAsw}` : ""}
+At level ${level}${aswOffset > 0 ? `+${aswOffset} mod`:""}: ${aswAtLevel(ship, level) + aswOffset}${equipmentAsw > 0 ? `
+With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipmentAsw}` : ""}
 \`\`\``)
 
         if (aswRequired > 0) {
@@ -107,10 +107,6 @@ With +${equipmentAsw} equipment: ${this.aswAtLevel(ship, level) + aswOffset + eq
         if ([6, 10, 16, 17].includes(ship.type)) return -3
 
         return -99
-    }
-    aswAtLevel(ship: Ship, level: number): number {
-        if (ship.asw_max == false) return 0
-        return Math.floor(ship.asw + ((ship.asw_max - ship.asw) * level / 99))
     }
     levelAtAsw(ship: Ship, asw: number): number {
         if (ship.asw_max == false) return ship.asw

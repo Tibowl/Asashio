@@ -1,6 +1,6 @@
 export interface Ship {
     aa: number
-    aa_max: boolean | number
+    aa_max: false | number
     aa_mod: boolean | number
     ammo: number
     api_id: number
@@ -15,7 +15,7 @@ export interface Ship {
     class_number: boolean | number
     equipment: (ShipEquipment)[] | false
     evasion: number
-    evasion_max: number
+    evasion_max: number | false
     firepower: number
     firepower_max: number
     firepower_mod: boolean | number
@@ -25,7 +25,7 @@ export interface Ship {
     id: number
     japanese_name: string
     los: number
-    los_max: number
+    los_max: false | number
     luck: number
     luck_max: number
     luck_mod: boolean | number
@@ -48,9 +48,9 @@ export interface Ship {
     speed: number
     suffix?: boolean | string
     torpedo: number
-    torpedo_max: boolean | number
-    torpedo_mod: boolean | number
-    true_id: boolean | number
+    torpedo_max: false | number
+    torpedo_mod: false | number
+    true_id: false | number
     type: number
     full_name: string
     implementation_date: number[]

@@ -136,6 +136,21 @@ Scrap     :: ${ship.scraps}
     return embed
 }
 
+export function aswAtLevel(ship: Ship, level: number): number {
+    if (ship.asw_max == false) return 0
+    return Math.floor(ship.asw + ((ship.asw_max - ship.asw) * level / 99))
+}
+
+export function evasionAtLevel(ship: Ship, level: number): number {
+    if (ship.evasion_max == false) return 0
+    return Math.floor(ship.evasion + ((ship.evasion_max - ship.evasion) * level / 99))
+}
+
+export function losAtLevel(ship: Ship, level: number): number {
+    if (ship.los_max == false) return 0
+    return Math.floor(ship.los + ((ship.los_max - ship.los) * level / 99))
+}
+
 const compare = {
     min: (a: number, b: number): number => {
         if (isNaN(a)) return b

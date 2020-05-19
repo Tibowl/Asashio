@@ -36,6 +36,7 @@ export default class AsashioClient extends Discord.Client {
         fs.readdir(join(__dirname, "./events/"), (err, files) => {
             if (err) return Logger.error(err)
             files.forEach(file => {
+                if (file.endsWith(".d.ts")) return
                 // eslint-disable-next-line @typescript-eslint/no-var-requires
                 const event = require(`./events/${file}`)
                 const eventName = file.split(".")[0] as keyof ClientEvents
@@ -48,6 +49,7 @@ export default class AsashioClient extends Discord.Client {
                 if (err) return Logger.error(err)
                 files.forEach(file => {
                     if (!(file.endsWith(".js") || file.endsWith(".ts"))) return readDir(dir + file + "/")
+                    if (file.endsWith(".d.ts")) return
                     // eslint-disable-next-line @typescript-eslint/no-var-requires
                     const props = require(`${dir}${file}`)
                     const commandName = file.split(".")[0]
