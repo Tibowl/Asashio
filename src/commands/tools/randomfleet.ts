@@ -193,7 +193,7 @@ ${new Date(entry.datetime + "Z").toLocaleString("en-UK", {
             }
 
             if (ship.exslot != -1) {
-                Logger.info(shipData?.full_name, ship.exslot, i, keys[i])
+                // Logger.info(shipData?.full_name, ship.exslot, i, keys[i])
                 t.items[keys[i]] = {
                     id: ship.exslot
                 }
