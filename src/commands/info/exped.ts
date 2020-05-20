@@ -30,7 +30,7 @@ export default class Exped extends Command {
 
         const embed = new MessageEmbed()
             .setURL(getWiki("Expedition#/Expedition_Tables", message.guild))
-            .setTitle(`${exped.api_disp_no} ${exped.api_reset_type == 1 ? "[M] " : ""}${exped.api_damage_type == 1 ? "[D] " : ""}- ${exped.api_name} - ${this.getTime(exped.api_time)}`)
+            .setTitle(`${exped.api_disp_no} ${exped.api_reset_type == 1 ? "[M] " : ""}${this.getDamage(exped.api_damage_type)}- ${exped.api_name} - ${this.getTime(exped.api_time)}`)
 
         let req = (extraExpedData?.fleet) ?? `${exped.api_deck_num} ships required, details unknown`
         if (extraExpedData?.fs_lvl) req += `\n${extraExpedData.fs_lvl} Lv. FS`
