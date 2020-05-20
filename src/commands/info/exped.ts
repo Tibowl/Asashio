@@ -58,11 +58,23 @@ export default class Exped extends Command {
         else if (exped.api_reset_type != 0)
             notes += "Unknown expedition reset type\n"
 
-        if (exped.api_damage_type)
+        if (exped.api_damage_type == 1)
             notes += "You can receive damage on this expedition\n"
+        else if (exped.api_damage_type == 2)
+            notes += "You can receive *heavy* damage on this expedition\n"
+        else if (exped.api_damage_type != 0)
+            notes += `Unknown damage type ${exped.api_damage_type}\n`
 
         embed.addField("Notes", notes.trim())
         return message.channel.send(embed)
+    }
+    getDamage(d: number): string {
+        switch (d) {
+            case 0: return ""
+            case 1: return "[D]"
+            case 2: return "[D+]"
+            default: return `[D${d}?]`
+        }
     }
     getItem(item: number): string {
         switch (item) {
