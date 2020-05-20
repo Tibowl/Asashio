@@ -43,45 +43,53 @@ function addStats(msg: Message, cmdInfo: ParsedCommand): void {
     client.data.saveStore()
 }
 
-async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<boolean> {
-    const { args, command, cmd } = cmdInfo
+async function deletable(reply: Message, message: Message): Promise<void> {
     try {
-        const msg = cmd.run(message, args, command)
-        if (!msg || message.channel.type !== "text") return true
-        const reply = await msg
-        if (!reply) return true
-        if (!(reply instanceof Message)) return true
-
-        try {
-            await reply.react("❌")
-            reply.awaitReactions(
-                (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || config.admins.includes(user.id)),
-                { max: 1, time: 60000, errors: ["time"] }
-            ).then((collected) => {
-                if (collected)
-                    reply.delete()
-            }).catch(() => {
-                const user = client.user
-                if (user == undefined) return
-                reply?.reactions?.cache.map((reaction) => reaction.me ? reaction.users.remove(user) : undefined)
-            })
-            client.recentMessages.push(reply)
-            setTimeout(() => {
-                client.recentMessages.shift()
-            }, 65000)
-        } catch (error) {
-            if (reply.editable)
-                reply.edit(`${reply.content}
+        await reply.react("❌")
+        reply.awaitReactions(
+            (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || config.admins.includes(user.id)),
+            { max: 1, time: 60000, errors: ["time"] }
+        ).then((collected) => {
+            if (collected)
+                reply.delete()
+        }).catch(() => {
+            const user = client.user
+            if (user == undefined) return
+            reply?.reactions?.cache.map((reaction) => reaction.me ? reaction.users.remove(user) : undefined)
+        })
+        client.recentMessages.push(reply)
+        setTimeout(() => {
+            client.recentMessages.shift()
+        }, 65000)
+    } catch (error) {
+        if (reply.editable)
+            reply.edit(`${reply.content}
 
 Unable to add ❌ reaction, please contact admins of this discord guild to give this bot the ability to add reactions.
 Doing so, will allow users to delete bot replies within some time.`)
-            else
-                Logger.error(error)
+        else
+            Logger.error(error)
+    }
+}
+
+async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<void> {
+    const { args, command, cmd } = cmdInfo
+    try {
+        const msg = cmd.run(message, args, command)
+        if (!msg || message.channel.type !== "text") return
+        const reply = await msg
+        if (!reply) return
+        if (!(reply instanceof Message)) {
+            if (reply.length)
+                reply.forEach(r => deletable(r, message))
+            return
         }
+
+        await deletable(reply, message)
     } catch (error) {
         Logger.error(error)
     }
-    return true
+    return
 }
 
 export async function handle(message: Message): Promise<void> {

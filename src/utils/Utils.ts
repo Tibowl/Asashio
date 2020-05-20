@@ -250,19 +250,15 @@ export function calculatePostCap(atk: number, currenthp: number, maxhp: number, 
 }
 
 const shipDropCache: Cached = {}
-
-const getDisplayDataString = (cached: Cache, message: Message | Message[], db: DBType): string => {
-    if (cached == undefined || cached.dropData == undefined || cached.loading)
-        return `Loading ${cached.ship.full_name} drop data...`
-
+function getDisplayDropString(cached: Cache, message: Message | Message[] | undefined, db: DBType, notice = true): string {
     let drops = Object.values(cached.dropData).sort((a, b) => b.totalDrops - a.totalDrops)
     if (drops.length == 0)
-        return `No ${cached.ship.full_name} drops found`
+        return `No ${cached.rank} rank **${cached.ship.full_name}** drops found`
 
-    if (!(message instanceof Message)) message = message[0]
+    if (message && !(message instanceof Message)) message = message[0]
 
     const totalCount = drops.length
-    drops = message.channel.type == "dm" ? drops.slice(0, 35) : drops.slice(0, 10)
+    drops = (message && message.channel.type == "dm") ? drops.slice(0, 35) : drops.slice(0, 10)
 
     let dropTable = createTable(
         { 0: "Map", 4: "Rate" },
@@ -281,19 +277,45 @@ const getDisplayDataString = (cached: Cache, message: Message | Message[], db: D
                 [PAD_END, PAD_END, PAD_END, PAD_END, PAD_START, PAD_END, PAD_END, PAD_START, PAD_END]
             )
 
-    return `Found following drops for ${cached.ship.full_name} (${cached.rank} rank): \`\`\`
-${dropTable}
-\`\`\`*Please note that some smaller sample size results may be inaccurate.* 
-${drops.length < totalCount ? (message.channel.type == "dm" ? `Shown top ${drops.length}/${totalCount} rows. ` : `Shown top ${drops.length}/${totalCount} rows. Redo command in DM for more. `) : ""}Data from ${db == "tsundb" ? `TsunDB on ${new Date(cached.time).toLocaleString("en-UK", {
-    timeZone: "GMT",
-    timeZoneName: "short",
-    hour12: false,
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-})}` : `poi-statistics on ${cached.generateTime}`}`
+    let dropString = `Found following drops for **${cached.ship.full_name}** (${cached.rank} rank): \`\`\`
+${dropTable}\`\`\``
+
+    // Add small drop size notice
+    if (notice) {
+        dropString += `
+*Please note that some smaller sample size results may be inaccurate.*`
+    }
+
+    // Add rows shown notice
+    if (drops.length < totalCount) {
+        if (message && message.channel.type == "dm") {
+            dropString += `Shown top ${drops.length}/${totalCount} rows. `
+        } else {
+            dropString += `Shown top ${drops.length}/${totalCount} rows. Redo a .drop command in DM for more. `
+        }
+    }
+
+    // Add data notice
+    if (notice) {
+        dropString += `Data from ${db == "tsundb" ? `TsunDB on ${new Date(cached.time).toLocaleString("en-UK", {
+            timeZone: "GMT",
+            timeZoneName: "short",
+            hour12: false,
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        })}` : `poi-statistics on ${cached.generateTime}`}`
+    }
+    return dropString
+}
+
+function getDisplayDataString(cached: Cache, message: Message | Message[], db: DBType, notice = false): string {
+    if (cached == undefined || cached.dropData == undefined || cached.loading)
+        return `Loading ${cached.ship.full_name} drop data...`
+
+    return getDisplayDropString(cached, message, db, notice)
 }
 
 const displayData = (cached: Cache, reply: Message | Message[], db: DBType): void => {
@@ -321,7 +343,7 @@ export function percentage(count: number, total: number): string {
     return (count / total * 100).toFixed(3) + "%"
 }
 
-const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<void> => {
+const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<{ [key: string]: DropData }> => {
     const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
 
     if (db == "tsundb") {
@@ -377,6 +399,8 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
     cached.generateTime = api.generateTime
     cached.callback.forEach(k => k())
     delete cached.callback
+
+    return cached.dropData
 }
 
 export async function dropTable(message: Message, args: string[], db: DBType = "tsundb"): Promise<Message | Message[]> {
@@ -424,6 +448,69 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     const reply = await message.channel.send(getDisplayDataString(newcached, message, db))
     newcached.callback.push(async () => displayData(newcached, await reply, db))
     queue(ship, rank, newcached, db)
+    return reply
+}
+
+export async function specialDrops(message: Message,  db: DBType = "tsundb"): Promise<Message | Message[]> {
+    const ships = ["Fletcher", "Gambier Bay", "Samuel B. Roberts", "Perth"]
+
+    let reply = undefined
+    const caches: Cache[] = []
+    for (const name of ships) {
+        const ship = client.data.getShipByName(name)
+
+        for (const rank of (["S", "A"] as Rank[])) {
+
+            // Check if cached, if so show cached reply.
+            const cached = shipDropCache[db + ship.api_id + rank]
+            if (cached && cached.time + 1 * 60 * 60 * 1000 > new Date().getTime()) {
+                caches.push(cached)
+                if (cached.callback) {
+                    if (!reply) reply = message.channel.send("Loading...")
+                    await new Promise((resolve) => cached.callback.push(async () => resolve()))
+                }
+                continue
+            }
+
+            const startTime = new Date()
+            const dropData = {}
+
+            // Not cached, add it
+            const newcached: Cache = shipDropCache[db + ship.api_id + rank] = {
+                time: startTime.getTime(),
+                dropData,
+                ship,
+                rank,
+                loading: true,
+                callback: []
+            }
+            Logger.info(`Caching ${rank} drops for ${ship.full_name}...`)
+            if (!reply) reply = message.channel.send("Loading...")
+            await queue(ship, rank, newcached, db)
+            caches.push(newcached)
+        }
+    }
+
+    const out = `${caches.filter(f => !(f.rank == "A" && Object.values(f.dropData).length == 0)).map((cached) => getDisplayDropString(cached, message, db, false).trim().replace(/\n+$/, "")).join("\r\n")}
+
+*Please note that some smaller sample size results may be inaccurate.*
+See \`.drop <ship>\` for more information.`
+
+    if (!reply)
+        reply = message.channel.send(out, {split: {
+            maxLength: 1800,
+            char: "\r"
+        }})
+    else if (out.length > 1900) {
+        (await reply).delete()
+
+        reply = message.channel.send(out, {split: {
+            maxLength: 1800,
+            char: "\r"
+        }})
+    } else
+        (await reply).edit(out)
+
     return reply
 }
 
