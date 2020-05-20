@@ -71,9 +71,9 @@ export default class Exped extends Command {
     getDamage(d: number): string {
         switch (d) {
             case 0: return ""
-            case 1: return "[D]"
-            case 2: return "[D+]"
-            default: return `[D${d}?]`
+            case 1: return "[D] "
+            case 2: return "[D+] "
+            default: return `[D${d}?] `
         }
     }
     getItem(item: number): string {
