@@ -13,7 +13,7 @@ export default class Equip extends Command {
             category: "Information",
             help: "Get equip information.",
             usage: "equip <equip>",
-            aliases: ["item", "equipment"]
+            aliases: ["item", "equipment", "eq"]
         })
     }
 

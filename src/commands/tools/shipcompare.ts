@@ -12,6 +12,7 @@ export default class ShipCompare extends Command {
             category: "Tools",
             help: "Compares two ships.",
             usage: "shipcompare <ship A>, <ship B>",
+            aliases: ["compareship", "compareships", "shipscompare"]
         })
     }
 

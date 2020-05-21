@@ -10,7 +10,7 @@ export default class OneHourDraw extends Command {
             category: "Tools",
             help: "Check today's 1h draw ships",
             usage: "1hdraw",
-            aliases: ["onehourdraw", "1hd", "1hourdraw"]
+            aliases: ["onehourdraw", "1hd", "1hourdraw", "1hrdraw"]
         })
     }
 

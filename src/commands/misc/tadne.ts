@@ -9,7 +9,7 @@ export default class TADNE extends Command {
             category: "Hidden",
             help: "Random TADNE pic.",
             usage: "tadne",
-            aliases: ["asashio", "prpr"],
+            aliases: ["asashio", "prpr", "sendmeasashiolewdstibi"],
         })
     }
 
