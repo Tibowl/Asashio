@@ -1,5 +1,5 @@
 dependencies:
-  '@tibowl/node-gkcoi': 1.1.4
+  '@tibowl/node-gkcoi': 1.1.5
   '@types/fs-extra': 8.1.0
   better-sqlite3: 7.0.1
   canvas: 2.6.1
@@ -62,7 +62,7 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA==
-  /@tibowl/node-gkcoi/1.1.4:
+  /@tibowl/node-gkcoi/1.1.5:
     dependencies:
       canvas: 2.6.1
       chart.js: 2.9.3
@@ -72,7 +72,7 @@ packages:
       node-fetch: 2.6.0
     dev: false
     resolution:
-      integrity: sha512-zXBg6LsTA+sgivmi4qJxkhUcljvdSDn8EQe6iDrnkXegWEp4DesClSo+ewE0w35zwlB41U33BdKqMoLc44xyIw==
+      integrity: sha512-rGrFuNfp3JXWb5ZEqJldXkOn4tuV+BCQqg1MJtalxCWCk9SrFrl1K/loxvRK2L7ozVu5NwyjqpaNZC/fOtL13w==
   /@types/better-sqlite3/5.4.0:
     dependencies:
       '@types/integer': 1.0.0
@@ -508,7 +508,7 @@ packages:
   /chart.js/2.9.3:
     dependencies:
       chartjs-color: 2.4.1
-      moment: 2.25.3
+      moment: 2.26.0
     dev: false
     resolution:
       integrity: sha512-+2jlOobSk52c1VU6fzkh3UwqHMdSlgH1xFv9FKMqHiNCpXsGPQa/+81AFa+i3jZ253Mq9aAycPwDjnn1XbRNNw==
@@ -1715,10 +1715,10 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==
-  /moment/2.25.3:
+  /moment/2.26.0:
     dev: false
     resolution:
-      integrity: sha512-PuYv0PHxZvzc15Sp8ybUCoQ+xpyPWvjOuK72a5ovzp2LI32rJXOiIfyoFoYvG3s6EwwrdkMyWuRiEHSZRLJNdg==
+      integrity: sha512-oIixUO+OamkUkwjhAVE18rAMfRJNsNe/Stid/gwHSOfHrOtw9EhAY2AHvdKZ/k/MggcYELFCJz/Sn2pL8b8JMw==
   /ms/2.0.0:
     dev: true
     resolution:
@@ -2796,7 +2796,7 @@ packages:
     resolution:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
 specifiers:
-  '@tibowl/node-gkcoi': ^1.1.4
+  '@tibowl/node-gkcoi': ^1.1.5
   '@types/better-sqlite3': ^5.4.0
   '@types/fs-extra': ^8.1.0
   '@types/html-to-text': ^1.4.31
