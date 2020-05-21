@@ -69,8 +69,8 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     ship.range_name = data.misc.RangeNames[ship.range]
     ship.rarity_name = data.misc.RarityNames[ship.rarity]
 
-    ship.mods = [ship.firepower_mod ?? 0, ship.torpedo_mod ?? 0, ship.aa_mod ?? 0, ship.armor_mod ?? 0].join("/")
-    ship.scraps = [ship.scrap_fuel ?? 0, ship.scrap_ammo ?? 0, ship.scrap_steel ?? 0, ship.scrap_bauxite ?? 0].join("/")
+    ship.mods = [ship.firepower_mod || 0, ship.torpedo_mod || 0, ship.aa_mod || 0, ship.armor_mod || 0].join("/")
+    ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
 
     if (ship.equipment) {
         ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)

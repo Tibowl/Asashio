@@ -21,16 +21,15 @@ export default class Ship extends Command {
 
         const shipName = args.join(" ")
         let ship: ShipExtended | undefined
-        if (Object.values(data.misc.ShipTypes).includes(shipName.toUpperCase())
-            || Object.values(data.misc.ShipCodes).includes(shipName.toUpperCase())) {
-            const type = Object.entries(data.misc.ShipTypes)
-                .concat(Object.entries(data.misc.ShipCodes))
-                .find(k => k[1] === shipName.toUpperCase())?.[0] ?? 0
+        const type = Object.entries(data.misc.ShipTypes)
+            .concat(Object.entries(data.misc.ShipCodes))
+            .find(k => k[1].toUpperCase() === shipName.toUpperCase())?.[0] ?? 0
 
-            const ships = Object.values(data.ships).filter(ship => ship.type == type)
+        if (type !== 0) {
+            const ships = Object.values(data.ships).filter(ship => ship.type == +type)
             ship = ships[Math.floor(Math.random() * ships.length)]
         } else
-            data.getShipByName(shipName)
+            ship = data.getShipByName(shipName)
 
         if (ship == undefined) return message.reply("Unknown ship")
 
