@@ -267,23 +267,34 @@ function getDisplayDropString(cached: Cache, message: Message | Message[] | unde
     )
 
     if (db == "tsundb")
-        if (!(drops.map(drop => drop.samples0).filter(k => k != "[0/0]").length == 0 && drops.map(drop => drop.samples1).filter(k => k != "[0/0]").length == 0))
+        if (!(drops.map(drop => drop.samples0).filter(k => k != "[0/0]").length == 0 && drops.map(drop => drop.samples1).filter(k => k != "[0/0]").length == 0)) {
+            drops = drops.slice(0, 20)
             dropTable = createTable(
                 {
                     0: "Map",
                     4: "Rate first",
-                    7: "Rate first dupe"
-                }, drops.map(drop => [drop.map + drop.node, "|", ["/", "C", "E", "M", "H"][drop.difficulty], "|", drop.rate0, drop.samples0, "|", drop.rate1, drop.samples1]),
-                [PAD_END, PAD_END, PAD_END, PAD_END, PAD_START, PAD_END, PAD_END, PAD_START, PAD_END]
+                    6: " ",
+                    7: "Rate first dupe",
+                    9: " ",
+                    10: "Rate >1 dupe"
+                }, drops.map(drop => [
+                    drop.map + drop.node, "|",
+                    ["/", "C", "E", "M", "H"][drop.difficulty], "|",
+                    drop.rate0, drop.samples0, "|",
+                    drop.rate1, drop.samples1, "|",
+                    drop.rateRem, drop.samplesRem
+                ]),
+                [PAD_END, PAD_END, PAD_END, PAD_END, PAD_START, PAD_END, PAD_END, PAD_START, PAD_END, PAD_END, PAD_START, PAD_END]
             )
+        }
 
     let dropString = `Found following drops for **${cached.ship.full_name}** (${cached.rank} rank): \`\`\`
 ${dropTable}\`\`\``
 
     // Add small drop size notice
     if (notice) {
-        dropString += `
-*Please note that some smaller sample size results may be inaccurate.*`
+        dropString += `*Please note that some smaller sample size results may be inaccurate.*
+`
     }
 
     // Add rows shown notice
@@ -322,7 +333,7 @@ const displayData = (cached: Cache, reply: Message | Message[], db: DBType): voi
     try {
         if (!(reply instanceof Message)) reply = reply[0]
 
-        reply.edit(getDisplayDataString(cached, reply, db))
+        reply.edit(getDisplayDataString(cached, reply, db, true))
     } catch (error) {
         Logger.error(error)
     }
@@ -357,17 +368,24 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
             }
             difficulty = difficulty ?? 0
 
+            const drops_zero = entry.drops_zero ?? 0, runs_zero = entry.runs_zero ?? 0
+            const drops_one = entry.drops_one ?? 0, runs_one = entry.runs_one ?? 0
+            const drops = entry.drops ?? 0, runs = entry.runs ?? 0
+            const remaining = drops - drops_one - drops_zero, remainingRuns = runs - runs_one - runs_zero
+
             const dropData: DropData = {
                 map,
                 difficulty,
                 node,
                 rank,
-                "rate0": percentage(entry.drops_zero ?? 0, entry.runs_zero ?? 0),
-                "samples0": `[${entry.drops_zero ?? 0}/${entry.runs_zero ?? 0}]`,
-                "rate1": percentage(entry.drops_one ?? 0, entry.runs_one ?? 0),
-                "samples1": `[${entry.drops_one ?? 0}/${entry.runs_one ?? 0}]`,
-                "rateTotal": percentage(entry.drops ?? 0, entry.runs ?? 0),
-                "samplesTotal": `[${entry.drops ?? 0}/${entry.runs ?? 0}]`,
+                "rate0": percentage(drops_zero, runs_zero),
+                "samples0": `[${drops_zero}/${runs_zero}]`,
+                "rate1": percentage(drops_one, runs_one),
+                "samples1": `[${drops_one}/${runs_one}]`,
+                "rateTotal": percentage(drops, runs),
+                "samplesTotal": `[${drops}/${runs}]`,
+                "rateRem": percentage(remaining, remainingRuns),
+                "samplesRem": `[${remaining}/${remainingRuns}]`,
                 "totalDrops": entry.drops ?? 0
             }
             cached.dropData[entry.map + node + difficulty] = dropData

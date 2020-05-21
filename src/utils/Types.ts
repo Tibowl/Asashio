@@ -650,6 +650,8 @@ export interface DropData {
     samples1?: string
     rateTotal: string
     samplesTotal: string
+    rateRem?: string
+    samplesRem?: string
     totalDrops: number
 }
 
