@@ -201,10 +201,10 @@ export interface Routes {
 }
 
 export interface MapEntries {
-    entryCount: number
-    pageCount:  number
-    perPage:    number
-    entries:    MapEntry[]
+    entryCount?: number
+    pageCount:   number
+    perPage:     number
+    entries:     MapEntry[]
 }
 
 export interface MapEntry {

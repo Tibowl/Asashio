@@ -16,8 +16,10 @@ const cache = join(path, "cache")
 configure({ cacheDir: cache })
 Logger.info(`Caching in ${cache}`)
 
-const entriesCache: { [key: string]: MapEntry[] } = {}
-
+const entriesCache: { [key: string]: {
+    entries: MapEntry[][]
+    edgeCounts: number[]
+} } = {}
 type ShipID = "s1" | "s2" | "s3" | "s4" | "s5" | "s6" | "s7"
 type ItemID = "i1" | "i2" | "i3" | "i4" | "i5" | "ix"
 
@@ -30,6 +32,7 @@ export default class RandomFleet extends Command {
 How it works:
 - Picks a random entry in TsunDB for this map:
   - Only lastest 50 for each incoming edge are considered
+  - These 50 are weighted by the amount of total entries for the edge
   - Limited to last 15 days for normal maps
 - Generates an image out of that fleet
 
@@ -101,11 +104,19 @@ Difficulty: ${["/", "C", "E", "M", "H"][entry.difficulty]}
     }
 
     async randomFleet(map: string, edges: string[], node: string): Promise<DeckBuilder | undefined> {
-        const entries = await this.getEntries(map, edges)
+        const samples = await this.getEntries(map, edges)
 
-        if (entries.length == 0) return undefined
+        if (samples.edgeCounts.length == 0) return undefined
 
-        const entry = entries[Math.floor(Math.random() * entries.length)]
+        const sum = samples.edgeCounts.reduce((acc, el) => acc+el, 0)
+        if (sum == 0) return undefined
+
+        const target = Math.random() * sum
+        let acc = 0
+
+        const edgeEntries = samples.entries[samples.edgeCounts.filter(el => (acc = acc + el) <= target).length]
+
+        const entry = edgeEntries[Math.floor(Math.random() * edgeEntries.length)]
         const data: DeckBuilder = {
             hqlv: entry.hqLvl,
             theme: "dark",
@@ -134,24 +145,29 @@ ${new Date(entry.datetime + "Z").toLocaleString("ja-JP", {
         return data
     }
 
-    private async getEntries(map: string, edges: string[]): Promise<MapEntry[]> {
+    private async getEntries(map: string, edges: string[]): Promise<{
+        entries: MapEntry[][]
+        edgeCounts: number[]
+    }> {
         const cached = entriesCache[map + edges.join(",")]
         if (cached) return cached
 
         const dateFilter = (+map.split("-")[0]) < 10 ? `&start=${this.recent()}` : ""
 
-        const entries: MapEntry[] = []
+        const entries: MapEntry[][] = []
+        const edgeCounts: number[] = []
         for (const edge of edges) {
             Logger.info(`Caching entries of ${map} / ${edge}`)
             const comps: MapEntries = await (await fetch(`http://kc.piro.moe/api/routing/entries/${map}?edgeId=${edge}${dateFilter}&perPage=50`)).json()
-            entries.push(...comps.entries)
+            entries.push(comps.entries ?? [])
+            edgeCounts.push(comps.entryCount ?? 0)
         }
-        entriesCache[map + edges.join(",")] = entries
+        entriesCache[map + edges.join(",")] = { entries, edgeCounts }
         setTimeout(() => {
             delete entriesCache[map + edges.join(",")]
         }, 60 * 60 * 1000)
 
-        return entries
+        return entriesCache[map + edges.join(",")]
     }
 
     getFleet(fleetData: FleetData[]): DeckBuilderFleet | undefined {
