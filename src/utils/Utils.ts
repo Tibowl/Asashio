@@ -445,7 +445,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     // Check if cached, if so show cached reply.
     const cached = shipDropCache[db + ship.api_id + rank]
     if (cached && cached.time + 1 * 60 * 60 * 1000 > new Date().getTime()) {
-        const reply = await message.channel.send(getDisplayDataString(cached, message, db))
+        const reply = await message.channel.send(getDisplayDataString(cached, message, db, true))
         if (cached.callback)
             cached.callback.push(async () => displayData(cached, reply, db))
         return reply
@@ -463,7 +463,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
         loading: true,
         callback: []
     }
-    const reply = await message.channel.send(getDisplayDataString(newcached, message, db))
+    const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true))
     newcached.callback.push(async () => displayData(newcached, await reply, db))
     queue(ship, rank, newcached, db)
     return reply
