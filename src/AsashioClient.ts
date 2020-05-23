@@ -1,4 +1,4 @@
-import Discord, { ClientEvents } from "discord.js"
+import Discord, { ClientEvents, Intents } from "discord.js"
 import DBL from "dblapi.js"
 import Enmap from "enmap"
 import fs from "fs"
@@ -16,6 +16,15 @@ import Command from "./utils/Command"
 import FollowManager from "./utils/FollowManager"
 
 const Logger = log4js.getLogger("main")
+const intents = new Intents()
+intents.add(
+    // For handling commands in DMs
+    "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS",
+    // For follow stuff, also required for guild messages for some reason?
+    "GUILDS",
+    // For handling commands in guilds, reactions for X to delete
+    "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"
+)
 
 export default class AsashioClient extends Discord.Client {
     data: DataManager = new DataManager()
@@ -28,8 +37,15 @@ export default class AsashioClient extends Discord.Client {
     commands: Enmap<string, Command> = new Enmap()
     recentMessages: Discord.Message[] = []
 
-    constructor(options?: Discord.ClientOptions | undefined) {
-        super(options)
+    constructor() {
+        super({
+            presence: {
+                status: "idle"
+            },
+            ws: {
+                intents
+            }
+        })
     }
 
     init(): void {
