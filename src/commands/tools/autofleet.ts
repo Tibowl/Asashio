@@ -204,7 +204,9 @@ Ships to use:
         const allShips: ShipCandidates = { "main": [], "escort": [] }
         for (const edge of edges) {
             try {
-                const ships = await (await fetch(`http://kc.piro.moe/api/routing/edges/${map}/${edge}?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)).json()
+                const fetched = await fetch(`http://kc.piro.moe/api/routing/edges/${map}/${edge}?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)
+                if (fetched.status == 204) continue
+                const ships = await fetched.json()
                 if (!ships.topships) continue
                 const check = (fleet: FleetNum): void => {
                     if (!ships.topships[fleet]) return
@@ -221,6 +223,7 @@ Ships to use:
                 check("escort")
             } catch (error) {
                 Logger.error(`Gathering fleets for ${map} - ${edge} failed`)
+                Logger.error(error)
             }
         }
         if (!shipsCache[map])
