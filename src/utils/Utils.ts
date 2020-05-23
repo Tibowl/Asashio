@@ -90,6 +90,7 @@ export function handleShip(ship: ShipExtended): ShipExtended {
         if (ship.remodel_report) requirements.push(`${k(ship.remodel_report)}×${emoji.action_report}`)
         if (ship.remodel_catapult) requirements.push(`${k(ship.remodel_catapult)}×${emoji.catapult}`)
         if (ship.remodel_gunmat) requirements.push(`${k(ship.remodel_gunmat)}×${emoji.gun_mat}`)
+        if (ship.remodel_airmat) requirements.push(`${k(ship.remodel_airmat)}×${emoji.air_mat}`)
 
         ship.remodel_text += requirements.join(", ")
     } else
