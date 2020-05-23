@@ -85,6 +85,7 @@ export function handleShip(ship: ShipExtended): ShipExtended {
         if (ship.remodel_ammo) requirements.push(`${ship.remodel_ammo}×${emoji.ammo}`)
         if (ship.remodel_steel) requirements.push(`${ship.remodel_steel}×${emoji.steel}`)
         if (ship.remodel_development_material) requirements.push(`${k(ship.remodel_development_material)}×${emoji.devmat}`)
+        if (ship.remodel_construction_material) requirements.push(`${k(ship.remodel_construction_material)}×${emoji.flamethrower}`)
         if (ship.remodel_blueprint) requirements.push(`${k(ship.remodel_blueprint)}×${emoji.blueprint}`)
         if (ship.remodel_report) requirements.push(`${k(ship.remodel_report)}×${emoji.action_report}`)
         if (ship.remodel_catapult) requirements.push(`${k(ship.remodel_catapult)}×${emoji.catapult}`)
