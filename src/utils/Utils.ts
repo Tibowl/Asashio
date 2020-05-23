@@ -219,8 +219,8 @@ export function calculatePostCap(atk: number, currenthp: number, maxhp: number, 
         "hps": [],
         "minhp": 9999,
         "maxhp": 0,
-        "maxdmg": 9999,
-        "mindmg": 0
+        "mindmg": 9999,
+        "maxdmg": 0
     }
 
     for (const posdmg in dmgsDealth) {

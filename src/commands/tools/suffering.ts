@@ -52,7 +52,7 @@ export default class Suffering extends Command {
         if (isNaN(maxhp) || maxhp <= 4 || (maxhp > 1000 || (maxhp > 200 && armor == undefined)) || hp > maxhp) return message.reply("Invalid/unrealistic maximum hp.")
 
         // Create overkill bar
-        if (armor == undefined) {
+        if (armor == undefined || isNaN(armor)) {
             const calculated = calculatePostCap(9999, hp, maxhp, 1)
             return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, this.createBar(calculated))
