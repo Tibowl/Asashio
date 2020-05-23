@@ -22,10 +22,13 @@ export default class FollowManager {
         this.sql.prepare("CREATE TABLE IF NOT EXISTS follows (guildID TEXT, channelID TEXT, category TEXT, filter TEXT, addedOn BIGINT, addedBy TEXT, PRIMARY KEY (channelID, category, filter))").run()
 
         this.addFollowStatement = this.sql.prepare("INSERT OR REPLACE INTO follows VALUES (@guildID, @channelID, @category, @filter, @addedOn, @addedBy)")
+
         this.getFollowsStatement = this.sql.prepare("SELECT * FROM follows WHERE category = @category AND channelID = @channelID")
+        this.getFollowsInChannelStatement = this.sql.prepare("SELECT * FROM follows WHERE channelID = @channelID")
         this.followingStatement = this.sql.prepare("SELECT category, channelID, COUNT(filter) AS amount FROM follows WHERE guildID = @guildID GROUP BY category, channelID")
         this.getFollowersStatement = this.sql.prepare("SELECT channelID FROM follows WHERE category = @category AND filter = @filter")
         this.followsStatement = this.sql.prepare("SELECT channelID FROM follows WHERE category = @category AND filter = @filter AND channelID = @channelID")
+
         this.unfollowsStatement = this.sql.prepare("DELETE FROM follows WHERE category = @category AND filter = @filter AND channelID = @channelID")
         this.dropChannelStatement = this.sql.prepare("DELETE FROM follows WHERE channelID = @channelID")
         this.dropChannelCategoryStatement = this.sql.prepare("DELETE FROM follows WHERE channelID = @channelID AND category = @category")
@@ -46,7 +49,11 @@ export default class FollowManager {
     }
 
     private getFollowsStatement: SQLite.Statement
-    getFollows(channel: Channel, category: FollowCategory): Follower[] {
+    private getFollowsInChannelStatement: SQLite.Statement
+    getFollows(channel: Channel, category?: FollowCategory): Follower[] {
+        if (category == undefined) {
+            return this.getFollowsInChannelStatement.all({ channelID: channel.id })
+        }
         return this.getFollowsStatement.all({
             channelID: channel.id,
             category
