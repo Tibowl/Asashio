@@ -358,6 +358,7 @@ export function percentage(count: number, total: number): string {
 
 const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<{ [key: string]: DropData }> => {
     const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
+    if (api.error) return {}
 
     if (db == "tsundb") {
         for (const entry of api.result) {
@@ -471,9 +472,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     return reply
 }
 
-export async function specialDrops(message: Message,  db: DBType = "tsundb"): Promise<Message | Message[]> {
-    const ships = ["Fletcher", "Gambier Bay", "Samuel B. Roberts", "Perth"]
-
+export async function specialDrops(message: Message, ships: string[], db: DBType = "tsundb"): Promise<Message | Message[]> {
     let reply = undefined
     const caches: Cache[] = []
     for (const name of ships) {
@@ -483,7 +482,7 @@ export async function specialDrops(message: Message,  db: DBType = "tsundb"): Pr
 
             // Check if cached, if so show cached reply.
             const cached = shipDropCache[db + ship.api_id + rank]
-            if (cached && cached.time + 1 * 60 * 60 * 1000 > new Date().getTime()) {
+            if (cached && cached.time + 2 * 60 * 60 * 1000 > new Date().getTime()) {
                 caches.push(cached)
                 if (cached.callback) {
                     if (!reply) reply = message.channel.send("Loading...")
@@ -512,7 +511,6 @@ export async function specialDrops(message: Message,  db: DBType = "tsundb"): Pr
     }
 
     const out = `${caches.filter(f => !(f.rank == "A" && Object.values(f.dropData).length == 0)).map((cached) => getDisplayDropString(cached, message, db, false).trim().replace(/\n+$/, "")).join("\r\n")}
-
 *Please note that some smaller sample size results may be inaccurate.*
 See \`.drop <ship>\` for more information.`
 
