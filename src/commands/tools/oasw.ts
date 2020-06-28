@@ -47,7 +47,7 @@ With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipme
         if (aswRequired > 0) {
             embed.setColor("#0066ff")
                 .addField("Opening ASW", `This ship requires ${aswRequired} ASW`)
-            if (ship.asw_max == null || ship.asw == null)
+            if (ship.asw_max == undefined || ship.asw == undefined)
                 embed.addField("No data available", "ASW stats are not yet updated for this ship")
             else if (level > 0)
                 addLevelRow()
