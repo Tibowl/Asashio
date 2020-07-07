@@ -26,7 +26,7 @@ export default class Dupes extends Command {
         let rank: string | undefined = "S"
 
         for (let i = args.length - 1; i > 0; i--) {
-            args[i] = args[i].replace(/^E(\d[a-zA-Z0-9]+)$/i, "E-$1")
+            args[i] = args[i].replace(/^E(\d[a-zA-Z0-9]?)$/i, "E-$1")
 
             if (args[i].includes("-")) {
                 if (!args[i].match(/-\d$/)) {
