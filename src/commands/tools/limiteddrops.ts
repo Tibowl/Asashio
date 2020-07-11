@@ -32,7 +32,7 @@ function stype(classes: number[]): () => string[] {
 const types: {
     [key: string]: () => string[]
 } = {
-    "new": () => ["Jingei", "Kaiboukan No.4"],
+    "new": () => ["Jingei", "Kaiboukan No.4", "Ariake", "Helena", "Yashiro"],
 
     "de": stype([1]),
 
