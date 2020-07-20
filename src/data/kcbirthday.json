@@ -254,9 +254,10 @@
     "class": "De Ruyter-01",
     "type": "CL",
     "day": 11,
-    "month": 5,
+    "month": 3,
     "year": 1935,
-    "builder": "Netherlands, Schiedam, Wilton-Fijenoord"
+    "builder": "Netherlands, Schiedam, Wilton-Fijenoord",
+    "note": "other date? 11 may"
   },
   {
     "id": 84,
@@ -279,15 +280,6 @@
     "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
-    "id": 421,
-    "name": "Shinshuu Maru",
-    "type": "LHA",
-    "day": 14,
-    "month": 3,
-    "year": 1934,
-    "builder": "Japan, Ishikawajima Shipyard"
-  },
-  {
     "id": 101,
     "name": "Mogami",
     "class": "Mogami-01",
@@ -296,6 +288,15 @@
     "month": 3,
     "year": 1934,
     "builder": "Japan, Kure Naval Arsenal"
+  },
+  {
+    "id": 421,
+    "name": "Shinshuu Maru",
+    "type": "LHA",
+    "day": 14,
+    "month": 3,
+    "year": 1934,
+    "builder": "Japan, Ishikawajima Shipyard"
   },
   {
     "id": 295,
@@ -528,6 +529,16 @@
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
   },
   {
+    "id": 375,
+    "name": "Maestrale",
+    "class": "Maestrale-01",
+    "type": "DD",
+    "day": 5,
+    "month": 4,
+    "year": 1934,
+    "builder": "Italy, Riva Trigoso"
+  },
+  {
     "id": 79,
     "name": "Shiratsuyu",
     "class": "Shiratsuyu-01",
@@ -578,16 +589,6 @@
     "builder": "Japan, Kobe Kawasaki Shipyard"
   },
   {
-    "id": 168,
-    "name": "Urakaze",
-    "class": "Kagerou-11",
-    "type": "DD",
-    "day": 10,
-    "month": 4,
-    "year": 1940,
-    "builder": "Japan, Fujinagata Shipyards"
-  },
-  {
     "id": 384,
     "name": "Hachijou",
     "class": "Shimushu-03",
@@ -596,6 +597,16 @@
     "month": 4,
     "year": 1940,
     "builder": "Japan, Sasebo Naval Arsenal"
+  },
+  {
+    "id": 168,
+    "name": "Urakaze",
+    "class": "Kagerou-11",
+    "type": "DD",
+    "day": 10,
+    "month": 4,
+    "year": 1940,
+    "builder": "Japan, Fujinagata Shipyards"
   },
   {
     "id": 283,
@@ -646,16 +657,6 @@
     "month": 4,
     "year": 1937,
     "builder": "UK, Cammell Laird and Company Ltd."
-  },
-  {
-    "id": 375,
-    "name": "Maestrale",
-    "class": "Maestrale-01",
-    "type": "DD",
-    "day": 5,
-    "month": 4,
-    "year": 1934,
-    "builder": "Italy, Riva Trigoso"
   },
   {
     "id": 55,
@@ -1278,16 +1279,6 @@
     "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
-    "id": 252,
-    "name": "Okinami",
-    "class": "Yuugumo-14",
-    "type": "DD",
-    "day": 18,
-    "month": 7,
-    "year": 1943,
-    "builder": "Japan, Maizuru Naval Arsenal"
-  },
-  {
     "id": 225,
     "name": "Asashimo",
     "class": "Yuugumo-16",
@@ -1296,6 +1287,16 @@
     "month": 7,
     "year": 1943,
     "builder": "Japan, Fujinagata Shipyards"
+  },
+  {
+    "id": 252,
+    "name": "Okinami",
+    "class": "Yuugumo-14",
+    "type": "DD",
+    "day": 18,
+    "month": 7,
+    "year": 1943,
+    "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
     "id": 138,
@@ -1820,16 +1821,6 @@
     "builder": "Japan, Fujinagata Shipyards"
   },
   {
-    "id": 169,
-    "name": "Tanikaze",
-    "class": "Kagerou-14",
-    "type": "DD",
-    "day": 1,
-    "month": 11,
-    "year": 1940,
-    "builder": "Japan, Fujinagata Shipyards"
-  },
-  {
     "id": 143,
     "name": "Musashi",
     "class": "Yamato-02",
@@ -1838,6 +1829,16 @@
     "month": 11,
     "year": 1940,
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
+  },
+  {
+    "id": 169,
+    "name": "Tanikaze",
+    "class": "Kagerou-14",
+    "type": "DD",
+    "day": 1,
+    "month": 11,
+    "year": 1940,
+    "builder": "Japan, Fujinagata Shipyards"
   },
   {
     "id": 27,
@@ -1900,16 +1901,6 @@
     "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
-    "id": 67,
-    "name": "Oboro",
-    "class": "Ayanami-07",
-    "type": "DD",
-    "day": 8,
-    "month": 11,
-    "year": 1930,
-    "builder": "Japan, Sasebo Naval Arsenal"
-  },
-  {
     "id": 61,
     "name": "Maya",
     "class": "Takao-03",
@@ -1918,6 +1909,16 @@
     "month": 11,
     "year": 1930,
     "builder": "Japan, Kobe Kawasaki Shipyard"
+  },
+  {
+    "id": 67,
+    "name": "Oboro",
+    "class": "Ayanami-07",
+    "type": "DD",
+    "day": 8,
+    "month": 11,
+    "year": 1930,
+    "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
     "id": 1,
@@ -2410,5 +2411,105 @@
     "month": 12,
     "year": 1937,
     "builder": "Italy, Livorno OTO"
+  },
+  {
+    "id": 431,
+    "name": "Usugumo",
+    "class": "Fubuki-07",
+    "type": "DD",
+    "day": 26,
+    "month": 12,
+    "year": 1927,
+    "builder": "Japan, Ishikawajima Shipyard"
+  },
+  {
+    "id": 434,
+    "name": "Jingei",
+    "class": "Jingei-01",
+    "type": "Special",
+    "day": 4,
+    "month": 5,
+    "year": 1923,
+    "builder": "Japan, Nagasaki Mitsubishi Shipyard"
+  },
+  {
+    "id": 436,
+    "name": "I-47",
+    "class": "I-16-class-07",
+    "type": "SS",
+    "day": 29,
+    "month": 9,
+    "year": 1943,
+    "builder": "Japan, Sasebo Naval Arsenal"
+  },
+  {
+    "id": 437,
+    "name": "Kaiboukan No.4",
+    "class": "Type D-02",
+    "type": "DDE",
+    "day": 30,
+    "month": 12,
+    "year": 1943,
+    "builder": "Japan, Yokosuka Naval Arsenal"
+  },
+  {
+    "id": 441,
+    "name": "Matsu",
+    "class": "Matsu-01",
+    "type": "DD",
+    "day": 3,
+    "month": 2,
+    "year": 1944,
+    "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
+    "id": 432,
+    "name": "Ariake",
+    "class": "Hatsuharu-05",
+    "type": "DD",
+    "day": 23,
+    "month": 9,
+    "year": 1934,
+    "builder": "Japan, Kobe Kawasaki Shipyard"
+  },
+  {
+    "id": 415,
+    "name": "Helena",
+    "class": "St.Louis-02",
+    "type": "CL",
+    "day": 27,
+    "month": 8,
+    "year": 1938,
+    "builder": "US, New York Naval Yard"
+  },
+  {
+    "id": 412,
+    "name": "Yashiro",
+    "class": "Mikura-06",
+    "type": "DDE",
+    "day": 16,
+    "month": 2,
+    "year": 1944,
+    "builder": "Japan, Sakurajima Hitachi Shipyard"
+  },
+  {
+    "id": 402,
+    "name": "South Dakota",
+    "class": "South Dakota-01",
+    "type": "BB",
+    "day": 7,
+    "month": 6,
+    "year": 1941,
+    "builder": "US, New York Shipbuilding"
+  },
+  {
+    "id": 403,
+    "name": "Hornet",
+    "class": "Yorktown-03",
+    "type": "CV",
+    "day": 14,
+    "month": 12,
+    "year": 1940,
+    "builder": "US, Newport News Shipbuilding Company"
   }
 ]
