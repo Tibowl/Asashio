@@ -252,7 +252,7 @@ export function calculatePostCap(atk: number, currenthp: number, maxhp: number, 
 }
 
 const shipDropCache: Cached = {}
-function getDisplayDropString(cached: Cache, message: Message | Message[] | undefined, db: DBType, notice = true): string {
+function getDisplayDropString(cached: Cache, message: Message | Message[] | undefined, db: DBType, notice = true, single = true): string {
     let drops = Object.values(cached.dropData).sort((a, b) => b.totalDrops - a.totalDrops)
     if (drops.length == 0)
         return `No ${cached.rank} rank **${cached.ship.full_name}** drops found`
@@ -260,7 +260,7 @@ function getDisplayDropString(cached: Cache, message: Message | Message[] | unde
     if (message && !(message instanceof Message)) message = message[0]
 
     const totalCount = drops.length
-    drops = (message && message.channel.type == "dm") ? drops.slice(0, 35) : drops.slice(0, 10)
+    drops = (message && message.channel.type == "dm" && single) ? drops.slice(0, 35) : drops.slice(0, 10)
 
     let dropTable = createTable(
         { 0: "Map", 4: "Rate" },
@@ -301,7 +301,7 @@ ${dropTable}\`\`\``
 
     // Add rows shown notice
     if (drops.length < totalCount) {
-        if (message && message.channel.type == "dm") {
+        if (message && message.channel.type == "dm" && single) {
             dropString += `Shown top ${drops.length}/${totalCount} rows. `
         } else {
             dropString += `Shown top ${drops.length}/${totalCount} rows. Redo a .drop command in DM for more. `
@@ -510,24 +510,26 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
         }
     }
 
-    const out = `${caches.filter(f => !(f.rank == "A" && Object.values(f.dropData).length == 0)).map((cached) => getDisplayDropString(cached, message, db, false).trim().replace(/\n+$/, "")).join("\r\n")}
+    const out = `${caches.filter(f => !(f.rank == "A" && Object.values(f.dropData).length == 0)).map((cached) => getDisplayDropString(cached, message, db, false, false).trim().replace(/\n+$/, "")).join("\r\n")}
 *Please note that some smaller sample size results may be inaccurate.*
 See \`.drop <ship>\` for more information.`
 
-    if (!reply)
-        reply = message.channel.send(out, {split: {
-            maxLength: 1800,
-            char: "\r"
-        }})
-    else if (out.length > 1900) {
-        (await reply).delete()
+    if (out.length > 1900) {
+        if (message.channel.type !== "dm" && reply)
+            (await reply).edit("This list is too long and thus can only be used in DMs.")
+        else if (reply)
+            (await reply).delete()
+        else
+            reply = []
 
-        reply = message.channel.send(out, {split: {
-            maxLength: 1800,
+        message.author.send(out, {split: {
+            maxLength: 1900,
             char: "\r"
         }})
-    } else
+    } else if (reply)
         (await reply).edit(out)
+    else
+        reply = message.channel.send(out)
 
     return reply
 }

@@ -45,9 +45,9 @@ const types: {
     "russia": ctype(["Tashkent", "Gangut"]),
 
     "usa-dd": ctype(["John C. Butler", "Fletcher"]),
-    "usa-cruiser": ctype(["Atlanta", "Northampton"]),
+    "usa-cruiser": ctype(["Atlanta", "Northampton", "St. Louis"]),
     "usa-bb": ctype(["Iowa", "Colorado"]),
-    "usa-cv": ctype(["Casablanca", "Lexington", "Essex"]),
+    "usa-cv": ctype(["Casablanca", "Lexington", "Essex", "Yorktown"]),
 }
 
 export default class LimitedDrop extends Command {
@@ -71,8 +71,6 @@ Available types: ${Object.keys(types).map(k => `\`${k}\``).join(", ")}`)
         if (ships == undefined) return message.reply(`Unknown type, available: ${Object.keys(types).map(k => `\`${k}\``).join(", ")}`)
 
         const list = ships()
-        if (list.length > 5 && message.channel.type !== "dm")
-            return message.reply("This list can only be used in DM")
 
         if (args.length > 1 && args[1] == "poi")
             return specialDrops(message, list, "poi")
