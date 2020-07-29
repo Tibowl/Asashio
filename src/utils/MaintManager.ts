@@ -5,18 +5,17 @@ import fetch from "node-fetch"
 import client from "../main"
 
 const Logger = log4js.getLogger("MaintManager")
-export default class MaintManager{
+export default class MaintManager {
     init(): void {
         client.data.store.maintInfo = client.data.store.maintInfo ?? {}
+        client.data.store.versionInfo = client.data.store.versionInfo ?? {}
 
-        this.check()
-        setInterval(() => {
-            this.check()
-        }, 60 * 1000)
+        this.checkUpdates()
+        setInterval(() => this.checkUpdates(), 60 * 1000)
     }
 
     getTimes(): string[] | null {
-        const {maintInfo} = client.data.store
+        const { maintInfo } = client.data.store
         if (!maintInfo || !maintInfo.lastLine) return []
 
         const line = maintInfo.lastLine
@@ -27,9 +26,27 @@ export default class MaintManager{
         return times
     }
 
-    async check(): Promise<void> {
-        const {maintInfo} = client.data.store
+    checkUpdates(): void {
+        try {
+            this.checkNews()
+        } catch (error) {
+            Logger.error(`An error occured while handling news ${error}`)
+        }
+
+        try {
+            this.checkVersion()
+        } catch (error) {
+            Logger.error(`An error occured while handling news ${error}`)
+        }
+    }
+
+    async checkNews(): Promise<void> {
+        const { maintInfo } = client.data.store
         const html = await (await fetch("http://203.104.209.7/kcscontents/news/post.html")).text()
+        if (html.includes("403 Forbidden")) {
+            Logger.error("Unable to fetch maint updates (403)")
+            return
+        }
         const line = htmlToText.fromString(html)
         if (maintInfo.lastLine == line) return
 
@@ -39,6 +56,78 @@ export default class MaintManager{
         client.data.saveStore()
 
         Logger.info(this.getTimes())
-        client.followManager.send("maint", `Maint info: ${this.getTimes()?.join(" ~ ")}\nMessage: ${line}`)
+        if (line.trim().length == 0)
+            client.followManager.send("maint", "Maint info cleared")
+        else
+            client.followManager.send("maint", `Maint info: ${this.getTimes()?.join(" ~ ")}\nMessage: ${line}`)
+    }
+
+    async checkVersion(): Promise<void> {
+        const { versionInfo } = client.data.store
+        const isFirstRun = versionInfo.lastKCAVersion == undefined
+        let output = ""
+        let isDoing = false, isEmergency = false, endDateTime = "", newMainVersion = ""
+
+        const html = await (await fetch("http://203.104.209.7/gadget_html5/js/kcs_const.js")).text()
+        if (html.includes("403 Forbidden")) {
+            Logger.error("Unable to fetch maint updates (403)")
+            return
+        }
+
+        for (let line of html.split("\n")) {
+            if (line.indexOf("MaintenanceInfo.IsDoing") >= 0)
+                isDoing = !!parseInt(line.split("= ")[1].replace(";", "").trim())
+            else if (line.indexOf("MaintenanceInfo.IsEmergency") >= 0)
+                isEmergency = !!parseInt(line.split("= ")[1].replace(";", "").trim())
+            else if (line.indexOf("MaintenanceInfo.EndDateTime") >= 0)
+                endDateTime = line.split("parse(\"")[1].replace("\");", "").trim()
+            else if (line.indexOf("VersionInfo.scriptVesion") >= 0)
+                newMainVersion = line.split("\"")[1].replace("\";", "").trim()
+        }
+
+        const infoLines = isDoing ? [
+            `📉 ${isEmergency ? "[Emergency] " : ""}Maintenance ongoing`,
+            "Expected end time: " + endDateTime
+        ] : [
+            "📈 Maintenance ended"
+        ]
+
+        if (infoLines.join("\n") !== versionInfo.lastMaintString) {
+            versionInfo.lastMaintString = infoLines.join("\n")
+            if (isDoing && !versionInfo.lastMaintOngoing)
+                infoLines[0] = `📉 ${isEmergency ? "[Emergency] " : ""}Maintenance has started - you can no longer refresh`
+
+            versionInfo.lastMaintOngoing = isDoing
+            output += infoLines.join("\n")
+            output += "\n"
+        }
+
+        if (newMainVersion !== versionInfo.lastMainVersion) {
+            output += `Main game version changed from ${versionInfo.lastMainVersion} -> ${newMainVersion}\n`
+            versionInfo.lastMainVersion = newMainVersion
+        }
+
+        try {
+            const kca = await (await fetch("http://203.104.209.7/kca/version.json")).json()
+            const newKCAVersion = kca?.api?.api_start2 ?? "?.?.?.?"
+            if (newKCAVersion !== versionInfo.lastKCAVersion) {
+                output += `Metadata version changed from ${versionInfo.lastKCAVersion} -> ${newKCAVersion}\n`
+                versionInfo.lastKCAVersion = newKCAVersion
+            }
+        } catch (error) {
+            Logger.error("Failed to get android version", error)
+        }
+
+        output = output.trim()
+        if (isFirstRun) {
+            Logger.info(`First run - not sending ${output}`)
+            client.data.saveStore()
+            return
+        }
+        if (output.length == 0) return
+        Logger.info(output)
+
+        client.data.saveStore()
+        client.followManager.send("maint", output)
     }
 }

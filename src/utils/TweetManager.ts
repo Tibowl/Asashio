@@ -75,14 +75,6 @@ export default class Tweetmanager {
 
         let text = (tweet.extended_tweet?.full_text ?? tweet.text).replace("&gt;", ">").replace("&lt;", "<")
 
-        // @KCServerWatcher
-        if (tweet.user.id_str == "980204936687489025") {
-            if (text.includes("Game version") || text.includes("Maintenance ended") || text.includes("Maintenance ongoing"))
-                client.followManager.send("maint", text)
-
-            return
-        }
-
         // @kancolle_1draw || @kancolle_1draw2
         if (tweet.user.id_str == "3098155465" || tweet.user.id_str == "1242879824445624320") {
             if (text.includes("お題は"))

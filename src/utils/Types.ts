@@ -123,7 +123,7 @@ export interface Improvements {
     _bauxite: number
     _fuel: number
     _steel: number
-    _products: {[key: string]: unknown}
+    _products: { [key: string]: unknown }
 }
 
 export interface Equipment {
@@ -202,56 +202,56 @@ export interface Routes {
 
 export interface MapEntries {
     entryCount?: number
-    pageCount:   number
-    perPage:     number
-    entries:     MapEntry[]
+    pageCount: number
+    perPage: number
+    entries: MapEntry[]
 }
 
 export interface MapEntry {
-    id:              number
-    map:             string
-    hqLvl:           number
-    cleared?:        boolean
-    fleet1:          string[]
-    fleet1data:      FleetData[]
-    fleet2:          string[]
-    fleet2data:      FleetData[]
-    sortiedFleet:    number
-    fleetSpeed:      number
-    edgeId:          number[]
-    los:             number[]
-    datetime:        string
-    fleetIds:        number[]
-    fleetLevel:      number
-    fleetOneEquips:  number[]
+    id: number
+    map: string
+    hqLvl: number
+    cleared?: boolean
+    fleet1: string[]
+    fleet1data: FleetData[]
+    fleet2: string[]
+    fleet2data: FleetData[]
+    sortiedFleet: number
+    fleetSpeed: number
+    edgeId: number[]
+    los: number[]
+    datetime: string
+    fleetIds: number[]
+    fleetLevel: number
+    fleetOneEquips: number[]
     fleetOneExSlots: number[]
-    fleetOneTypes:   number[]
-    fleetTwoEquips:  number[]
+    fleetOneTypes: number[]
+    fleetTwoEquips: number[]
     fleetTwoExSlots: number[]
-    fleetTwoTypes:   number[]
-    radars:          number
-    radarShips:      number
-    radars5los:      number
-    radarShips5los:  number
-    nodeInfo:        string
-    difficulty?:     number
-    gaugeType?:      number
-    gaugeNum?:       number
-    currentMapHp?:   number
-    maxMapHp?:       number
+    fleetTwoTypes: number[]
+    radars: number
+    radarShips: number
+    radars5los: number
+    radarShips5los: number
+    nodeInfo: string
+    difficulty?: number
+    gaugeType?: number
+    gaugeNum?: number
+    currentMapHp?: number
+    maxMapHp?: number
 }
 
 export interface FleetData {
-    id:      number
-    name:    string
+    id: number
+    name: string
     name_en: string
-    level:   number
-    type:    number
-    speed:   number
-    equip:   number[]
-    stars:   number[]
-    ace:     number[]
-    exslot:  number
+    level: number
+    type: number
+    speed: number
+    equip: number[]
+    stars: number[]
+    ace: number[]
+    exslot: number
 }
 
 export interface MiscDB {
@@ -295,24 +295,24 @@ export interface Birthday {
 }
 
 export interface Quest {
-    detail_en?:      string
-    label:           string
-    letter?:         QuestLetter
-    note?:           string
-    reward_ammo?:    number
+    detail_en?: string
+    label: string
+    letter?: QuestLetter
+    note?: string
+    reward_ammo?: number
     reward_bauxite?: number
-    reward_fuel?:    number
-    reward_other?:   string
-    reward_steel?:   number
-    title?:          string
-    title_en?:       null | string
-    category?:       null
-    detail?:         null
-    id?:             null
-    requires?:       null
-    type?:           null
-    unlocks?:        null
-    alias_of?:       string
+    reward_fuel?: number
+    reward_other?: string
+    reward_steel?: number
+    title?: string
+    title_en?: null | string
+    category?: null
+    detail?: null
+    id?: null
+    requires?: null
+    type?: null
+    unlocks?: null
+    alias_of?: string
 }
 
 export type QuestLetter = "A" | "B" | "C" | "D" | "E" | "F" | "G"
@@ -613,6 +613,7 @@ interface ShipCache {
 
 export interface Store {
     maintInfo: MaintInfo
+    versionInfo: VersionInfo
     eventID?: number
     stats?: Stats
     cachedShips?: ShipCache
@@ -627,6 +628,12 @@ export interface CommandStats {
 
 export interface MaintInfo {
     lastLine?: string
+}
+export interface VersionInfo {
+    lastMainVersion?: string
+    lastKCAVersion?: string
+    lastMaintString?: string
+    lastMaintOngoing?: boolean
 }
 
 export type Alias = [string, string]
