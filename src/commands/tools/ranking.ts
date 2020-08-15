@@ -3,6 +3,7 @@ import fetch from "node-fetch"
 
 import Command from "../../utils/Command"
 import { PAD_END, PAD_START, createTable } from "../../utils/Utils"
+import emoji from "../../data/emoji.json"
 
 const en_names = ["?", "Yokosuka", "Kure", "Sasebo", "Maizuru", "Ominato", "Truk", "Lingga", "Rabaul", "Shortland", "Buin", "Tawi-Tawi", "Palau", "Brunei", "Hitokappu", "Paramushir", "Sukumo", "Kanoya", "Iwagawa", "Saiki Bay", "Hashirajima"]
 const ranks = [1, 5, 20, 100, 500]
@@ -36,7 +37,7 @@ export default class Ranking extends Command {
     run(message: Message, args: string[]): Promise<Message | Message[]> {
         const cached = this.returnCached(message, args)
         if (cached) return cached
-        const reply = message.reply("Loading...")
+        const reply = message.reply(`${emoji.loading} Loading...`)
 
         fetch(`https://api.kancolle.moe/server/list?date=${Date.now()}`).then(async (fetched) => {
             const api: SenkaAPI = await fetched.json()

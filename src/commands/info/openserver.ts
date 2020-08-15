@@ -1,7 +1,8 @@
 import { Message } from "discord.js"
 import fetch from "node-fetch"
-import Command from "../../utils/Command"
 
+import Command from "../../utils/Command"
+import emoji from "../../data/emoji.json"
 import { createTable, PAD_START, PAD_END } from "../../utils/Utils"
 
 interface CacheData {
@@ -31,7 +32,7 @@ export default class OpenServer extends Command {
     async run(message: Message, args: string[]): Promise<Message | Message[]> {
         const cached = this.returnCached(message, args)
         if (cached != undefined) return cached
-        const reply = message.reply("Loading...")
+        const reply = message.reply(`${emoji.loading} Loading...`)
 
         fetch(`https://tsundb.kc3.moe/api/kc_servers?date=${Date.now()}`).then(async (api) => {
             const parsed = await api.json()

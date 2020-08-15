@@ -326,7 +326,7 @@ ${dropTable}\`\`\``
 
 function getDisplayDataString(cached: Cache, message: Message | Message[], db: DBType, notice = false): string {
     if (cached == undefined || cached.dropData == undefined || cached.loading)
-        return `Loading ${cached.ship.full_name} drop data...`
+        return `${emoji.loading} Loading ${cached.ship.full_name} drop data...`
 
     return getDisplayDropString(cached, message, db, notice)
 }
@@ -485,7 +485,7 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
             if (cached && cached.time + 2 * 60 * 60 * 1000 > new Date().getTime()) {
                 caches.push(cached)
                 if (cached.callback) {
-                    if (!reply) reply = message.channel.send("Loading...")
+                    if (!reply) reply = message.channel.send(`${emoji.loading} Loading...`)
                     await new Promise((resolve) => cached.callback.push(async () => resolve()))
                 }
                 continue
@@ -504,7 +504,7 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
                 callback: []
             }
             Logger.info(`Caching ${rank} drops for ${ship.full_name}...`)
-            if (!reply) reply = message.channel.send("Loading...")
+            if (!reply) reply = message.channel.send(`${emoji.loading} Loading...`)
             await queue(ship, rank, newcached, db)
             caches.push(newcached)
         }
