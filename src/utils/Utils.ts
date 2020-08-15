@@ -324,9 +324,16 @@ ${dropTable}\`\`\``
     return dropString
 }
 
-function getDisplayDataString(cached: Cache, message: Message | Message[], db: DBType, notice = false): string {
-    if (cached == undefined || cached.dropData == undefined || cached.loading)
+function getDisplayDataString(cached: Cache, message: Message | Message[], db: DBType, notice = false, oldCache?: Cache): string {
+    if (cached == undefined || cached.dropData == undefined || cached.loading) {
+        if (!(oldCache == undefined || oldCache.dropData == undefined || oldCache.loading)) {
+            return `${emoji.loading} Updating ${cached.ship.full_name} drop data... Old data:
+
+${getDisplayDropString(oldCache, message, db)}`
+        }
+
         return `${emoji.loading} Loading ${cached.ship.full_name} drop data...`
+    }
 
     return getDisplayDropString(cached, message, db, notice)
 }
@@ -466,7 +473,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
         loading: true,
         callback: []
     }
-    const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true))
+    const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true, cached))
     newcached.callback.push(async () => displayData(newcached, await reply, db))
     queue(ship, rank, newcached, db)
     return reply
