@@ -12,7 +12,7 @@
     "hqxp": "https://i.imgur.com/0efnuyO.png",
     "installation": "https://i.imgur.com/oR7PmAC.png",
     "invite": "<https://discordapp.com/oauth2/authorize?client_id=621009359627091968&scope=bot&permissions=0>",
-    "lb": "https://i.imgur.com/8fgG60S.png",
+    "lb": "@lbas",
     "monthlyexped": "https://i.imgur.com/gfBbOrv.png",
     "range": "https://i.imgur.com/JubBLwo.png",
     "shipxp": "https://i.imgur.com/cibdGaf.jpg",
@@ -20,7 +20,7 @@
     "ui": "https://i.imgur.com/h41VOMF.png",
     "kcnav": "<http://kc.piro.moe/nav/#/>",
     "eventlist": "<https://flatisjustice.moe/eventlist>\nGeneral: Enter ship levels/export to kanmusu list -> Copy the code in the box at top (starts with `.2|`) -> Paste in text box on site linked above -> Press enter/select wanted image\nFor KC3: Strategy room -> Ship list -> Click on `Export to: kanmusu_list` at bottom of filter box -> See general\nFor EO: Right click fleet name in fleet panel -> Click on `Copy Ship List (kancolle-calc)` -> See general",
-    "lbas": "@lb",
+    "lbas": "https://i.imgur.com/Qy0jxSh.png",
     "development": "@dev",
     "install": "@installation",
     "fit": "@gunfits",
@@ -32,5 +32,6 @@
     "gotsheep": "The gotsheep minigame can be started in the item menu, by clicking on the three flowers.\nFlick the sheep to move it. To advance to the next phase you need to meet a point requirement. \nAt the end of every wave you get one Shuusui, these stack, so use them when you can't meet point requirement / during final round.\nThere are 5 waves:\n```\nWave | Border | Time | Score/E. | E. Size | E. Hits Required\n1    |   2500 |   30 |       10 |      70 | 250\n2    |   5000 |   35 |       20 |     100 | 250\n3    |  15000 |   40 |       40 |      80 | 375\n4    |  50000 |   45 |       80 |      90 | 625\n5    |  70000 |   50 |      100 |     120 | 700\n```\nTo get an S rank, you'll need to reach wave 5 and get 70000 points.\n\nExample of S rank playthrough; <https://youtu.be/tERzplgdU1U>",
     "touchattacks": "https://i.imgur.com/NRuzt7H.png",
     "touch": "@touchattacks",
-    "expedgear": "https://i.imgur.com/jkbzL4g.png"
+    "expedgear": "https://i.imgur.com/jkbzL4g.png",
+    "bugs": "<https://github.com/Tibowl/KCBugTracker/issues>"
 }
