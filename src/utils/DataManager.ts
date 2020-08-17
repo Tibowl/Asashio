@@ -237,11 +237,11 @@ export default class DataManager {
     }
 
     normalizeName = (name: string): string => name.toLowerCase().replace(/\./g, " ").trim()
-    getEquipByName = (name: string): Equipment | undefined => {
+    getEquipByName = (name: string): Equipment[] | undefined => {
         name = this.normalizeName(name)
 
         let result = this.getEquipById(name)
-        if (result != undefined) return result
+        if (result != undefined) return [result]
 
         for (let alias of this.equipAliases)
             name = name.replace(alias[0], alias[1]).trim()
@@ -256,7 +256,7 @@ export default class DataManager {
 
         const dists = equipList.map(equip => this.distance(this.normalizeName(equip.name), name))
         const minDist = Math.min(...dists)
-        return equipList[dists.indexOf(minDist)]
+        return equipList.filter((_, i) => dists[i] == minDist)
     }
 
     getMapInfo = async (map: string): Promise<MapInfo> => {

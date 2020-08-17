@@ -22,13 +22,34 @@ export default class Equip extends Command {
         const { data } = client
 
         const equipName = args.join(" ")
-        const equip = data.getEquipByName(equipName)
+        const equips = data.getEquipByName(equipName)
 
-        if (equip == undefined) return message.reply("Unknown equip")
+        if (equips == undefined || equips.length == 0 || equips.length > 15) return message.reply("Unknown equip")
         // console.log(equip)
 
-        const embed = this.displayEquip(equip, data, message.guild)
-        return message.channel.send(embed)
+        if (equips.length == 1)
+            return message.channel.send(this.displayEquip(equips[0], data, message.guild))
+
+        const reply = await message.channel.send(`Multiple equipment matched, please respond number:
+${equips.map((e, i) => `${i+1}: [${e.id}] ${e.name}`).join("\n")}`)
+
+        message.channel.awaitMessages((m: Message) => {
+            if (m.author.id !== message.author.id) return false
+            if (!m.content.match(/\d+/)) return false
+            const i = +m.content
+            if (i > equips.length || i <= 0) return false
+            return true
+        }, { max: 1, time: 30000 }).then((msgs) => {
+            const m = msgs.first()
+            if (m == undefined) {
+                reply.edit("Reply timed out")
+                return
+            }
+
+            const i = +m.content
+            reply.edit(`Selected result #${i}:`, this.displayEquip(equips[i-1], data, message.guild))
+        }).catch(() => reply.edit("Reply timed out"))
+        return reply
     }
     stats = {
         "firepower": "Firepower",
