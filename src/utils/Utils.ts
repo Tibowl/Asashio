@@ -253,6 +253,7 @@ export function calculatePostCap(atk: number, currenthp: number, maxhp: number, 
 
 const shipDropCache: Cached = {}
 function getDisplayDropString(cached: Cache, message: Message | Message[] | undefined, db: DBType, notice = true, single = true): string {
+    if (cached.error) return "An error has occured while fetching data. Try again later, if it still fails, try to contact me (see `.credits`)."
     let drops = Object.values(cached.dropData).sort((a, b) => b.totalDrops - a.totalDrops)
     if (drops.length == 0)
         return `No ${cached.rank} rank **${cached.ship.full_name}** drops found`
@@ -365,7 +366,14 @@ export function percentage(count: number, total: number): string {
 
 const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<{ [key: string]: DropData }> => {
     const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
-    if (api.error) return {}
+    if (api.error) {
+        Logger.error(`An error has occured while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
+        delete cached.loading
+        cached.error = true
+        cached.callback.forEach(k => k())
+        delete cached.callback
+        return {}
+    }
 
     if (db == "tsundb") {
         for (const entry of api.result) {

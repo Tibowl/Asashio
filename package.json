@@ -5,7 +5,7 @@
     "main": "dist/main.js",
     "scripts": {
         "start": "node dist/main.js",
-        "dev": "nodemon --ignore src/data/*.json src/main.ts",
+        "dev": "tsnd --rs --respawn src/main.ts",
         "build": "tsc -p ."
     },
     "repository": {
@@ -42,8 +42,8 @@
         "@typescript-eslint/eslint-plugin": "^2.34.0",
         "@typescript-eslint/parser": "^2.34.0",
         "eslint": "^6.8.0",
-        "nodemon": "^2.0.4",
         "ts-node": "^8.10.2",
+        "ts-node-dev": "^1.0.0-pre.57",
         "typescript": "^3.9.7"
     }
 }

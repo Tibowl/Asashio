@@ -669,6 +669,7 @@ export interface Cache {
     rank: Rank
     loading: boolean
     generateTime?: number
+    error?: boolean
     callback: (() => Promise<void>)[]
 }
 
