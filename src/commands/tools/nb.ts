@@ -44,14 +44,16 @@ export default class NB extends Command {
             name,
             category: "Tools",
             help: `Show night battle cutin rates.
-            - When only cut-in type provided, shows list of bonuses.`,
+    - When only cut-in type provided, shows list of bonuses.
+    - Available types: 
+        - ${Object.entries(cutins).map(([k, v]) => `\`${k}\`: ${v.name}`).join("\n        - ")}`,
             usage: "nb <cutin> [level] [luck]"
         })
     }
 
     run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\`
-Available types: ${Object.keys(cutins).map(k => `\`${k}\``).join(", ")}`)
+Available types: ${Object.entries(cutins).map(([k, v]) => `\`${k}\`: ${v.name}`).join(", ")}`)
         const { data } = client
 
         const cutinType = args[0].toLowerCase()
