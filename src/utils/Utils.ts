@@ -552,12 +552,15 @@ See \`.drop <ship>\` for more information.`
 
 export async function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment): Promise<(Message | Message[])[]> {
     const messages = []
-    if (!channels || embed == undefined) return Promise.all([])
+    if (!channels) return Promise.all([])
 
     for (const channel of channels) {
         const chanObj = await client.channels.fetch(channel)
         if (chanObj && chanObj instanceof TextChannel)
-            messages.push(chanObj.send(content, embed))
+            if (embed == undefined)
+                messages.push(chanObj.send(content))
+            else
+                messages.push(chanObj.send(content, embed))
     }
 
     return Promise.all(messages)
