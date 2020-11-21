@@ -116,6 +116,9 @@ export default class LinkManager extends Command {
         while (toSend?.startsWith("@") && tries++ < 100)
             toSend = linkMap.get(toSend.substring(1))
 
+        if (toSend == undefined)
+            toSend = "Unknown link"
+
         return message.channel.send(toSend)
     }
 }

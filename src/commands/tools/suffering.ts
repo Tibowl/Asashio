@@ -48,7 +48,7 @@ export default class Suffering extends Command {
             armor = ship.armor_max
         }
 
-        if (isNaN(hp) || hp <= 4 || (hp > 1000 || (hp > 200 && armor == undefined))) return message.reply("Invalid/unrealistic hp.")
+        if (isNaN(hp) || hp < 1 || (hp > 1000 || (hp > 200 && armor == undefined))) return message.reply("Invalid/unrealistic hp.")
         if (isNaN(maxhp) || maxhp <= 4 || (maxhp > 1000 || (maxhp > 200 && armor == undefined)) || hp > maxhp) return message.reply("Invalid/unrealistic maximum hp.")
 
         // Create overkill bar
@@ -58,7 +58,7 @@ export default class Suffering extends Command {
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, this.createBar(calculated))
         }
 
-        if (isNaN(armor) || armor <= 4 || armor > 450) return message.reply("Invalid/unrealistic armor.")
+        if (isNaN(armor) || armor < 1 || armor > 450) return message.reply("Invalid/unrealistic armor.")
 
         // Create suffering chart
         if (attackStr == undefined)

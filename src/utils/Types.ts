@@ -667,10 +667,10 @@ export interface Cache {
     dropData: { [key: string]: DropData }
     ship: Ship
     rank: Rank
-    loading: boolean
+    loading?: boolean
     generateTime?: number
     error?: boolean
-    callback: (() => Promise<void>)[]
+    callback?: (() => Promise<void>)[]
 }
 
 export interface Cached {

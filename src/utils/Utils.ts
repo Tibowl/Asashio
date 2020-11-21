@@ -370,7 +370,7 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
         Logger.error(`An error has occured while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
         delete cached.loading
         cached.error = true
-        cached.callback.forEach(k => k())
+        cached.callback?.forEach(k => k())
         delete cached.callback
         return {}
     }
@@ -433,7 +433,7 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
     }
     delete cached.loading
     cached.generateTime = api.generateTime
-    cached.callback.forEach(k => k())
+    cached.callback?.forEach(k => k())
     delete cached.callback
 
     return cached.dropData
@@ -482,7 +482,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
         callback: []
     }
     const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true, cached))
-    newcached.callback.push(async () => displayData(newcached, await reply, db))
+    newcached.callback?.push(async () => displayData(newcached, await reply, db))
     queue(ship, rank, newcached, db)
     return reply
 }
@@ -501,7 +501,7 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
                 caches.push(cached)
                 if (cached.callback) {
                     if (!reply) reply = message.channel.send(`${emoji.loading} Loading...`)
-                    await new Promise((resolve) => cached.callback.push(async () => resolve()))
+                    await new Promise((resolve) => cached.callback?.push(async () => resolve()))
                 }
                 continue
             }
@@ -552,7 +552,7 @@ See \`.drop <ship>\` for more information.`
 
 export async function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment): Promise<(Message | Message[])[]> {
     const messages = []
-    if (!channels) return Promise.all([])
+    if (!channels || embed == undefined) return Promise.all([])
 
     for (const channel of channels) {
         const chanObj = await client.channels.fetch(channel)

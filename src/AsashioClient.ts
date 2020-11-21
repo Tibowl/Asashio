@@ -1,5 +1,4 @@
 import Discord, { ClientEvents, Intents } from "discord.js"
-import DBL from "dblapi.js"
 import Enmap from "enmap"
 import fs from "fs"
 import { join } from "path"
@@ -77,7 +76,5 @@ export default class AsashioClient extends Discord.Client {
         readDir("./commands/")
 
         this.login(config.token)
-        if (config.dbl_token)
-            new DBL(config.dbl_token, this)
     }
 }
