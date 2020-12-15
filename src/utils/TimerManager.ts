@@ -55,7 +55,7 @@ export default class TimerManager {
                     (k: Guild) => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"),
                     "Asashio 🎉"
                 )
-            } else if (this.lastName != "Asashio"){
+            } else if (!birthdays.includes("Asashio") && this.lastName != "Asashio"){
                 this.lastName = "Asashio"
                 changeName(
                     [...client.guilds.cache.values()]
