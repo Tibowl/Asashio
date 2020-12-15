@@ -566,13 +566,14 @@ export async function sendToChannels(channels: string[] | undefined, content?: S
     return Promise.all(messages)
 }
 
-export async function changeName(guilds: Guild[], name: string): Promise<void> {
+export async function changeName(guilds: Guild[], check: (guild: Guild) => boolean, name: string): Promise<void> {
     for (let i = 0; i < guilds.length; i++) {
         const guild = guilds[i]
 
-        await new Promise(res => setTimeout(res, 30000))
+        if (!check(guild)) continue
         Logger.info(`Changing name in ${guild.name} to ${name}`)
         await guild.me?.setNickname(name)
+        await new Promise(res => setTimeout(res, 30000))
     }
 }
 

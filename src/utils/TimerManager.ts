@@ -2,7 +2,7 @@ import { shiftMinute, shiftDate, shiftHour, shiftMonth, changeName } from "./Uti
 import client from "../main"
 import config from "../data/config.json"
 import log4js from "log4js"
-import { Message } from "discord.js"
+import { Guild, Message } from "discord.js"
 import { TimeStamps } from "./Types"
 
 const Logger = log4js.getLogger("TimerManager")
@@ -48,14 +48,18 @@ export default class TimerManager {
             if (birthdays.includes("Asashio"))
                 changeName(
                     [...client.guilds.cache.values()]
-                        .filter(k => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"))
-                        .sort((a, b) => a.memberCount - b.memberCount)
-                        .slice(0, 100),
-                    "Asashio 🎉")
+                        .sort((a, b) => b.memberCount - a.memberCount)
+                        .slice(0, 250),
+                    (k: Guild) => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"),
+                    "Asashio 🎉"
+                )
             else
-                changeName([...client.guilds.cache.values()]
-                    .filter(k => k != null && k.me != null && k.me.nickname == "Asashio 🎉")
-                    .sort((a, b) => a.memberCount - b.memberCount), "Asashio")
+                changeName(
+                    [...client.guilds.cache.values()]
+                        .sort((b, a) => a.memberCount - b.memberCount),
+                    (k: Guild) => k != null && k.me != null && k.me.nickname == "Asashio 🎉",
+                    "Asashio"
+                )
         }
 
         if (this.activityTimer == undefined)
