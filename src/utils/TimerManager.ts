@@ -51,8 +51,8 @@ export default class TimerManager {
                 changeName(
                     [...client.guilds.cache.values()]
                         .sort((a, b) => b.memberCount - a.memberCount)
-                        .slice(0, 250),
-                    (k: Guild) => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"),
+                        .slice(0, 100),
+                    (k: Guild) => k != null && k.me != null && k.memberCount > 5 && (k.me.nickname == null || k.me.nickname == "Asashio"),
                     "Asashio 🎉"
                 )
             } else if (!birthdays.includes("Asashio") && this.lastName != "Asashio"){
