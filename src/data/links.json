@@ -33,5 +33,7 @@
     "touchattacks": "https://i.imgur.com/NRuzt7H.png",
     "touch": "@touchattacks",
     "expedgear": "https://i.imgur.com/jkbzL4g.png",
-    "bugs": "<https://github.com/Tibowl/KCBugTracker/issues>"
+    "bugs": "<https://github.com/Tibowl/KCBugTracker/issues>",
+    "kccp": "@proxy",
+    "kccacheproxy": "@kccp"
 }
