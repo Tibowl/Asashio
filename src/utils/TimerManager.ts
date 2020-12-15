@@ -9,6 +9,7 @@ const Logger = log4js.getLogger("TimerManager")
 
 export default class TimerManager {
     activityTimer: NodeJS.Timeout | undefined = undefined
+    lastName = "?"
 
     init(): void {
         this.scheduleNextMessages()
@@ -45,7 +46,8 @@ export default class TimerManager {
             if (midnight.getTime() < time) shiftDate(midnight, 1)
 
             const birthdays = this.getShipsOnBirthday(midnight)
-            if (birthdays.includes("Asashio"))
+            if (birthdays.includes("Asashio") && this.lastName != "Asashio 🎉") {
+                this.lastName = "Asashio 🎉"
                 changeName(
                     [...client.guilds.cache.values()]
                         .sort((a, b) => b.memberCount - a.memberCount)
@@ -53,13 +55,15 @@ export default class TimerManager {
                     (k: Guild) => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"),
                     "Asashio 🎉"
                 )
-            else
+            } else if (this.lastName != "Asashio"){
+                this.lastName = "Asashio"
                 changeName(
                     [...client.guilds.cache.values()]
                         .sort((b, a) => a.memberCount - b.memberCount),
                     (k: Guild) => k != null && k.me != null && k.me.nickname == "Asashio 🎉",
                     "Asashio"
                 )
+            }
         }
 
         if (this.activityTimer == undefined)
