@@ -1,4 +1,4 @@
-import { shiftMinute, shiftDate, shiftHour, shiftMonth, sendToChannels } from "./Utils"
+import { shiftMinute, shiftDate, shiftHour, shiftMonth, changeName } from "./Utils"
 import client from "../main"
 import config from "../data/config.json"
 import log4js from "log4js"
@@ -46,13 +46,16 @@ export default class TimerManager {
 
             const birthdays = this.getShipsOnBirthday(midnight)
             if (birthdays.includes("Asashio"))
-                client.guilds.cache
-                    .filter(k => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"))
-                    .forEach(k => k.me != null && k.me.setNickname("Asashio 🎉"))
+                changeName(
+                    [...client.guilds.cache.values()]
+                        .filter(k => k != null && k.me != null && (k.me.nickname == null || k.me.nickname == "Asashio"))
+                        .sort((a, b) => a.memberCount - b.memberCount)
+                        .slice(0, 100),
+                    "Asashio 🎉")
             else
-                client.guilds.cache
+                changeName([...client.guilds.cache.values()]
                     .filter(k => k != null && k.me != null && k.me.nickname == "Asashio 🎉")
-                    .forEach(k => k.me != null && k.me.setNickname("Asashio"))
+                    .sort((a, b) => a.memberCount - b.memberCount), "Asashio")
         }
 
         if (this.activityTimer == undefined)

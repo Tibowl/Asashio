@@ -501,7 +501,7 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
                 caches.push(cached)
                 if (cached.callback) {
                     if (!reply) reply = message.channel.send(`${emoji.loading} Loading...`)
-                    await new Promise((resolve) => cached.callback?.push(async () => resolve()))
+                    await new Promise<void>((resolve) => cached.callback?.push(async () => resolve()))
                 }
                 continue
             }
@@ -564,6 +564,16 @@ export async function sendToChannels(channels: string[] | undefined, content?: S
     }
 
     return Promise.all(messages)
+}
+
+export async function changeName(guilds: Guild[], name: string): Promise<void> {
+    for (let i = 0; i < guilds.length; i++) {
+        const guild = guilds[i]
+
+        await new Promise(res => setTimeout(res, 30000))
+        Logger.info(`Changing name in ${guild.name} to ${name}`)
+        await guild.me?.setNickname(name)
+    }
 }
 
 export function shiftDate(date: Date, time: number): Date {
