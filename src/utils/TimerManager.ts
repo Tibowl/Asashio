@@ -52,15 +52,15 @@ export default class TimerManager {
                     [...client.guilds.cache.values()]
                         .sort((a, b) => b.memberCount - a.memberCount)
                         .slice(0, 100),
-                    (k: Guild) => k != null && k.me != null && k.memberCount > 5 && (k.me.nickname == null || k.me.nickname == "Asashio"),
+                    (k: Guild) => k != null && k.me != null && k.memberCount > 5 && k.me.permissions.has("CHANGE_NICKNAME") && (k.me.nickname == null || k.me.nickname == "Asashio"),
                     "Asashio 🎉"
                 )
-            } else if (!birthdays.includes("Asashio") && this.lastName != "Asashio"){
+            } else if (!birthdays.includes("Asashio") && this.lastName != "Asashio") {
                 this.lastName = "Asashio"
                 changeName(
                     [...client.guilds.cache.values()]
                         .sort((b, a) => a.memberCount - b.memberCount),
-                    (k: Guild) => k != null && k.me != null && k.me.nickname == "Asashio 🎉",
+                    (k: Guild) => k != null && k.me != null && k.me.permissions.has("CHANGE_NICKNAME") && k.me.nickname == "Asashio 🎉",
                     "Asashio"
                 )
             }
