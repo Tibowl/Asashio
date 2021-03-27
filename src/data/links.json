@@ -35,5 +35,6 @@
     "expedgear": "https://i.imgur.com/TC7Hqjt.png",
     "bugs": "<https://github.com/Tibowl/KCBugTracker/issues>",
     "kccp": "@proxy",
-    "kccacheproxy": "@kccp"
+    "kccacheproxy": "@kccp",
+    "aar": "@aaresist"
 }
