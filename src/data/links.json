@@ -36,5 +36,6 @@
     "bugs": "<https://github.com/Tibowl/KCBugTracker/issues>",
     "kccp": "@proxy",
     "kccacheproxy": "@kccp",
-    "aar": "@aaresist"
+    "aar": "@aaresist",
+    "aares": "@aaresist"
 }
