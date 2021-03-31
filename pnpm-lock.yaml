@@ -23,7 +23,7 @@ devDependencies:
   ts-node: 8.10.2_typescript@3.9.7
   ts-node-dev: 1.1.1_typescript@3.9.7
   typescript: 3.9.7
-lockfileVersion: 5.1
+lockfileVersion: 5.2
 packages:
   /@babel/code-frame/7.10.4:
     dependencies:
@@ -2087,7 +2087,7 @@ packages:
       tough-cookie: 2.5.0
       tunnel-agent: 0.6.0
       uuid: 3.4.0
-    deprecated: 'request has been deprecated, see https://github.com/request/request/issues/3142'
+    deprecated: request has been deprecated, see https://github.com/request/request/issues/3142
     dev: false
     engines:
       node: '>= 6'

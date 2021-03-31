@@ -334,9 +334,9 @@ export default class DataManager {
             }
 
             if (previous != wordsIndex)
-                score += this.lenz(wordsName[wordsIndex++], word)
+                score += this.lenz(wordsName[wordsIndex], word)
 
-            if (wordsIndex == wordsName.length - 1) break
+            if (wordsIndex >= wordsName.length - 1) break
         }
         return score
     }
