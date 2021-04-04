@@ -120,13 +120,19 @@ export default class FollowManager {
         })
     }
 
-    send(category: FollowCategory, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {
+    async send(category: FollowCategory, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {
         if (!filters.includes("*")) filters = [...filters, "*"]
         let channels: string[] = []
         filters.forEach(filter => channels.push(...this.getFollowers(category, filter).map(k => k.channelID)))
         channels = channels.filter((val, ind) => channels.indexOf(val) === ind)
 
         Logger.info(`Sending ${category} for ${filters.join(",")} to ${channels.length} channels: ${content}`)
-        return sendToChannels(channels, content, embed)
+        const messages = (await sendToChannels(channels, content, embed)).flat()
+
+        for (const message of messages)
+            if (message instanceof Message && message.channel.type === "news")
+                await message.crosspost()
+
+        return messages
     }
 }
