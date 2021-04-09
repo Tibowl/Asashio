@@ -555,12 +555,16 @@ export async function sendToChannels(channels: string[] | undefined, content?: S
     if (!channels) return Promise.all([])
 
     for (const channel of channels) {
-        const chanObj = await client.channels.fetch(channel)
-        if (chanObj && chanObj instanceof TextChannel)
-            if (embed == undefined)
-                messages.push(chanObj.send(content))
-            else
-                messages.push(chanObj.send(content, embed))
+        try {
+            const chanObj = await client.channels.fetch(channel)
+            if (chanObj && chanObj instanceof TextChannel)
+                if (embed == undefined)
+                    messages.push(chanObj.send(content))
+                else
+                    messages.push(chanObj.send(content, embed))
+        } catch (error) {
+            Logger.error("An error occured while fetching channels for sentToChannels", error)
+        }
     }
 
     return Promise.all(messages)
