@@ -9,7 +9,8 @@ export default class DropPoi extends Command {
             name,
             category: "Tools",
             help: "Gets drop list of a ship. Data from poi-statistics, bot will cache results up to 6 hours.",
-            usage: "drop-poi <ship> [rank: S/A]"
+            usage: "drop-poi <ship> [rank: S/A]",
+            aliases: ["poidrop", "poi-drop", "poidb"]
         })
     }
 

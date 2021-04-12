@@ -550,7 +550,7 @@ See \`.drop <ship>\` for more information.`
 }
 
 
-export async function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment): Promise<(Message | Message[])[]> {
+export async function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment): Promise<PromiseSettledResult<Message | Message[]>[]> {
     const messages = []
     if (!channels) return Promise.all([])
 
@@ -567,7 +567,7 @@ export async function sendToChannels(channels: string[] | undefined, content?: S
         }
     }
 
-    return Promise.all(messages)
+    return Promise.allSettled(messages)
 }
 
 export async function changeName(guilds: Guild[], check: (guild: Guild) => boolean, name: string): Promise<void> {
