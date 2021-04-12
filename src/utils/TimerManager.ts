@@ -38,7 +38,7 @@ export default class TimerManager {
                 minute: "2-digit"
             })), {
                 type: "LISTENING"
-            })
+            }).catch(Logger.error)
 
             const time = now.getTime() - 24 * 60 * 60 * 1000
             const midnight = new Date(time)
@@ -54,7 +54,7 @@ export default class TimerManager {
                         .slice(0, 100),
                     (k: Guild) => k != null && k.me != null && k.memberCount > 5 && k.me.permissions.has("CHANGE_NICKNAME") && (k.me.nickname == null || k.me.nickname == "Asashio"),
                     "Asashio 🎉"
-                )
+                ).catch(Logger.error)
             } else if (!birthdays.includes("Asashio") && this.lastName != "Asashio") {
                 this.lastName = "Asashio"
                 changeName(
@@ -62,7 +62,7 @@ export default class TimerManager {
                         .sort((b, a) => a.memberCount - b.memberCount),
                     (k: Guild) => k != null && k.me != null && k.me.permissions.has("CHANGE_NICKNAME") && k.me.nickname == "Asashio 🎉",
                     "Asashio"
-                )
+                ).catch(Logger.error)
             }
         }
 
@@ -73,12 +73,12 @@ export default class TimerManager {
     scheduleNextMessages(now = Date.now() + 60000): void {
         const nextTimeStamps = this.nextResetsTimestamp(now)
         const nextTimeStampsFull = this.nextResetsTimestamp(now, true)
-        const nextEntry = Object.entries(nextTimeStamps).sort((a,b) => a[1] - b[1])[0]
+        const nextEntry = Object.entries(nextTimeStamps).sort((a, b) => a[1] - b[1])[0]
 
         const type = nextEntry[0]
         const nextTimeStamp = nextEntry[1]
 
-        /*console.info(`Next timestamps:
+        /* console.info(`Next timestamps:
     ${Object.entries(nextTimeStamps).map(entry => `${entry[0]} @ ${new Date(entry[1]).toISOString()}`).join("\n")}`)*/
 
         Logger.debug(`Next time: ${type} @ ${new Date(nextTimeStamp).toISOString()}`)
@@ -106,15 +106,15 @@ export default class TimerManager {
 
         // console.info(nextTimeStamp - Date.now() - 30 * 60000)
         if (type !== "monthlyExped" && type !== "rank") {
-            for (let k of [60, 30, 15, 5]) {
-                let diff = nextTimeStamp - Date.now() - k * 60000
+            for (const k of [60, 30, 15, 5]) {
+                const diff = nextTimeStamp - Date.now() - k * 60000
                 if (diff > 0 && !(k == 60 && type == "pvp"))
-                    setTimeout(() => this.update(`${message} in ${k} minutes.`), diff + config.timerOffsetms)
+                    setTimeout(async () => this.update(`${message} in ${k} minutes.`), diff + config.timerOffsetms)
             }
         }
 
         setTimeout(() => {
-            this.update(`${message}.`)
+            this.update(`${message}.`).catch(Logger.error)
             this.scheduleNextMessages()
         }, nextTimeStamp - Date.now() + config.timerOffsetms)
     }
@@ -157,7 +157,7 @@ export default class TimerManager {
             this.scheduleNextBirthday(Date.now() + 60 * 60000)
 
             const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
-            client.followManager.send("birthday", newMessage, undefined, shipList)
+            client.followManager.send("birthday", newMessage, undefined, shipList).catch(Logger.error)
         }, midnight.getTime() - Date.now() + config.timerOffsetms)
     }
     // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443
@@ -243,7 +243,7 @@ export default class TimerManager {
     toDeleteMessages: (Message | Message[])[] = []
 
     async update(newMessage?: string): Promise<unknown[]> {
-        let deletion = this.toDeleteMessages.map(td => {
+        const deletion = this.toDeleteMessages.map(td => {
             try {
                 if (td instanceof Message)
                     return td.delete()

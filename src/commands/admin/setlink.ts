@@ -14,7 +14,7 @@ export default class SetLink extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!config.admins.includes(message.author.id)) return message.reply("Admins only")
         return client.linkManager.setLink(message, args)
     }

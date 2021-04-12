@@ -12,7 +12,7 @@ export default class Pepper extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length !== 2) return message.reply(`Usage: \`${this.usage}\``)
 
         let [dropRateStr, chanceStr] = args
@@ -24,7 +24,7 @@ export default class Pepper extends Command {
 
         const dropRate = parseFloat(dropRateStr)
         const chance = parseFloat(chanceStr)
-        let runs = Math.log(1 - (chance/100)) / Math.log(1 - (dropRate/100))
+        const runs = Math.log(1 - (chance/100)) / Math.log(1 - (dropRate/100))
         return message.channel.send(`**~${runs.toLocaleString(undefined, {
             "maximumFractionDigits": 1,
             "maximumSignificantDigits": 4

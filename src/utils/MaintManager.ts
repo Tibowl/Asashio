@@ -6,12 +6,12 @@ import client from "../main"
 
 const Logger = log4js.getLogger("MaintManager")
 export default class MaintManager {
-    init(): void {
+    async init(): Promise<void> {
         client.data.store.maintInfo = client.data.store.maintInfo ?? {}
         client.data.store.versionInfo = client.data.store.versionInfo ?? {}
 
-        this.checkUpdates()
-        setInterval(() => this.checkUpdates(), 60 * 1000)
+        await this.checkUpdates()
+        setInterval(async () => this.checkUpdates(), 60 * 1000)
     }
 
     getTimes(): string[] | null {
@@ -26,15 +26,15 @@ export default class MaintManager {
         return times
     }
 
-    checkUpdates(): void {
+    async checkUpdates(): Promise<void> {
         try {
-            this.checkNews()
+            await this.checkNews()
         } catch (error) {
             Logger.error(`An error occured while handling news ${error}`)
         }
 
         try {
-            this.checkVersion()
+            await this.checkVersion()
         } catch (error) {
             Logger.error(`An error occured while handling news ${error}`)
         }
@@ -57,9 +57,9 @@ export default class MaintManager {
 
         Logger.info(this.getTimes())
         if (line.trim().length == 0)
-            client.followManager.send("maint", "Maint info cleared")
+            await client.followManager.send("maint", "Maint info cleared")
         else
-            client.followManager.send("maint", `Maint info: ${this.getTimes()?.join(" ~ ")}\nMessage: ${line}`)
+            await client.followManager.send("maint", `Maint info: ${this.getTimes()?.join(" ~ ")}\nMessage: ${line}`)
     }
 
     async checkVersion(): Promise<void> {
@@ -74,7 +74,7 @@ export default class MaintManager {
             return
         }
 
-        for (let line of html.split("\n")) {
+        for (const line of html.split("\n")) {
             if (line.indexOf("MaintenanceInfo.IsDoing") >= 0)
                 isDoing = !!parseInt(line.split("= ")[1].replace(";", "").trim())
             else if (line.indexOf("MaintenanceInfo.IsEmergency") >= 0)
@@ -128,6 +128,6 @@ export default class MaintManager {
         Logger.info(output)
 
         client.data.saveStore()
-        client.followManager.send("maint", output)
+        await client.followManager.send("maint", output)
     }
 }

@@ -12,8 +12,8 @@ export default class Replay extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
-        let baseLink = "https://kc3kai.github.io/kancolle-replay/battleplayer.html"
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
+        const baseLink = "https://kc3kai.github.io/kancolle-replay/battleplayer.html"
 
         const found = message.attachments?.find(k => !!k.url)
         let link = baseLink

@@ -48,14 +48,15 @@ async function deletable(reply: Message, message: Message): Promise<void> {
         await reply.react("❌")
         reply.awaitReactions(
             (reaction, user) => reaction.emoji.name == "❌" && (user.id == message.author.id || config.admins.includes(user.id)),
-            { max: 1, time: 60000, errors: ["time"] }
-        ).then((collected) => {
-            if (collected)
-                reply.delete()
-        }).catch(() => {
+            { max: 1, time: 60000, errors: ["time", "messageDelete", "channelDelete", "guildDelete"] }
+        ).then(async (collected) => {
+            if (collected && collected.size > 0 && reply.deletable) {
+                await reply.delete()
+            }
+        }).catch(async () => {
             const user = client.user
-            if (user == undefined) return
-            reply?.reactions?.cache.map((reaction) => reaction.me ? reaction.users.remove(user) : undefined)
+            if (user == undefined || reply.deleted) return
+            await Promise.allSettled(reply?.reactions?.cache.map((reaction) => reaction.me ? reaction.users.remove(user) : undefined).filter(f => f))
         })
         client.recentMessages.push(reply)
         setTimeout(() => {
@@ -66,7 +67,7 @@ async function deletable(reply: Message, message: Message): Promise<void> {
             reply.edit(`${reply.content}
 
 Unable to add ❌ reaction, please contact admins of this discord guild to give this bot the ability to add reactions.
-Doing so, will allow users to delete bot replies within some time.`)
+Doing so, will allow users to delete bot replies within some time.`).catch(Logger.error)
         else
             Logger.error(error)
     }
@@ -81,7 +82,7 @@ async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<
         if (!reply) return
         if (!(reply instanceof Message)) {
             if (reply.length)
-                reply.forEach(r => deletable(r, message))
+                await reply.map(async r => deletable(r, message))
             return
         }
 
@@ -109,14 +110,14 @@ export async function handle(message: Message): Promise<void> {
         else
             Logger.info(`${message.author.id} (${message.author.username}) executes command in ${channel} (guild ${message.guild ? message.guild.id : "NaN"})${attach}: ${message.content}`)
 
-        handleCommand(message, cmdInfo)
         addStats(message, cmdInfo)
+        await handleCommand(message, cmdInfo)
     } else if (message.channel.type === "dm") {
         Logger.info(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
         // Gather information for new aliases
         const channel = await client.channels.fetch("658083473818517505")
         if (channel && channel instanceof TextChannel)
-            channel.send(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
+            await channel.send(`${message.author.id} (${message.author.username}) sends message ${message.type} in dm${attach}: ${message.content}`)
     }
     // Logger.info(message)
 }

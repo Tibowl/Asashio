@@ -61,7 +61,7 @@ export default class LimitedDrop extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\`
 Available types: ${Object.keys(types).map(k => `\`${k}\``).join(", ")}`)
 

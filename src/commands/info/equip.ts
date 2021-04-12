@@ -39,16 +39,16 @@ ${equips.map((e, i) => `${i+1}: [${e.id}] ${e.name}`).join("\n")}`)
             const i = +m.content
             if (i > equips.length || i <= 0) return false
             return true
-        }, { max: 1, time: 30000 }).then((msgs) => {
+        }, { max: 1, time: 30000 }).then(async (msgs) => {
             const m = msgs.first()
             if (m == undefined) {
-                reply.edit("Reply timed out")
+                await reply.edit("Reply timed out")
                 return
             }
 
             const i = +m.content
-            reply.edit(`Selected result #${i}:`, this.displayEquip(equips[i-1], data, message.guild))
-        }).catch(() => reply.edit("Reply timed out"))
+            await reply.edit(`Selected result #${i}:`, this.displayEquip(equips[i-1], data, message.guild))
+        }).catch(async () => reply.edit("Reply timed out"))
         return reply
     }
     stats = {
@@ -75,8 +75,8 @@ ${equips.map((e, i) => `${i+1}: [${e.id}] ${e.name}`).join("\n")}`)
             .setThumbnail(data.getEquipLink(equip.id))
         // TODO rarity color? .setColor("#")
 
-        let equipStats = []
-        for (let entry of Object.entries(this.stats))
+        const equipStats = []
+        for (const entry of Object.entries(this.stats))
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if ((equip as any)[entry[0]] !== false && (equip as any)[entry[0]] !== undefined)
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -88,7 +88,7 @@ ${equips.map((e, i) => `${i+1}: [${e.id}] ${e.name}`).join("\n")}`)
         equipStats.push(["Scrap", [equip.scrap_fuel || 0, equip.scrap_ammo || 0, equip.scrap_steel || 0, equip.scrap_bauxite || 0]])
         equipStats.push(["Improvable", equip.improvements !== false && equip.improvements !== undefined ? "yes" : "no"])
 
-        let longestName = equipStats.map(k => k[0].length).reduce((a,b) => Math.max(a,b),0)
+        const longestName = equipStats.map(k => k[0].length).reduce((a, b) => Math.max(a, b), 0)
 
         embed.addField("Stats", `\`\`\`asciidoc
 ${equipStats.map(stat => `${stat[0].padEnd(longestName, " ")} :: ${stat[1]}`).join("\n")}

@@ -62,7 +62,7 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
         if (args.length !== 2)
             return message.reply("Missing node!")
 
-        let node = args[1]
+        const node = args[1]
         const mapInfo = await data.getMapInfo(map)
         if (Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
         if (Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).length == 0)

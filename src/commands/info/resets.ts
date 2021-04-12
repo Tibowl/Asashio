@@ -49,7 +49,7 @@ export default class Resets extends Command {
     }
 
     timeLeft(diff: number): string {
-        let result = [], originalTime = diff / 1000
+        const result = [], originalTime = diff / 1000
 
         diff /= 1000 // convert to s
         if (diff >= 24*60*60) {

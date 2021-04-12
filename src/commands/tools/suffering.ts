@@ -25,10 +25,11 @@ export default class Suffering extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1) return message.channel.send("Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
         const { data } = client
 
+        // eslint-disable-next-line prefer-const
         let [hpStr, armorStr, attackStr]: (string | undefined)[] = args
         let maxHpStr = hpStr
         if (hpStr.includes("/"))
@@ -64,7 +65,7 @@ HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, this.createBa
         if (attackStr == undefined)
             return message.channel.send(maxhp >= 200 ? "**Assuming abyssal**" : `${ship ? `Suffering chart for **${ship.full_name}** (unmarried)` : ""}`, this.createGraph(hp, maxhp, armor))
 
-        let attack = parseInt(attackStr)
+        const attack = parseInt(attackStr)
 
         if (isNaN(attack) || attack < 0 || attack > 10000) return message.reply("Invalid/unrealistic attack.")
 
@@ -142,7 +143,7 @@ ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
         }
         context.fillStyle = "#000000"
         context.fillRect(width, 0, 1, height+1)
-        for (let percentage of [1, .75, .5, .25, 0]) {
+        for (const percentage of [1, .75, .5, .25, 0]) {
             context.fillRect(0, percentage * height, width, 1)
             context.fillText(percentage * 100 + "%", width + 3, (1-percentage) * height)
         }

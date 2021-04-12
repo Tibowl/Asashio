@@ -30,7 +30,7 @@ export default class Dupes extends Command {
 
             if (args[i].includes("-")) {
                 if (!args[i].match(/-\d$/)) {
-                    args[i] = args[i].replace(/-\d/,"$& ")
+                    args[i] = args[i].replace(/-\d/, "$& ")
                     args = args.join(" ").split(" ")
                 }
 

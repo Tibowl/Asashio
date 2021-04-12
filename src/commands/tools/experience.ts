@@ -13,7 +13,7 @@ export default class Experience extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\``)
         const { data } = client
 

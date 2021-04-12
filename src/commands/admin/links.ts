@@ -13,7 +13,7 @@ export default class Links extends Command {
         })
     }
 
-    run(message: Message): Promise<Message | Message[]> {
+    async run(message: Message): Promise<Message | Message[]> {
         return message.reply(`<https://github.com/Tibowl/Asashio/blob/master/src/data/links.json>
 All links (including redirects that are hidden from help):
 ${client.linkManager.getLinks(true).join(", ")}`)

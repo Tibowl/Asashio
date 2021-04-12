@@ -73,7 +73,7 @@ Uses <http://kc.piro.moe> API`,
 
         if (args.length !== 2)
             return message.reply("Missing node!")
-        let node = args[1]
+        const node = args[1]
         const mapInfo = await data.getMapInfo(map)
         if (Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
         if (Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).length == 0)
@@ -97,16 +97,16 @@ Uses <http://kc.piro.moe> API`,
         const bestComp = allComps.sort((a, b) => b.count - a.count)[0]
 
         const { fleet1Comp, fleet2Comp, fleetTypes } = bestComp
-        //console.log("Found fleet: ", fleet1Comp, fleet2Comp)
+        // console.log("Found fleet: ", fleet1Comp, fleet2Comp)
 
         const allShips = await this.getTopShips(map, edges, fleet1Comp, fleet2Comp)
 
         const usedShips: number[] = []
         const ships1 = [], ships2 = []
 
-        let entireFleet = [...fleet1Comp, ...fleet2Comp]
-        let fleet1 = [...fleet1Comp], fleet2 = [...fleet2Comp]
-        //console.log(entireFleet)
+        const entireFleet = [...fleet1Comp, ...fleet2Comp]
+        const fleet1 = [...fleet1Comp], fleet2 = [...fleet2Comp]
+        // console.log(entireFleet)
 
         for (let shipsAdded = 0; shipsAdded < fleet1Comp.length + fleet2Comp.length; shipsAdded++) {
             // Select random ship class
@@ -240,4 +240,4 @@ Ships to use:
 }
 
 // eslint-disable-next-line no-console
-//;(async () => console.log(await this.autoFleet("46-5", [10])))()
+// ;(async () => console.log(await this.autoFleet("46-5", [10])))()

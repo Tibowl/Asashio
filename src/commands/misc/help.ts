@@ -15,11 +15,11 @@ export default class Help extends Command {
         })
     }
 
-    run(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
-        //if(message.channel.type !== "dm") return;
+    async run(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
+        // if(message.channel.type !== "dm") return;
         const { commands } = client
         if (!args || args.length < 1) {
-            let categorized: { [a in CommandCategory]: string[] } = {
+            const categorized: { [a in CommandCategory]: string[] } = {
                 "Hidden": [],
                 "Information": [],
                 "Tools": [],
@@ -28,7 +28,7 @@ export default class Help extends Command {
                 "Admin": []
             }
             commands.forEach(cmd => {
-                let category = cmd?.category ?? "Misc"
+                const category = cmd?.category ?? "Misc"
                 categorized[category].push(cmd.commandName)
             })
             categorized.Links = client.linkManager.getLinks()

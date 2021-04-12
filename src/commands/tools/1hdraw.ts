@@ -14,7 +14,7 @@ export default class OneHourDraw extends Command {
         })
     }
 
-    run(message: Message): Promise<Message | Message[]> {
+    async run(message: Message): Promise<Message | Message[]> {
         const { cachedShips } = client.data.store
 
         if (cachedShips == undefined || !cachedShips.date) {

@@ -13,7 +13,7 @@ export default class Drop extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         return dropTable(message, args, "tsundb")
     }
 }

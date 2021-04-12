@@ -14,7 +14,7 @@ export default class BGM extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1) return message.reply("Must provide a map or bgm id.")
         const { data } = client
 

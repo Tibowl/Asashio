@@ -48,10 +48,10 @@ export function createTable(names: NameTable | undefined, rows: StringResolvable
 export function handleShip(ship: ShipExtended): ShipExtended {
     const { data } = client
 
-    ship.hp_married = Math.min(ship.hp_max, ship.hp + [4,4,4,5,6,7,7,8,8,9][Math.floor(ship.hp/10)])
+    ship.hp_married = Math.min(ship.hp_max, ship.hp + [4, 4, 4, 5, 6, 7, 7, 8, 8, 9][Math.floor(ship.hp/10)])
     ship.ship_type = `${data.misc.ShipTypes[ship.type]} (${data.misc.ShipCodes[ship.type]})`
 
-    for (let key of ["asw", "evasion", "los"]) {
+    for (const key of ["asw", "evasion", "los"]) {
         if (ship[key] != undefined && ship[`${key}_max`] != undefined)
             ship[`${key}_ring`] = ship[key] + Math.floor((ship[`${key}_max`] - ship[key]) / 99 * data.getMaxLevel())
         else
@@ -73,13 +73,13 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     ship.scraps = [ship.scrap_fuel || 0, ship.scrap_ammo || 0, ship.scrap_steel || 0, ship.scrap_bauxite || 0].join("/")
 
     if (ship.equipment) {
-        ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a,b) => a + b, 0)
+        ship.aircraft = ship.equipment.map(equip => equip.size).reduce((a, b) => a + b, 0)
         ship.equipment_text = ship.equipment.map(equip => `• ${ship.aircraft > 0 ? `${equip.size}${emoji.plane} `:""}${equip.equipment == undefined ? "??" : equip.equipment ? equip.equipment : "None"}${(equip.stars && equip.stars > 0) ? ` ${emoji.star}+${equip.stars}`:""}`).join("\n")
     }
 
     if (ship.remodel_level) {
         ship.remodel_text = "Remodel requires: "
-        let requirements = [`Lv.${ship.remodel_level}.`]
+        const requirements = [`Lv.${ship.remodel_level}.`]
         const k = (remodel: number|true): number => remodel == true ? 1 : remodel
 
         if (ship.remodel_ammo) requirements.push(`${ship.remodel_ammo}×${emoji.ammo}`)
@@ -102,7 +102,7 @@ export function handleShip(ship: ShipExtended): ShipExtended {
 
 export function displayShip(ship: ShipExtended, guild?: Guild | null): MessageEmbed {
     const embed = new MessageEmbed()
-        .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`, ship.full_name, ship.japanese_name, /*ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
+        .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`, ship.full_name, ship.japanese_name, /* ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
 
     if (typeof ship.api_id == "number")
         embed.setURL(getWiki(ship.name, guild))
@@ -339,11 +339,11 @@ ${getDisplayDropString(oldCache, message, db)}`
     return getDisplayDropString(cached, message, db, notice)
 }
 
-const displayData = (cached: Cache, reply: Message | Message[], db: DBType): void => {
+const displayData = async (cached: Cache, reply: Message | Message[], db: DBType): Promise<void> => {
     try {
         if (!(reply instanceof Message)) reply = reply[0]
 
-        reply.edit(getDisplayDataString(cached, reply, db, true))
+        await reply.edit(getDisplayDataString(cached, reply, db, true))
     } catch (error) {
         Logger.error(error)
     }
@@ -370,13 +370,14 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
         Logger.error(`An error has occured while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
         delete cached.loading
         cached.error = true
-        cached.callback?.forEach(k => k())
+        Promise.all(cached.callback?.map(async k => k()) ?? []).catch(Logger.error)
         delete cached.callback
         return {}
     }
 
     if (db == "tsundb") {
         for (const entry of api.result) {
+            // eslint-disable-next-line prefer-const
             let { map, node, difficulty } = entry
 
             if (parseInt(map.split("-")[0]) > 20) {
@@ -412,6 +413,7 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
         for (const location in api.data) {
             const entry = api.data[location]
 
+            // eslint-disable-next-line prefer-const
             let [world, map, node, difficulty] = location.split("-")
 
             node = node.replace("(Boss)", "").trim()
@@ -433,7 +435,7 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
     }
     delete cached.loading
     cached.generateTime = api.generateTime
-    cached.callback?.forEach(k => k())
+    Promise.all(cached.callback?.map(async k => k()) ?? []).catch(Logger.error)
     delete cached.callback
 
     return cached.dropData
@@ -483,7 +485,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     }
     const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true, cached))
     newcached.callback?.push(async () => displayData(newcached, await reply, db))
-    queue(ship, rank, newcached, db)
+    queue(ship, rank, newcached, db).catch(Logger.error)
     return reply
 }
 
@@ -500,8 +502,8 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
             if (cached && cached.time + 2 * 60 * 60 * 1000 > new Date().getTime()) {
                 caches.push(cached)
                 if (cached.callback) {
-                    if (!reply) reply = message.channel.send(`${emoji.loading} Loading...`)
-                    await new Promise<void>((resolve) => cached.callback?.push(async () => resolve()))
+                    if (!reply) reply = await message.channel.send(`${emoji.loading} Loading...`)
+                    await new Promise<void>((resolve) => cached.callback?.push(async () => await resolve()))
                 }
                 continue
             }
@@ -519,7 +521,7 @@ export async function specialDrops(message: Message, ships: string[], db: DBType
                 callback: []
             }
             Logger.info(`Caching ${rank} drops for ${ship.full_name}...`)
-            if (!reply) reply = message.channel.send(`${emoji.loading} Loading...`)
+            if (!reply) reply = await message.channel.send(`${emoji.loading} Loading...`)
             await queue(ship, rank, newcached, db)
             caches.push(newcached)
         }
@@ -531,18 +533,18 @@ See \`.drop <ship>\` for more information.`
 
     if (out.length > 1900) {
         if (message.channel.type !== "dm" && reply)
-            (await reply).edit("This list is too long and thus can only be used in DMs.")
+            await reply.edit("This list is too long and thus can only be used in DMs.")
         else if (reply)
-            (await reply).delete()
+            await reply.delete()
         else
             reply = []
 
-        message.author.send(out, {split: {
+        await message.author.send(out, { split: {
             maxLength: 1900,
             char: "\r"
-        }})
+        } })
     } else if (reply)
-        (await reply).edit(out)
+        await reply.edit(out)
     else
         reply = message.channel.send(out)
 

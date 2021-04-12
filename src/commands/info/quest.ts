@@ -64,7 +64,7 @@ export default class Quest extends Command {
             .setURL(getWiki(`Quests#${quest.label ?? questId}`, message.guild))
             .setDescription(this.parseText(quest.detail_en ?? "", message.guild))
 
-        const type = questTypes[(quest.letter ?? quest.label ?? questId).substring(0,1) as keyof QuestTypes]
+        const type = questTypes[(quest.letter ?? quest.label ?? questId).substring(0, 1) as keyof QuestTypes]
         if (type)
             embed.setThumbnail(this.getImage(type[0]))
                 .setColor(type[1])
@@ -90,8 +90,8 @@ export default class Quest extends Command {
         let links = text.match(/\[\[.*?\]\]/g)
 
         if (links)
-            for (let match of links) {
-                let clean = match.replace(/\[\[/, "").replace(/\]\]/, "")
+            for (const match of links) {
+                const clean = match.replace(/\[\[/, "").replace(/\]\]/, "")
 
                 let title = clean, target = clean
                 if (clean.includes("|"))
@@ -112,14 +112,14 @@ export default class Quest extends Command {
 
         links = text.match(/\{\{[^{]*?\}\}/g)
         for (let i = 0; i < 5 && links; i++) {
-            for (let match of links) {
-                let clean = match.replace(/\{\{/, "").replace(/\}\}/, "")
+            for (const match of links) {
+                const clean = match.replace(/\{\{/, "").replace(/\}\}/, "")
 
                 let title = clean.split("|")[1]
                 if (clean.split("|")[0] == "color")
                     text = text.replace(match, clean.split("|")[2])
 
-                for (let arg of clean.split("|").slice(1))
+                for (const arg of clean.split("|").slice(1))
                     if (!arg.includes("=")) {
                         title = arg
                         break

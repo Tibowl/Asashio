@@ -479,8 +479,8 @@ export interface APIMstPayitem {
     api_type: number
 }
 
-export type Range = 0 | 1 | 2 | 3 | 4;
-export type Speed = 0 | 5 | 10 | 15 | 20;
+export type Range = 0 | 1 | 2 | 3 | 4
+export type Speed = 0 | 5 | 10 | 15 | 20
 
 export interface APIMstShip {
     api_id: number

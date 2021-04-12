@@ -4,6 +4,9 @@ import fetch from "node-fetch"
 import Command from "../../utils/Command"
 import emoji from "../../data/emoji.json"
 import { createTable, PAD_START, PAD_END } from "../../utils/Utils"
+import log4js from "log4js"
+
+const Logger = log4js.getLogger("openserver")
 
 interface CacheData {
     time: number
@@ -39,10 +42,10 @@ export default class OpenServer extends Command {
             cachedData.time = Date.now()
             cachedData.kc_servers = parsed
             if (parsed.errors)
-                cachedData.errors = parsed.errors;
+                cachedData.errors = parsed.errors
 
-            (await reply).edit(this.formatData(cachedData, args))
-        })
+            await (await reply).edit(this.formatData(cachedData, args))
+        }).catch(Logger.error)
 
         return reply
     }
@@ -54,8 +57,8 @@ export default class OpenServer extends Command {
 
         const serverData = []
 
-        for (let serverID in en_names) {
-            let currentServer = data.kc_servers?.find(k => (+serverID) == k.api_id)
+        for (const serverID in en_names) {
+            const currentServer = data.kc_servers?.find(k => (+serverID) == k.api_id)
             if (currentServer && (args.length > 0 || currentServer.api_entry))
                 serverData.push([currentServer.api_entry ? "+ Open" : "- Closed", "|", serverID, "|", en_names[serverID], "|", currentServer.api_rate.toString()])
         }

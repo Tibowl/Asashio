@@ -4,6 +4,9 @@ import fetch from "node-fetch"
 import Command from "../../utils/Command"
 import { PAD_END, PAD_START, createTable } from "../../utils/Utils"
 import emoji from "../../data/emoji.json"
+import log4js from "log4js"
+
+const Logger = log4js.getLogger("ranking")
 
 const en_names = ["?", "Yokosuka", "Kure", "Sasebo", "Maizuru", "Ominato", "Truk", "Lingga", "Rabaul", "Shortland", "Buin", "Tawi-Tawi", "Palau", "Brunei", "Hitokappu", "Paramushir", "Sukumo", "Kanoya", "Iwagawa", "Saiki Bay", "Hashirajima"]
 const ranks = [1, 5, 20, 100, 500]
@@ -34,7 +37,7 @@ export default class Ranking extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         const cached = this.returnCached(message, args)
         if (cached) return cached
         const reply = message.reply(`${emoji.loading} Loading...`)
@@ -44,8 +47,8 @@ export default class Ranking extends Command {
             cachedData.time = Date.now()
             cachedData.rankingData = api
 
-            ;(await reply).edit(this.formatData(api, args))
-        })
+            await (await reply).edit(this.formatData(api, args))
+        }).catch(Logger.error)
 
         return reply
     }
@@ -53,10 +56,10 @@ export default class Ranking extends Command {
     formatData(api: SenkaAPI, args: string[]): string {
         const serverData = []
 
-        const low = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a,b) => a-b)[2]
-        const high = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a,b) => a-b)[api.data.length - 3]
+        const low = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a, b) => a-b)[2]
+        const high = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a, b) => a-b)[api.data.length - 3]
 
-        for (let serverID in en_names) {
+        for (const serverID in en_names) {
             const found = api.data.find(k => +serverID == k.servernum)
             if (!(found && found.cutoff))
                 continue

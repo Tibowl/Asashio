@@ -16,7 +16,7 @@ export default class OASW extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length < 1) return message.reply("Must provide a ship name.")
         const { data } = client
 
@@ -110,7 +110,7 @@ With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipme
     }
     levelAtAsw(ship: Ship, asw: number): number {
         if (ship.asw_max == false) return ship.asw
-        let aswPerLevel = (ship.asw_max - ship.asw) / 99
+        const aswPerLevel = (ship.asw_max - ship.asw) / 99
         if (aswPerLevel <= 0) return -1
         let level = Math.ceil((asw - ship.asw) / aswPerLevel)
         if (typeof ship.remodel_level == "number" && level < ship.remodel_level)
@@ -136,7 +136,7 @@ With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipme
                 break
             }
 
-            let equipAsw = []
+            const equipAsw = []
             for (let i = 0; i < slots; i++)
                 equipAsw.push(12)
 
@@ -167,8 +167,8 @@ With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipme
         return string + "```"
     }
     generateLine(equipAsw: number[], ship: Ship, aswRequired: number, aswOffset: number, maxSlots: number, force = false): string {
-        let equipmentAsw = equipAsw.reduce((a,b) => a+b)
-        let level = this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw)
+        const equipmentAsw = equipAsw.reduce((a, b) => a+b)
+        const level = this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw)
 
         if (this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw + 2) <= ship.remodel_level && !force)
             return ""

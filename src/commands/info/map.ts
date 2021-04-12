@@ -43,7 +43,9 @@ export default class Map extends Command {
     async genMap(map: string, apiParsed: MapInfo): Promise<MessageAttachment> {
         const img = new Image
         img.src = `http://kc.piro.moe/api/assets/images/backgrounds/${map}`
-        await new Promise((resolve) => img.onload = resolve)
+        await new Promise((resolve) => {
+            img.onload = (): void => resolve(null)
+        })
 
         const lbas = await (await fetch(`http://kc.piro.moe/api/routing/lbasdistance/${map}`)).json()
 
@@ -51,7 +53,7 @@ export default class Map extends Command {
         const ctx = canvas.getContext("2d")
         ctx.drawImage(img, 0, 0)
 
-        for (let edge in apiParsed.route) {
+        for (const edge in apiParsed.route) {
             const route = apiParsed.route[edge]
             if (route[0] == undefined || route[1] == undefined) continue
             const from = apiParsed.spots[route[0]], to = apiParsed.spots[route[1]]
@@ -68,7 +70,7 @@ export default class Map extends Command {
         ctx.fillStyle = "rgba(128, 255, 0, 1)"
         ctx.font = "30px Georgia"
         ctx.textAlign = "center"
-        for (let node in apiParsed.spots) {
+        for (const node in apiParsed.spots) {
             const [x, y] = apiParsed.spots[node]
             ctx.fillStyle = "rgba(128, 255, 0, .7)"
             ctx.beginPath()

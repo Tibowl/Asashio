@@ -33,7 +33,7 @@ export default class LinkManager extends Command {
             linkMap.set(k, v as string)
     }
 
-    async loadLinks(): Promise<void> {
+    loadLinks(): void {
         if (existsSync(linkLocation))
             try {
                 this.loadMap(linkLocation)
@@ -57,7 +57,7 @@ export default class LinkManager extends Command {
 
     async setLink(message: Message, args: string[]): Promise<Message | Message[]> {
         if (args.length < 1) return await message.reply("Not enough arguments")
-        let command = args[0]
+        const command = args[0]
         if (args.length == 1) {
             if (!linkMap.has(command))
                 return await message.reply("That is not a link!")
@@ -69,7 +69,7 @@ export default class LinkManager extends Command {
 
             return await message.reply(`Deleted \`${command}\``)
         }
-        let link = args.slice(1).join(" ")
+        const link = args.slice(1).join(" ")
 
         if (client.commands.has(command) && !linkMap.has(command))
             return await message.reply("This is another command OhNo")
@@ -93,7 +93,7 @@ export default class LinkManager extends Command {
         return entries.filter(entry => all || !entry[1].startsWith("@")).map((entry) => entry[0])
     }
 
-    async updateDb(id: string): Promise<void> {
+    updateDb(id: string): void {
         if (existsSync(oldLinks))
             unlinkSync(oldLinks)
 
@@ -109,7 +109,7 @@ export default class LinkManager extends Command {
         cprocess.execSync(`git add ${linkLocation} && git commit -m "Link updated by ${id}" && git push`)
     }
 
-    run(message: Message, args: string[], command: string): Promise<Message | Message[]> {
+    async run(message: Message, args: string[], command: string): Promise<Message | Message[]> {
         let toSend = linkMap.get(command)
 
         let tries = 0

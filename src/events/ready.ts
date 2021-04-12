@@ -13,6 +13,6 @@ export async function handle(): Promise<void> {
     await client.data.reloadShipData()
     client.linkManager.loadLinks()
     client.tweetManager.init()
-    client.maintManager.init()
     client.timerManager.init()
+    await client.maintManager.init()
 }

@@ -47,7 +47,7 @@ export default class AsashioClient extends Discord.Client {
         })
     }
 
-    init(): void {
+    async init(): Promise<void> {
         fs.readdir(join(__dirname, "./events/"), (err, files) => {
             if (err) return Logger.error(err)
             files.forEach(file => {
@@ -75,6 +75,6 @@ export default class AsashioClient extends Discord.Client {
         }
         readDir("./commands/")
 
-        this.login(config.token)
+        await this.login(config.token)
     }
 }

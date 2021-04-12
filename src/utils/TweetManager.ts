@@ -95,7 +95,7 @@ export default class Tweetmanager {
         // Tweet has media, don't embed it
         if (tweet.extended_entities?.media) {
             if (tweet.extended_entities.media[0].type != "photo") {
-                client.followManager.send("twitter", tweetLink)
+                client.followManager.send("twitter", tweetLink).catch(Logger.error)
                 return
             } else
                 embed.setImage(tweet.extended_entities.media[0].media_url_https)
@@ -112,7 +112,7 @@ export default class Tweetmanager {
             // Tweet has media, don't embed it
             if (entities.media) {
                 if (entities.media[0].type != "photo") {
-                    client.followManager.send("twitter", tweetLink)
+                    client.followManager.send("twitter", tweetLink).catch(Logger.error)
                     return
                 } else
                     embed.setImage(entities.media[0].media_url_https)
@@ -125,7 +125,7 @@ export default class Tweetmanager {
 
         embed.setDescription(text)
 
-        client.followManager.send("twitter", `<${tweetLink}>`, embed)
+        client.followManager.send("twitter", `<${tweetLink}>`, embed).catch(Logger.error)
     }
 
     shutdown = (): void => {
@@ -134,10 +134,10 @@ export default class Tweetmanager {
     }
 
     set1hrDrawTweet(tweet: Tweet): void {
-        let text = tweet.extended_tweet?.full_text ?? tweet.text
+        const text = tweet.extended_tweet?.full_text ?? tweet.text
 
         Logger.info(`Received new tweet: ${text}`)
-        let match = text.match(/お題は(.*)(になります|となります)/)
+        const match = text.match(/お題は(.*)(になります|となります)/)
         if (match) {
             const ships = match[1].trim().replace(" (龍鳳)", "").split(" ").map((name) => {
                 const candidate = client.data.get1HrDrawName(name)
@@ -146,7 +146,7 @@ export default class Tweetmanager {
 
                 client.channels.fetch("658083473818517505").then(channel => {
                     if (channel && channel instanceof TextChannel)
-                        channel.send(`Unknown ship 1 hour draw ship! - ${name} <@127393188729192448>`)
+                        channel.send(`Unknown ship 1 hour draw ship! - ${name} <@127393188729192448>`).catch(Logger.error)
                 }).catch(e => Logger.error("While fetching channel", e))
 
                 return name
@@ -160,7 +160,8 @@ export default class Tweetmanager {
                         ships.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")
                     }`,
                     undefined,
-                    ships)
+                    ships
+                ).catch(Logger.error)
             }
 
             const date = new Date(tweet.created_at).toLocaleString("en-UK", {

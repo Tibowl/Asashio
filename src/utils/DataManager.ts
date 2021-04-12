@@ -7,7 +7,7 @@ import client from "../main"
 import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
-const existsP = (path: string): Promise<boolean> => new Promise((resolve) => exists(path, resolve))
+const existsP = async (path: string): Promise<boolean> => new Promise((resolve) => exists(path, resolve))
 
 const defaultMisc: MiscDB = {
     "RangeNames": {
@@ -165,7 +165,7 @@ export default class DataManager {
             })
         }
 
-        for (let alias of this.shipAliases)
+        for (const alias of this.shipAliases)
             name = name.replace(new RegExp("^" + alias[0]), alias[1])
 
         let result = this.getShipById(name)
@@ -207,7 +207,7 @@ export default class DataManager {
             })
         }
 
-        for (let alias of this.shipAliases)
+        for (const alias of this.shipAliases)
             name = name.replace(new RegExp("^" + alias[0]), alias[1])
 
         let result = this.birthdays.find(ship => ship.id === +name)
@@ -240,14 +240,14 @@ export default class DataManager {
     getEquipByName = (name: string): Equipment[] | undefined => {
         name = this.normalizeName(name)
 
-        let result = this.getEquipById(name)
+        const result = this.getEquipById(name)
         if (result != undefined) return [result]
 
-        for (let alias of this.equipAliases)
+        for (const alias of this.equipAliases)
             name = name.replace(alias[0], alias[1]).trim()
 
         const firstWord = name.split(" ")[0]
-        let equipList = Object.values(this.equips).filter(k => {
+        const equipList = Object.values(this.equips).filter(k => {
             const equipName = this.normalizeName(k.name)
             return equipName.includes(" " + firstWord) || equipName.startsWith(firstWord)
         })
@@ -322,8 +322,8 @@ export default class DataManager {
         const wordsName = name.split(" "), wordsSearch = toSearch.split(" ")
 
         let score = 0, wordsIndex = 0
-        for (let word of wordsSearch) {
-            let previous = wordsIndex
+        for (const word of wordsSearch) {
+            const previous = wordsIndex
             for (let i = wordsIndex; i < wordsName.length; i++) {
                 if (wordsName[i].startsWith(word)) {
                     wordsIndex = i
@@ -358,7 +358,7 @@ export default class DataManager {
         for (let i = 1; i <= b.length; i++) {
             let prev = i
             for (let j = 1; j <= a.length; j++) {
-                let val = (b.charAt(i - 1) == a.charAt(j - 1)) ? row[j - 1] : Math.min(row[j - 1] + 1, prev + 1, row[j] + 1)
+                const val = (b.charAt(i - 1) == a.charAt(j - 1)) ? row[j - 1] : Math.min(row[j - 1] + 1, prev + 1, row[j] + 1)
                 row[j - 1] = prev
                 prev = val
             }
@@ -399,7 +399,7 @@ export default class DataManager {
             Object.keys(ship).map(key => shipNew[key.replace("_", "")] = ship[key])
             this.ships[shipNew.api_id] = shipNew
         })
-        Logger.info(`Loaded ship data! ${Object.keys(this.ships).length} ships loaded`)//, this.ships[95])
+        Logger.info(`Loaded ship data! ${Object.keys(this.ships).length} ships loaded`)// , this.ships[95])
 
         const questData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/quest.json")).json()
 
@@ -407,7 +407,7 @@ export default class DataManager {
         Object.keys(questData).forEach(questId => {
             this.quests[questId.toUpperCase()] = questData[questId]
         })
-        Logger.info(`Loaded quest data! ${Object.keys(this.quests).length} quests loaded`)//, this.quests["B100"])
+        Logger.info(`Loaded quest data! ${Object.keys(this.quests).length} quests loaded`)// , this.quests["B100"])
 
         this.misc = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/misc.json")).json()
         Logger.info(`Loaded misc ${Object.keys(this.misc).join(", ")} data`)
@@ -423,7 +423,7 @@ export default class DataManager {
             if (equipNew.reading == false) delete equipNew.reading
             this.equips[equipNew.id] = equipNew
         })
-        Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)//, this.equips[1])
+        Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)// , this.equips[1])
 
         // eslint-disable-next-line @typescript-eslint/camelcase
         this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()

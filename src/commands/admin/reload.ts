@@ -18,7 +18,7 @@ export default class Reload extends Command {
         if (!config.admins.includes(message.author.id)) return message.reply("Admins only")
         if (!args || args.length < 1) return message.reply("Must provide a command name to reload.")
 
-        let commandName = args[0]
+        const commandName = args[0]
 
         if (commandName === "config") {
             return message.reply("Config reloading is disabled")
@@ -26,7 +26,7 @@ export default class Reload extends Command {
             const { data } = client
             const msg = message.reply("The DataManager is now being reloaded!")
             await data.reloadShipData()
-            ;(await msg).edit("Reloaded!")
+            await (await msg).edit("Reloaded!")
             return msg
         } else if (commandName === "links") {
             return message.reply("This requires a restart!")

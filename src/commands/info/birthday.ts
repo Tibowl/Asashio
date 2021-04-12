@@ -15,7 +15,7 @@ export default class Birthday extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         const now = new Date()
         const { timerManager, data } = client
 
@@ -109,7 +109,7 @@ export default class Birthday extends Command {
     }
 
     timeLeft(diff: number): string {
-        let result = [], originalTime = diff / 1000
+        const result = [], originalTime = diff / 1000
 
         diff /= 1000 // convert to s
         if (diff >= 24*60*60) {

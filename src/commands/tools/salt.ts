@@ -12,9 +12,10 @@ export default class Salt extends Command {
         })
     }
 
-    run(message: Message, args: string[]): Promise<Message | Message[]> {
+    async run(message: Message, args: string[]): Promise<Message | Message[]> {
         if (!args || args.length !== 2) return message.reply(`Usage: ${this.usage}`)
 
+        // eslint-disable-next-line prefer-const
         let [dropRateStr, runsStr] = args
         dropRateStr = dropRateStr.replace(/%$/, "")
 
@@ -23,7 +24,7 @@ export default class Salt extends Command {
 
         const dropRate = parseFloat(dropRateStr)
         const runs = parseFloat(runsStr)
-        let rate = 1 - ((1-(dropRate/100))**runs)
+        const rate = 1 - ((1-(dropRate/100))**runs)
         return message.channel.send(`**~${(rate*100).toLocaleString(undefined, {
             "minimumFractionDigits": 1,
             "maximumSignificantDigits": 4
