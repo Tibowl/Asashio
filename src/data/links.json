@@ -37,5 +37,6 @@
     "kccp": "@proxy",
     "kccacheproxy": "@kccp",
     "aar": "@aaresist",
-    "aares": "@aaresist"
+    "aares": "@aaresist",
+    "test": "**KCCacheProxy**: https://github.com/Tibowl/KCCacheProxy/releases/\n**Full/differential cache dumps (optional)**: https://mega.nz/#F!sOwClABa!yHldyYZr2MBqhTNYEupztg - Mirror: http://shizuru.piro.moe/kccp/\n\n**Installation video**: <90s video showing how to install (& setup for Chrome) https://youtu.be/Dog1zKAAWeI\n**Installation** (v2 or later, windows): Get latest setup exe from releases for your architecture (32/64 bit), open it, set browser/viewer proxy to localhost:8081 (see https://github.com/Tibowl/KCCacheProxy/wiki/Installation-and-setup#browserviewer-setup for more information).\n\n**Using full/differential cache dumps (optional)**: See https://github.com/Tibowl/KCCacheProxy/wiki/Installation-and-setup#using-cache-dumps\n\n**More information**: https://github.com/Tibowl/KCCacheProxy/wiki"
 }
