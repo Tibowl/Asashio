@@ -94,7 +94,13 @@ async function handleCommand(message: Message, cmdInfo: ParsedCommand): Promise<
 }
 
 export async function handle(message: Message): Promise<void> {
-    if (message.author.bot) return
+    if (message.author.bot) {
+        if (message.guild?.id == "616569685370077192"
+            && message.author !== client.user
+            && message.channel.type == "news")
+            await message.crosspost()
+        return
+    }
 
     const cmdInfo = await getCommand(message)
 
