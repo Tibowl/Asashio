@@ -425,7 +425,6 @@ export default class DataManager {
         })
         Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)// , this.equips[1])
 
-        // eslint-disable-next-line @typescript-eslint/camelcase
         this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
         if (this.api_start2 && this.api_start2.api_mst_maparea) {
             const eventID = Math.max(...this.api_start2.api_mst_maparea.map(area => area.api_id))
@@ -446,7 +445,6 @@ export default class DataManager {
         this.expeds = require("../../src/data/exped.json")
         Logger.info(`Loaded expeds! ${this.expeds.length} expeds!`)
 
-        // eslint-disable-next-line @typescript-eslint/camelcase
         this.levels_exp = require("../../src/data/levels.json")
         Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
 

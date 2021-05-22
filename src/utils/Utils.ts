@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import fetch from "node-fetch"
 import { Guild, Message, TextChannel, StringResolvable, MessageEmbed, MessageAttachment } from "discord.js"
 import log4js from "log4js"

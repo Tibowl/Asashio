@@ -58,6 +58,11 @@ export default class Quest extends Command {
 
         if (quest == undefined) return message.reply("Unknown quest")
 
+        let tries = 0
+        while (quest?.alias_of && tries++ < 20) quest = data.getQuestByName(quest.alias_of)
+
+        if (quest == undefined || quest?.alias_of) return message.reply("Unknown quest redirection")
+
         // console.log(quest)
         const embed = new MessageEmbed()
             .setTitle([quest.label ?? questId, this.cleanText(quest.title_en ?? ""), this.cleanText(quest.title)].filter(a => a).join(" | "))

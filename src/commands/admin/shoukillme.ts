@@ -3,8 +3,9 @@ import { Message, MessageReaction } from "discord.js"
 import Command from "../../utils/Command"
 import client from "../../main"
 import config from "../../data/config.json"
+import log4js from "log4js"
 
-const Logger = require("log4js").getLogger("shoukillme")
+const Logger = log4js.getLogger("shoukillme")
 
 export default class ShouKillMe extends Command {
     constructor(name: string) {
