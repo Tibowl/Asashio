@@ -148,6 +148,15 @@
     "builder": "Japan, Fujinagata Shipyards"
   },
   {
+    "id": 408,
+    "name": "Souya",
+    "type": "Special",
+    "day": 16,
+    "month": 2,
+    "year": 1938,
+    "builder": "Japan, Matsuo Shipyard"
+  },
+  {
     "id": 412,
     "name": "Yashiro",
     "class": "Mikura-06",
@@ -300,6 +309,16 @@
     "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
+    "id": 475,
+    "name": "Suzunami",
+    "class": "Yuugumo-10",
+    "type": "DD",
+    "day": 12,
+    "month": 3,
+    "year": 1943,
+    "builder": "Japan, Uraga Dock Company"
+  },
+  {
     "id": 101,
     "name": "Mogami",
     "class": "Mogami-01",
@@ -312,7 +331,7 @@
   {
     "id": 421,
     "name": "Shinshuu Maru",
-    "type": "LHA",
+    "type": "Special",
     "day": 14,
     "month": 3,
     "year": 1934,
@@ -489,6 +508,16 @@
     "builder": "US, Seattle-Tacoma Shipbuilding Corporation"
   },
   {
+    "id": 444,
+    "name": "Momo",
+    "class": "Matsu-04",
+    "type": "DD",
+    "day": 25,
+    "month": 3,
+    "year": 1944,
+    "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
     "id": 26,
     "name": "Fusou",
     "class": "Fusou-01",
@@ -619,16 +648,6 @@
     "builder": "Japan, Kobe Kawasaki Shipyard"
   },
   {
-    "id": 384,
-    "name": "Hachijou",
-    "class": "Shimushu-03",
-    "type": "DDE",
-    "day": 10,
-    "month": 4,
-    "year": 1940,
-    "builder": "Japan, Sasebo Naval Arsenal"
-  },
-  {
     "id": 168,
     "name": "Urakaze",
     "class": "Kagerou-11",
@@ -637,6 +656,16 @@
     "month": 4,
     "year": 1940,
     "builder": "Japan, Fujinagata Shipyards"
+  },
+  {
+    "id": 384,
+    "name": "Hachijou",
+    "class": "Shimushu-03",
+    "type": "DDE",
+    "day": 10,
+    "month": 4,
+    "year": 1940,
+    "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
     "id": 283,
@@ -1349,16 +1378,6 @@
     "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
-    "id": 225,
-    "name": "Asashimo",
-    "class": "Yuugumo-16",
-    "type": "DD",
-    "day": 18,
-    "month": 7,
-    "year": 1943,
-    "builder": "Japan, Fujinagata Shipyards"
-  },
-  {
     "id": 252,
     "name": "Okinami",
     "class": "Yuugumo-14",
@@ -1367,6 +1386,16 @@
     "month": 7,
     "year": 1943,
     "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
+    "id": 225,
+    "name": "Asashimo",
+    "class": "Yuugumo-16",
+    "type": "DD",
+    "day": 18,
+    "month": 7,
+    "year": 1943,
+    "builder": "Japan, Fujinagata Shipyards"
   },
   {
     "id": 138,
@@ -1490,6 +1519,16 @@
     "builder": "Germany, Germaniawerft"
   },
   {
+    "id": 398,
+    "name": "Honolulu",
+    "class": "Brooklyn CL-48",
+    "type": "CL",
+    "day": 26,
+    "month": 8,
+    "year": 1937,
+    "builder": "US, New York Naval Yard, Brooklyn, New York"
+  },
+  {
     "id": 415,
     "name": "Helena",
     "class": "St.Louis-02",
@@ -1518,6 +1557,16 @@
     "month": 9,
     "year": 1925,
     "builder": "UK, Armstrong-Whitworth"
+  },
+  {
+    "id": 455,
+    "name": "Northampton",
+    "class": "Northampton CA-26",
+    "type": "CA",
+    "day": 5,
+    "month": 9,
+    "year": 1929,
+    "builder": "US, Fore River Shipyard, Quincy, Massachusetts"
   },
   {
     "id": 397,
@@ -1634,7 +1683,7 @@
   {
     "id": 161,
     "name": "Akitsu Maru",
-    "class": "Hei",
+    "class": "Hei-01",
     "type": "Special",
     "day": 24,
     "month": 9,
@@ -1805,7 +1854,7 @@
     "id": 311,
     "name": "Gangut",
     "class": "Gangut-04",
-    "type": "FBB",
+    "type": "BB",
     "day": 20,
     "month": 10,
     "year": 1911,
@@ -1821,6 +1870,16 @@
     "month": 10,
     "year": 1943,
     "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
+    "id": 482,
+    "name": "I-203",
+    "class": "I-201 class-03",
+    "type": "SS",
+    "day": 20,
+    "month": 10,
+    "year": 1944,
+    "builder": "Japan, Kure Naval Arsenal"
   },
   {
     "id": 73,
@@ -1891,16 +1950,6 @@
     "builder": "Japan, Uraga Dock Company"
   },
   {
-    "id": 274,
-    "name": "Matsukaze",
-    "class": "Kamikaze-04",
-    "type": "DD",
-    "day": 30,
-    "month": 10,
-    "year": 1923,
-    "builder": "Japan, Maizuru Naval Arsenal"
-  },
-  {
     "id": 46,
     "name": "Sendai",
     "class": "Sendai-01",
@@ -1909,6 +1958,16 @@
     "month": 10,
     "year": 1923,
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
+  },
+  {
+    "id": 274,
+    "name": "Matsukaze",
+    "class": "Kamikaze-04",
+    "type": "DD",
+    "day": 30,
+    "month": 10,
+    "year": 1923,
+    "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
     "id": 162,
@@ -2112,16 +2171,6 @@
     "note": "renamed to Ryuuhou"
   },
   {
-    "id": 89,
-    "name": "Arare",
-    "class": "Asashio-09",
-    "type": "DD",
-    "day": 16,
-    "month": 11,
-    "year": 1937,
-    "builder": "Japan, Maizuru Naval Arsenal"
-  },
-  {
     "id": 9,
     "name": "Hiryuu",
     "class": "Hiryuu-01",
@@ -2130,6 +2179,16 @@
     "month": 11,
     "year": 1937,
     "builder": "Japan, Yokosuka Naval Arsenal"
+  },
+  {
+    "id": 89,
+    "name": "Arare",
+    "class": "Asashio-09",
+    "type": "DD",
+    "day": 16,
+    "month": 11,
+    "year": 1937,
+    "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
     "id": 7,
@@ -2531,6 +2590,16 @@
     "month": 12,
     "year": 1927,
     "builder": "Japan, Ishikawajima Shipyard"
+  },
+  {
+    "id": 471,
+    "name": "Makinami",
+    "class": "Yuugumo-05",
+    "type": "DD",
+    "day": 27,
+    "month": 12,
+    "year": 1941,
+    "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
     "id": 313,
