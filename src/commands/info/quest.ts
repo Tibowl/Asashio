@@ -186,6 +186,8 @@ export default class Quest extends Command {
                 return emoji.headquarters_personnel
             case "File:Ranking_point_reward.png":
                 return emoji.ranking_points
+            case "File:Combat_Provisions.png":
+                return emoji.combat_provisions
             default:
                 return ""
         }
