@@ -97,7 +97,9 @@ export async function handle(message: Message): Promise<void> {
     if (message.author.bot) {
         if (message.guild?.id == "616569685370077192"
             && message.author !== client.user
-            && message.channel.type == "news")
+            && message.channel.type == "news"
+            && message.guild.me
+            && message.channel.permissionsFor(message.guild.me)?.has("MANAGE_MESSAGES"))
             await message.crosspost()
         return
     }
