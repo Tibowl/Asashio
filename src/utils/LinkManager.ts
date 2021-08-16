@@ -75,6 +75,10 @@ export default class LinkManager extends Command {
             return await message.reply("This is another command OhNo")
 
         const oldValue = linkMap.get(command)
+
+        if (oldValue == link)
+            return await message.reply("Link no changed")
+
         Logger.info(`${message.author.id} changed ${command} from ${oldValue} to ${link}`)
         linkMap.set(command, link)
 
@@ -83,7 +87,11 @@ export default class LinkManager extends Command {
         if (!client.commands.has(command))
             client.commands.set(command, this)
 
-        return await message.reply(`Updated \`${command}\` from \`${oldValue}\` -> \`${link}\``)
+        let reply = `Updated \`${command}\` from \`${oldValue}\` -> \`${link}\``
+        if (reply.length > 1995)
+            reply = reply.substring(1990) + " [...]"
+
+        return await message.reply(reply)
     }
 
     getLinks(all = false): string[] {
