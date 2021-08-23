@@ -95,7 +95,7 @@ export default class Tweetmanager {
         // Tweet has media, don't embed it
         if (tweet.extended_entities?.media) {
             if (tweet.extended_entities.media[0].type != "photo") {
-                client.followManager.send("twitter", tweetLink).catch(Logger.error)
+                client.followManager.send("twitter", tweetLink).catch(e => Logger.error(e))
                 return
             } else
                 embed.setImage(tweet.extended_entities.media[0].media_url_https)
@@ -112,7 +112,7 @@ export default class Tweetmanager {
             // Tweet has media, don't embed it
             if (entities.media) {
                 if (entities.media[0].type != "photo") {
-                    client.followManager.send("twitter", tweetLink).catch(Logger.error)
+                    client.followManager.send("twitter", tweetLink).catch(e => Logger.error(e))
                     return
                 } else
                     embed.setImage(entities.media[0].media_url_https)
@@ -125,7 +125,7 @@ export default class Tweetmanager {
 
         embed.setDescription(text)
 
-        client.followManager.send("twitter", `<${tweetLink}>`, embed).catch(Logger.error)
+        client.followManager.send("twitter", `<${tweetLink}>`, embed).catch(e => Logger.error(e))
     }
 
     shutdown = (): void => {
@@ -146,7 +146,7 @@ export default class Tweetmanager {
 
                 client.channels.fetch("658083473818517505").then(channel => {
                     if (channel && channel instanceof TextChannel)
-                        channel.send(`Unknown ship 1 hour draw ship! - ${name} <@127393188729192448>`).catch(Logger.error)
+                        channel.send(`Unknown ship 1 hour draw ship! - ${name} <@127393188729192448>`).catch(e => Logger.error(e))
                 }).catch(e => Logger.error("While fetching channel", e))
 
                 return name
@@ -161,7 +161,7 @@ export default class Tweetmanager {
                     }`,
                     undefined,
                     ships
-                ).catch(Logger.error)
+                ).catch(e => Logger.error(e))
             }
 
             const date = new Date(tweet.created_at).toLocaleString("en-UK", {

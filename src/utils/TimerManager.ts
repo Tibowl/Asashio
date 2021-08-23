@@ -38,7 +38,7 @@ export default class TimerManager {
                 minute: "2-digit"
             })), {
                 type: "LISTENING"
-            }).catch(Logger.error)
+            }).catch(e => Logger.error(e))
 
             const time = now.getTime() - 24 * 60 * 60 * 1000
             const midnight = new Date(time)
@@ -54,7 +54,7 @@ export default class TimerManager {
                         .slice(0, 100),
                     (k: Guild) => k != null && k.me != null && k.memberCount > 5 && k.me.permissions.has("CHANGE_NICKNAME") && (k.me.nickname == null || k.me.nickname == "Asashio"),
                     "Asashio 🎉"
-                ).catch(Logger.error)
+                ).catch(e => Logger.error(e))
             } else if (!birthdays.includes("Asashio") && this.lastName != "Asashio") {
                 this.lastName = "Asashio"
                 changeName(
@@ -62,7 +62,7 @@ export default class TimerManager {
                         .sort((b, a) => a.memberCount - b.memberCount),
                     (k: Guild) => k != null && k.me != null && k.me.permissions.has("CHANGE_NICKNAME") && k.me.nickname == "Asashio 🎉",
                     "Asashio"
-                ).catch(Logger.error)
+                ).catch(e => Logger.error(e))
             }
         }
 
@@ -114,7 +114,7 @@ export default class TimerManager {
         }
 
         setTimeout(() => {
-            this.update(`${message}.`).catch(Logger.error)
+            this.update(`${message}.`).catch(e => Logger.error(e))
             this.scheduleNextMessages()
         }, nextTimeStamp - Date.now() + config.timerOffsetms)
     }
@@ -157,7 +157,7 @@ export default class TimerManager {
             this.scheduleNextBirthday(Date.now() + 60 * 60000)
 
             const newMessage = `Happy Birthday ${shipList.map(s => `**${s}**`).join(", ").replace(/,([^,]*)$/, " and$1")}!`
-            client.followManager.send("birthday", newMessage, undefined, shipList).catch(Logger.error)
+            client.followManager.send("birthday", newMessage, undefined, shipList).catch(e => Logger.error(e))
         }, midnight.getTime() - Date.now() + config.timerOffsetms)
     }
     // https://github.com/KC3Kai/KC3Kai/blob/master/src/library/managers/CalculatorManager.js#L443

@@ -67,7 +67,7 @@ async function deletable(reply: Message, message: Message): Promise<void> {
             reply.edit(`${reply.content}
 
 Unable to add ❌ reaction, please contact admins of this discord guild to give this bot the ability to add reactions.
-Doing so, will allow users to delete bot replies within some time.`).catch(Logger.error)
+Doing so, will allow users to delete bot replies within some time.`).catch(e => Logger.error(e))
         else
             Logger.error(error)
     }

@@ -45,7 +45,7 @@ export default class OpenServer extends Command {
                 cachedData.errors = parsed.errors
 
             await (await reply).edit(this.formatData(cachedData, args))
-        }).catch(Logger.error)
+        }).catch(e => Logger.error(e))
 
         return reply
     }

@@ -48,7 +48,7 @@ export default class Ranking extends Command {
             cachedData.rankingData = api
 
             await (await reply).edit(this.formatData(api, args))
-        }).catch(Logger.error)
+        }).catch(e => Logger.error(e))
 
         return reply
     }

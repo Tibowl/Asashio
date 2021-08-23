@@ -369,7 +369,7 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
         Logger.error(`An error has occured while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
         delete cached.loading
         cached.error = true
-        Promise.all(cached.callback?.map(async k => k()) ?? []).catch(Logger.error)
+        Promise.all(cached.callback?.map(async k => k()) ?? []).catch(e => Logger.error(e))
         delete cached.callback
         return {}
     }
@@ -434,7 +434,7 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
     }
     delete cached.loading
     cached.generateTime = api.generateTime
-    Promise.all(cached.callback?.map(async k => k()) ?? []).catch(Logger.error)
+    Promise.all(cached.callback?.map(async k => k()) ?? []).catch(e => Logger.error(e))
     delete cached.callback
 
     return cached.dropData
@@ -484,7 +484,7 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     }
     const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true, cached))
     newcached.callback?.push(async () => displayData(newcached, await reply, db))
-    queue(ship, rank, newcached, db).catch(Logger.error)
+    queue(ship, rank, newcached, db).catch(e => Logger.error(e))
     return reply
 }
 
