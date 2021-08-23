@@ -30,13 +30,13 @@ export default class MaintManager {
         try {
             await this.checkNews()
         } catch (error) {
-            Logger.error(`An error occured while handling news ${error}`)
+            Logger.error(`An error occurred while handling news ${error}`)
         }
 
         try {
             await this.checkVersion()
         } catch (error) {
-            Logger.error(`An error occured while handling news ${error}`)
+            Logger.error(`An error occurred while handling news ${error}`)
         }
     }
 

@@ -52,7 +52,7 @@ export default class OpenServer extends Command {
 
     formatData(data: CacheData, args: string[]): string {
         if (cachedData.errors != undefined) {
-            return "An error occured while fetching data from external API."
+            return "An error occurred while fetching data from external API."
         }
 
         const serverData = []

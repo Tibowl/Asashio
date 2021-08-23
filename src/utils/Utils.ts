@@ -252,7 +252,7 @@ export function calculatePostCap(atk: number, currenthp: number, maxhp: number, 
 
 const shipDropCache: Cached = {}
 function getDisplayDropString(cached: Cache, message: Message | Message[] | undefined, db: DBType, notice = true, single = true): string {
-    if (cached.error) return "An error has occured while fetching data. Try again later, if it still fails, try to contact me (see `.credits`)."
+    if (cached.error) return "An error has occurred while fetching data. Try again later, if it still fails, try to contact me (see `.credits`)."
     let drops = Object.values(cached.dropData).sort((a, b) => b.totalDrops - a.totalDrops)
     if (drops.length == 0)
         return `No ${cached.rank} rank **${cached.ship.full_name}** drops found`
@@ -366,7 +366,7 @@ export function percentage(count: number, total: number): string {
 const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<{ [key: string]: DropData }> => {
     const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
     if (api.error) {
-        Logger.error(`An error has occured while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
+        Logger.error(`An error has occurred while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
         delete cached.loading
         cached.error = true
         Promise.all(cached.callback?.map(async k => k()) ?? []).catch(e => Logger.error(e))
@@ -564,7 +564,7 @@ export async function sendToChannels(channels: string[] | undefined, content?: S
                 else
                     messages.push(chanObj.send(content, embed))
         } catch (error) {
-            Logger.error("An error occured while fetching channels for sentToChannels", error)
+            Logger.error("An error occurred while fetching channels for sentToChannels", error)
         }
     }
 
