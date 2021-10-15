@@ -30,7 +30,7 @@
     "cache": "@kccp",
     "proxy": "@cache",
     "gotsheep": "The gotsheep minigame can be started in the item menu, by clicking on the three flowers.\nFlick the sheep to move it. To advance to the next phase you need to meet a point requirement. \nAt the end of every wave you get one Shuusui, these stack, so use them when you can't meet point requirement / during final round.\nThere are 5 waves:\n```\nWave | Border | Time | Score/E. | E. Size | E. Hits Required\n1    |   2500 |   30 |       10 |      70 | 250\n2    |   5000 |   35 |       20 |     100 | 250\n3    |  15000 |   40 |       40 |      80 | 375\n4    |  50000 |   45 |       80 |      90 | 625\n5    |  70000 |   50 |      100 |     120 | 700\n```\nTo get an S rank, you'll need to reach wave 5 and get 70000 points.\n\nExample of S rank playthrough; <https://youtu.be/tERzplgdU1U>",
-    "touchattacks": "https://i.imgur.com/NRuzt7H.png",
+    "touchattacks": "https://i.imgur.com/lbK0yuL.png",
     "touch": "https://i.imgur.com/lbK0yuL.png",
     "expedgear": "https://i.imgur.com/TC7Hqjt.png",
     "bugs": "<https://github.com/Tibowl/KCBugTracker/issues>",
