@@ -37,5 +37,6 @@
     "kccp": "**KCCacheProxy**: <https://github.com/Tibowl/KCCacheProxy/releases/>\n\n**Installation video**: <90s video showing how to install (& setup for Chrome) <https://youtu.be/Dog1zKAAWeI>\n\n**Installation** (v2 or later, windows): Get latest setup exe from releases for your architecture (32/64 bit), open it, set browser/viewer proxy to localhost:8081, import the basic built-in cache dump\n*(see <https://github.com/Tibowl/KCCacheProxy/wiki/Installation-and-setup#browserviewer-setup> for more information)*\n\n**Full/differential cache dumps (optional)**: <http://shizuru.piro.moe/kccp/>\n*Instructions on how to use cache dumps*: <https://github.com/Tibowl/KCCacheProxy/wiki/Installation-and-setup#using-cache-dumps>\n\n**More information**: <https://github.com/Tibowl/KCCacheProxy/wiki>\n\n**English Patch** (Add-on to KCCP managed by Oradimi#8947): <https://github.com/Oradimi/KanColle-English-Patch-KCCP>\n\nIf you need additional support for the English Patch or KCCacheProxy, please visit the KC English Patch Discord: <https://discord.gg/krMeMKB>",
     "kccacheproxy": "@kccp",
     "aar": "@aaresist",
-    "aares": "@aaresist"
+    "aares": "@aaresist",
+    "ezinstallation": "https://i.imgur.com/RYX9cIr.png"
 }
