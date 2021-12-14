@@ -168,7 +168,7 @@ Ships to use:
             return compsCache[map][edges.join(",")]
         Logger.info(`Caching top comps of ${map} ${edges.join(",")}`)
 
-        const allComps = []
+        const allComps : Array<any> = []
         for (const edge of edges) {
             try {
                 const comps = await (await fetch(`http://kc.piro.moe/api/routing/comps/${map}/${edge}?${constants}&mainComp=&escortComp=&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()

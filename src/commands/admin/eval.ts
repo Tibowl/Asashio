@@ -31,7 +31,7 @@ export default class Eval extends Command {
                     ""
                 ))
         } catch (error) {
-            return message.reply(`${error.name}: ${error.message}`)
+            return message.reply(`${(error as Error).name}: ${(error as Error).message}`)
         }
     }
 

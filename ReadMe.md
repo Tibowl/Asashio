@@ -7,7 +7,7 @@ Asashio is a discord bot with mainly KanColle related commands. An invite link f
 Development
 ------------
 1. Install dependencies with `npm i`
-2. Set up config in `src/config.json`. An example can be found in `src/config-example.json`.
+2. Set up config in `src/data/config.json`. An example can be found in `src/data/config-example.json`.
 3. Develop with `npm run-script dev`
 
 Running
