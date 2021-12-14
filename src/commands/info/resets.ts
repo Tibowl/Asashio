@@ -35,17 +35,7 @@ export default class Resets extends Command {
         }
 
         return message.channel.send(Object.entries(resets)
-            .map(([key, time]) => `${longNames[key as keyof TimeStamps]} in **${this.timeLeft(time - now)}** @ ${new Date(time).toLocaleString("en-UK", {
-                timeZone: "Asia/Tokyo",
-                hour12: false,
-                weekday: "short",
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit"
-            })} JST`).join("\n"))
+            .map(([key, time]) => `${longNames[key as keyof TimeStamps]} in **${this.timeLeft(time - now)}** @ <t:${time / 1000}>`).join("\n"))
     }
 
     timeLeft(diff: number): string {
