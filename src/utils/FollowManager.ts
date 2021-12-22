@@ -1,10 +1,10 @@
-import log4js from "log4js"
 import SQLite from "better-sqlite3"
-import { Channel, User, Guild, Message, MessageEmbed, MessageAttachment, StringResolvable } from "discord.js"
+import { Channel, Guild, Message, MessageAttachment, MessageEmbed, Snowflake } from "discord.js"
 import { ensureDirSync } from "fs-extra"
-
+import log4js from "log4js"
 import { FollowCategory, Follower } from "./Types"
 import { sendToChannels } from "./Utils"
+
 
 const Logger = log4js.getLogger("FollowManager")
 ensureDirSync("data/")
@@ -36,15 +36,15 @@ export default class FollowManager {
     }
 
     private addFollowStatement: SQLite.Statement
-    addFollow(guild: Guild, channel: Channel, category: FollowCategory, user: User, filter = "*"): void {
-        Logger.info(`Following ${filter} in ${category} for ${user.tag} in ${channel.id} in ${guild.name} (${guild.id})`)
+    addFollow(guild: Guild, channel: Channel, category: FollowCategory, addedBy: string, filter = "*"): void {
+        Logger.info(`Following ${filter} in ${category} for ${addedBy} in ${channel.id} in ${guild.name} (${guild.id})`)
         this.addFollowStatement.run({
             guildID: guild.id,
             channelID: channel.id,
             category,
             filter,
             addedOn: new Date().getTime(),
-            addedBy: user.id
+            addedBy
         })
     }
 
@@ -120,7 +120,7 @@ export default class FollowManager {
         })
     }
 
-    async send(category: FollowCategory, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {
+    async send(category: FollowCategory, content?: Snowflake, embed?: MessageEmbed | MessageAttachment, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {
         if (!filters.includes("*")) filters = [...filters, "*"]
         let channels: string[] = []
         filters.forEach(filter => channels.push(...this.getFollowers(category, filter).map(k => k.channelID)))
@@ -131,7 +131,7 @@ export default class FollowManager {
 
         for (const message of messages)
             if (message instanceof Message
-                && message.channel.type === "news"
+                && message.channel.type === "GUILD_NEWS"
                 && message.guild?.me
                 && message.channel.permissionsFor(message.guild?.me)?.has("MANAGE_MESSAGES"))
                 await message.crosspost()

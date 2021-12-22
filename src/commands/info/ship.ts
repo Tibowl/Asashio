@@ -1,9 +1,9 @@
 import client from "../../main"
-import { Message } from "discord.js"
+import { AutocompleteInteraction, CommandInteraction, Message } from "discord.js"
 
 import Command from "../../utils/Command"
-import { displayShip, handleShip } from "../../utils/Utils"
-import { ShipExtended } from "../../utils/Types"
+import { displayShip, findFuzzyBestCandidates, handleShip, sendMessage } from "../../utils/Utils"
+import { CommandResponse, CommandSource, SendMessage, ShipExtended } from "../../utils/Types"
 
 export default class Ship extends Command {
     constructor(name: string) {
@@ -12,14 +12,38 @@ export default class Ship extends Command {
             category: "Information",
             help: "Get ship information. Or a random ship from a class.",
             usage: "ship <type name | ship name>",
+            options: [{
+                name: "ship",
+                description: "Name of ship or class",
+                type:"STRING",
+                autocomplete: true,
+                required: true,
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide a ship name.")
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = Object.values(client.data.ships).map(s => s.full_name)
+        const search = source.options.getFocused().toString()
+
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source, source.options.getString("ship", true))
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a ship name.")
+
+        return await this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, shipName: string): Promise<CommandResponse> {
         const { data } = client
 
-        const shipName = args.join(" ")
         let ship: ShipExtended | undefined
         const type = Object.entries(data.misc.ShipTypes)
             .concat(Object.entries(data.misc.ShipCodes))
@@ -31,8 +55,8 @@ export default class Ship extends Command {
         } else
             ship = data.getShipByName(shipName)
 
-        if (ship == undefined) return message.reply("Unknown ship")
+        if (ship == undefined) return sendMessage(source, "Unknown ship")
 
-        return message.channel.send(displayShip(handleShip(ship), message.guild))
+        return sendMessage(source, displayShip(handleShip(ship)))
     }
 }

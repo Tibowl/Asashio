@@ -1,9 +1,12 @@
-import { Message } from "discord.js"
-import fetch from "node-fetch"
+import { CommandInteraction, Message } from "discord.js"
 import log4js from "log4js"
-
+import fetch from "node-fetch"
+import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
+import { CommandSource, SendMessage } from "../../utils/Types"
+import { sendMessage, updateMessage } from "../../utils/Utils"
+
 
 const Logger = log4js.getLogger("autofleet")
 
@@ -50,13 +53,28 @@ How it works:
 
 - Nothing can be guaranteed on these fleets on how they will route/perform
 Uses <http://kc.piro.moe> API`,
-            usage: "autofleet <map> <boss node>",
-            aliases: ["spoonfeed", "imretardedpleasehelp", "imretardedplshelp"]
+            usage: "autofleet <map-boss node>",
+            aliases: ["spoonfeed", "imretardedpleasehelp", "imretardedplshelp"],
+            options: [{
+                name: "mapnode",
+                description: "Map and node",
+                type: "STRING",
+                required: true
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1 || args.length > 2) return message.reply(`Usage: \`${this.usage}\``)
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return this.run(source, source.options.getString("mapnode", true))
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        return this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, arg: string): Promise<SendMessage | undefined> {
+        const args = arg.toUpperCase().split(/ +/)
+        if (!args || args.length < 1 || args.length > 2) return sendMessage(source, `Usage: \`${this.usage}\``)
         const { data } = client
 
         if (args[0].includes("-") && !args[0].match(/-\d$/))
@@ -64,24 +82,31 @@ Uses <http://kc.piro.moe> API`,
         else if (!args[0].match(/E\d$/))
             args[0] = args[0].replace(/E\d/i, "$& ")
 
-        args = args.join(" ").toUpperCase().split(" ")
-
         let map = args[0]
         if (map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
         else if (map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
-        if (map.split("-").length != 2) return message.reply("Invalid map!")
+        if (map.split("-").length != 2) return sendMessage(source, "Invalid map!")
 
         if (args.length !== 2)
-            return message.reply("Missing node!")
+            return sendMessage(source, "Missing node!")
         const node = args[1]
-        const mapInfo = await data.getMapInfo(map)
-        if (Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
-        if (Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).length == 0)
-            return message.reply("Invalid/unknown node!")
 
-        const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
+        const reply = await sendMessage(source, `${emoji.loading} Loading...`)
+        data.getMapInfo(map).then(async mapInfo => {
+            if (!reply) return
+            if (Object.keys(mapInfo.route).length == 0) {
+                await updateMessage(reply, "Invalid/unknown map!")
+                return
+            }
+            if (Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).length == 0) {
+                await updateMessage(reply, "Invalid/unknown node!")
+                return
+            }
 
-        return message.channel.send(`Generated autofleet for ${map} ${node}\n${await this.autoFleet(map, edges)}`)
+            const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
+            await updateMessage(reply, `Generated autofleet for ${map} ${node}\n${await this.autoFleet(map, edges)}`)
+        }).catch(e => Logger.error(e))
+        return reply
     }
 
     autoFleet = async (map: string, edges: string[]): Promise<string> => {

@@ -1,9 +1,10 @@
-import { Message, MessageEmbed } from "discord.js"
+import { AutocompleteInteraction, CommandInteraction, Message, MessageEmbed } from "discord.js"
 
 import Command from "../../utils/Command"
 import client from "../../main"
 import emoji from "../../data/emoji.json"
-import { getWiki } from "../../utils/Utils"
+import { findFuzzyBestCandidates, getWiki, sendMessage } from "../../utils/Utils"
+import { CommandResponse, CommandSource, SendMessage } from "../../utils/Types"
 
 export default class Exped extends Command {
     constructor(name: string) {
@@ -12,24 +13,47 @@ export default class Exped extends Command {
             category: "Information",
             help: "Gets expedition info.",
             usage: "exped <exped ID>",
-            aliases: ["expedition"]
+            aliases: ["expedition"],
+            options: [{
+                name: "expedid",
+                description: "Expedition ID",
+                type:"STRING",
+                autocomplete: true,
+                required: true,
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide an expedition.")
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = client.data.api_start2.api_mst_mission?.map(s => s.api_disp_no ?? s.api_id.toString()) ?? ["No expedition data loaded"]
+        const search = source.options.getFocused().toString()
+
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source, source.options.getString("expedid", true).toUpperCase())
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide an expedition.")
+
+        return await this.run(source, args[0].toUpperCase())
+    }
+
+    async run(source: CommandSource, expedID: string): Promise<CommandResponse> {
         const { data } = client
 
-        const expedID = args[0].toUpperCase()
-
         const exped = data.api_start2.api_mst_mission?.find(k => k.api_disp_no == expedID || k.api_id == parseInt(expedID))
-        if (exped == undefined) return message.reply("Unknown expedition.")
+        if (exped == undefined) return sendMessage(source, "Unknown expedition.")
 
         const extraExpedData = data.getExpedByID(exped.api_disp_no)
         const [fuel, ammo, steel, bauxite] = (extraExpedData?.rsc) ?? (exped.api_win_mat_level.map(this.winmatlevel))
 
         const embed = new MessageEmbed()
-            .setURL(getWiki("Expedition#/Expedition_Tables", message.guild))
+            .setURL(getWiki("Expedition#/Expedition_Tables"))
             .setTitle(`${exped.api_disp_no} ${exped.api_reset_type == 1 ? "[M] " : ""}${this.getDamage(exped.api_damage_type)}- ${exped.api_name} - ${this.getTime(exped.api_time)}`)
 
         let req = (extraExpedData?.fleet) ?? `${exped.api_deck_num} ships required, details unknown`
@@ -66,8 +90,9 @@ export default class Exped extends Command {
             notes += `Unknown damage type ${exped.api_damage_type}\n`
 
         embed.addField("Notes", notes.trim())
-        return message.channel.send(embed)
+        return sendMessage(source, embed)
     }
+
     getDamage(d: number): string {
         switch (d) {
             case 0: return ""
@@ -76,6 +101,7 @@ export default class Exped extends Command {
             default: return `[D${d}?] `
         }
     }
+
     getItem(item: number): string {
         switch (item) {
             case 1: return emoji.bucket
@@ -89,6 +115,7 @@ export default class Exped extends Command {
             default: return `Unknown item ${item}`
         }
     }
+
     winmatlevel(k: number): string {
         switch (k) {
             case 0: return "0"
@@ -99,6 +126,7 @@ export default class Exped extends Command {
             default: return "?"
         }
     }
+
     getTime(time: number): string {
         return `${(Math.floor(time / 60) + "").padStart(2, "0")}h${((time % 60) + "").padStart(2, "0")}m`
     }

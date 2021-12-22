@@ -1,8 +1,9 @@
-import { Message, MessageEmbed } from "discord.js"
+import { CommandInteraction, Message, MessageEmbed } from "discord.js"
 
 import Command from "../../utils/Command"
-import { getWiki } from "../../utils/Utils"
+import { getWiki, sendMessage } from "../../utils/Utils"
 import client from "../../main"
+import { CommandResponse, CommandSource, SendMessage } from "../../utils/Types"
 
 export default class BGM extends Command {
     constructor(name: string) {
@@ -10,34 +11,48 @@ export default class BGM extends Command {
             name,
             category: "Information",
             help: "Gets BGM from a map.",
-            usage: "bgm <map or id>"
+            usage: "bgm <map or id>",
+            options: [{
+                name: "bgm",
+                description: "Map or ID of BGM",
+                type:"STRING",
+                required: true,
+            }]
         })
     }
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source, source.options.getString("bgm", true))
+    }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide a map or bgm id.")
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a map or bgm id.")
+
+        return await this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, arg: string): Promise<CommandResponse> {
         const { data } = client
 
-        if (isFinite(+args[0])) {
-            const bgm = +args[0]
+        if (isFinite(+arg)) {
+            const bgm = +arg
             const embed = new MessageEmbed()
-                .setURL(getWiki("Music", message.guild))
+                .setURL(getWiki("Music"))
                 .setTitle(`BGM #${bgm}`)
 
             embed.setDescription(this.parseLine(bgm))
-            return message.channel.send(embed)
+            return sendMessage(source, embed)
         }
 
-        const map = args[0].replace(/E(-)*/i, `${data.eventID()}-`)
-        if (!map.includes("-") || map.split("-").length !== 2 || map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
+        const map = arg.replace(/E(-)*/i, `${data.eventID()}-`)
+        if (!map.includes("-") || map.split("-").length !== 2 || map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return sendMessage(source, "Invalid map.")
 
         const [world, mapid] = map.split("-").map(a => parseInt(a))
         const bgm = data.api_start2?.api_mst_mapbgm?.find(k => k.api_no == mapid && k.api_maparea_id == world)
 
-        if (bgm == undefined) return message.reply("Invalid map.")
+        if (bgm == undefined) return sendMessage(source, "Invalid map.")
 
         const embed = new MessageEmbed()
-            .setURL(getWiki("Music", message.guild))
+            .setURL(getWiki("Music"))
             .setTitle(`${map} BGM`)
 
         embed.addField("Overworld", this.parseLine(bgm.api_moving_bgm))
@@ -55,7 +70,7 @@ export default class BGM extends Command {
             embed.addField("Boss Node (Night)", this.parseLine(bgm.api_boss_bgm[1]))
         }
 
-        return message.channel.send(embed)
+        return sendMessage(source, embed)
     }
 
     parseLine(bgmId: number): string {

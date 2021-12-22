@@ -18,11 +18,11 @@ const Logger = log4js.getLogger("main")
 const intents = new Intents()
 intents.add(
     // For handling commands in DMs
-    "DIRECT_MESSAGES", "DIRECT_MESSAGE_REACTIONS",
+    "DIRECT_MESSAGES",
     // For follow stuff, also required for guild messages for some reason?
     "GUILDS",
-    // For handling commands in guilds, reactions for X to delete
-    "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS"
+    // For handling commands in guilds
+    "GUILD_MESSAGES",
 )
 
 export default class AsashioClient extends Discord.Client {
@@ -38,11 +38,14 @@ export default class AsashioClient extends Discord.Client {
 
     constructor() {
         super({
+            intents,
+            partials: ["CHANNEL"],
             presence: {
-                status: "idle"
-            },
-            ws: {
-                intents
+                status: "idle",
+                activities: [{
+                    name: "Loading...",
+                    type: "PLAYING"
+                }]
             }
         })
     }

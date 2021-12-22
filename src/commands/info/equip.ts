@@ -1,10 +1,10 @@
-import { Message, MessageEmbed, Guild } from "discord.js"
+import { Message, MessageEmbed, CommandInteraction, AutocompleteInteraction } from "discord.js"
 
 import Command from "../../utils/Command"
 import client from "../../main"
 import DataManager from "../../utils/DataManager"
-import { getWiki } from "../../utils/Utils"
-import { Equipment } from "../../utils/Types"
+import { findFuzzyBestCandidates, getWiki, sendMessage } from "../../utils/Utils"
+import { CommandResponse, CommandSource, Equipment, SendMessage } from "../../utils/Types"
 
 export default class Equip extends Command {
     constructor(name: string) {
@@ -13,43 +13,49 @@ export default class Equip extends Command {
             category: "Information",
             help: "Get equip information.",
             usage: "equip <equip>",
-            aliases: ["item", "equipment", "eq"]
+            aliases: ["item", "equipment", "eq"],
+            options: [{
+                name: "name",
+                description: "Name of equipment",
+                type:"STRING",
+                autocomplete: true,
+                required: true,
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide an equip name.")
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = Object.values(client.data.equips).map(s => s.name)
+        const search = source.options.getFocused().toString()
+
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source, source.options.getString("name", true))
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return source.reply("Must provide an equip name.")
+
+        return await this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, equipName: string): Promise<CommandResponse> {
         const { data } = client
 
-        const equipName = args.join(" ")
         const equips = data.getEquipByName(equipName)
 
-        if (equips == undefined || equips.length == 0 || equips.length > 15) return message.reply("Unknown equip")
+        if (equips == undefined || equips.length == 0 || equips.length > 15) return sendMessage(source, "Unknown equip")
         // console.log(equip)
 
         if (equips.length == 1)
-            return message.channel.send(this.displayEquip(equips[0], data, message.guild))
+            return sendMessage(source, this.displayEquip(equips[0], data))
 
-        const reply = await message.channel.send(`Multiple equipment matched, please respond number:
-${equips.map((e, i) => `${i+1}: [${e.id}] ${e.name}`).join("\n")}`)
-
-        message.channel.awaitMessages((m: Message) => {
-            if (m.author.id !== message.author.id) return false
-            if (!m.content.match(/\d+/)) return false
-            const i = +m.content
-            if (i > equips.length || i <= 0) return false
-            return true
-        }, { max: 1, time: 30000 }).then(async (msgs) => {
-            const m = msgs.first()
-            if (m == undefined) {
-                await reply.edit("Reply timed out")
-                return
-            }
-
-            const i = +m.content
-            await reply.edit(`Selected result #${i}:`, this.displayEquip(equips[i-1], data, message.guild))
-        }).catch(async () => reply.edit("Reply timed out"))
-        return reply
+        return sendMessage(source, `Multiple equipment matched:
+${equips.map(e => `[${e.id}] ${e.name}`).join("\n")}`)
     }
     stats = {
         "firepower": "Firepower",
@@ -67,11 +73,11 @@ ${equips.map((e, i) => `${i+1}: [${e.id}] ${e.name}`).join("\n")}`)
         "flight_cost": "Flight Cost",
         "flight_range": "Flight Range",
     }
-    displayEquip(equip: Equipment, data: DataManager, guild?: Guild|null): MessageEmbed {
+    displayEquip(equip: Equipment, data: DataManager): MessageEmbed {
         const title = [`No. ${equip.id}`, equip.name, equip.japanese_name].filter(a => a).join(" | ")
         const embed = new MessageEmbed()
             .setTitle(title)
-            .setURL(getWiki(equip.name, guild))
+            .setURL(getWiki(equip.name))
             .setThumbnail(data.getEquipLink(equip.id))
         // TODO rarity color? .setColor("#")
 

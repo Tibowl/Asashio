@@ -1,7 +1,9 @@
-import { Message } from "discord.js"
+import { CommandInteraction, Message } from "discord.js"
 
 import Command from "../../utils/Command"
 import client from "../../main"
+import { sendMessage } from "../../utils/Utils"
+import { CommandSource, SendMessage } from "../../utils/Types"
 
 export default class PvP extends Command {
     constructor(name: string) {
@@ -10,14 +12,29 @@ export default class PvP extends Command {
             category: "Tools",
             help: "Get experience you get from given ship lvls",
             usage: "pvp <flagship level> [escort level=0]",
-            aliases: ["pvpxp", "pvpexp"]
+            aliases: ["pvpxp", "pvpexp"],
+            options: [{
+                name: "flagship",
+                description: "Flagship level",
+                type: "INTEGER",
+                required: true
+            }, {
+                name: "escort",
+                description: "Escort level (defaults to 0)",
+                type: "INTEGER",
+                required: false
+            }]
         })
     }
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        const flagship = source.options.getInteger("flagship", true)
+        const escort = source.options.getInteger("escort") ?? 0
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply(`Usage: \`${this.usage}\``)
-        const { data } = client
+        return this.run(source, flagship, escort)
+    }
 
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, `Usage: \`${this.usage}\``)
         let flagshipLevel = 0, escortLevel = 0
         try {
             flagshipLevel = parseInt(args[0])
@@ -27,22 +44,28 @@ export default class PvP extends Command {
             else
                 escortLevel = 0
         } catch (e) {
-            return message.reply("Not a number")
+            return sendMessage(source, "Not a number")
         }
 
+        return this.run(source, flagshipLevel, escortLevel)
+    }
+
+    async run(source: CommandSource, flagshipLevel: number, escortLevel: number): Promise<SendMessage | undefined> {
+        const { data } = client
+
         if (!isFinite(flagshipLevel))
-            return message.reply("Flagship level is not a number")
+            return sendMessage(source, "Flagship level is not a number")
         if (flagshipLevel > data.getMaxLevel())
-            return message.reply(`Flagship level is too large (max: ${data.getMaxLevel()})`)
+            return sendMessage(source, `Flagship level is too large (max: ${data.getMaxLevel()})`)
         if (flagshipLevel < 1)
-            return message.reply("Flagship level too small")
+            return sendMessage(source, "Flagship level too small")
 
         if (!isFinite(escortLevel))
-            return message.reply("Escort level is not a number")
+            return sendMessage(source, "Escort level is not a number")
         if (escortLevel > data.getMaxLevel())
-            return message.reply(`Escort level is too large (max: ${data.getMaxLevel()})`)
+            return sendMessage(source, `Escort level is too large (max: ${data.getMaxLevel()})`)
         if (escortLevel < 0)
-            return message.reply("Escort level too small")
+            return sendMessage(source, "Escort level too small")
 
         const flagshipXP = data.levels_exp[flagshipLevel - 1]
         const escortXP = data.levels_exp[(escortLevel||1) - 1]
@@ -53,7 +76,7 @@ export default class PvP extends Command {
         const baseMin = this.postcap(precapMin)
         const baseMax = this.postcap(precapMax)
 
-        return message.channel.send(`A pvp with flagship level **${flagshipLevel}**${escortLevel > 0 ? ` and escort level **${escortLevel}**` : ""} gives **${this.range(Math.floor(baseMin), Math.floor(baseMax))}** base XP, **${this.range(Math.floor(baseMin * 1.2), Math.floor(baseMax * 1.2))}** for an S rank`)
+        return sendMessage(source, `A pvp with flagship level **${flagshipLevel}**${escortLevel > 0 ? ` and escort level **${escortLevel}**` : ""} gives **${this.range(Math.floor(baseMin), Math.floor(baseMax))}** base XP, **${this.range(Math.floor(baseMin * 1.2), Math.floor(baseMax * 1.2))}** for an S rank`)
     }
 
     postcap(precap: number): number {

@@ -1,8 +1,9 @@
-import { Message } from "discord.js"
+import { CommandInteraction, Message } from "discord.js"
 
 import Command from "../../utils/Command"
 import client from "../../main"
-import { TimeStamps } from "../../utils/Types"
+import { CommandResponse, CommandSource, SendMessage, TimeStamps } from "../../utils/Types"
+import { displayTimestamp, sendMessage } from "../../utils/Utils"
 
 export default class Resets extends Command {
     constructor(name: string) {
@@ -12,10 +13,19 @@ export default class Resets extends Command {
             help: "Get times when stuff resets",
             usage: "resets",
             aliases: ["cutoff", "cutoffs", "reset", "timer", "timers"],
+            options: []
         })
     }
 
-    async run(message: Message): Promise<Message | Message[]> {
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source)
+    }
+
+    async runMessage(source: Message): Promise<SendMessage | undefined> {
+        return await this.run(source)
+    }
+
+    async run(source: CommandSource): Promise<CommandResponse> {
         const { timerManager } = client
 
         const now = new Date().getTime()
@@ -34,7 +44,7 @@ export default class Resets extends Command {
             monthlyExped: "**Monthly exped** resets"
         }
 
-        return message.channel.send(Object.entries(resets)
+        return sendMessage(source, Object.entries(resets)
             .map(([key, time]) => `${longNames[key as keyof TimeStamps]} in **${this.timeLeft(time - now)}** @ ${new Date(time).toLocaleString("en-UK", {
                 timeZone: "Asia/Tokyo",
                 hour12: false,
@@ -45,7 +55,7 @@ export default class Resets extends Command {
                 hour: "2-digit",
                 minute: "2-digit",
                 second: "2-digit"
-            })} JST`).join("\n"))
+            })} JST (local: ${displayTimestamp(new Date(time), "f")})`).join("\n"))
     }
 
     timeLeft(diff: number): string {

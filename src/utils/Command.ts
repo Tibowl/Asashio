@@ -1,20 +1,27 @@
-import Discord from "discord.js"
+import { ApplicationCommandOptionData, AutocompleteInteraction, CommandInteraction, Message } from "discord.js"
+import config from "../data/config.json"
+import { CommandResponse, CommandSource, SendMessage } from "./Types"
+import { sendMessage } from "./Utils"
 
 export type CommandCategory = "Admin" | "Links" | "Links+" | "Tools" | "Information" | "Hidden"
 export interface CommandOptions {
     name: string
-    help: false | string
+    aliases?: string[]
+    help: string
+    shortHelp?: string
     usage: false | string
     category: CommandCategory
-    aliases?: string[]
+    options: ApplicationCommandOptionData[]
 }
 
 export default abstract class Command {
     public readonly commandName: string
     public readonly aliases: string[]
     public usage: string | false
-    public readonly help: string | false
+    public readonly help: string
+    public readonly shortHelp?: string
     public readonly category: CommandCategory
+    public options: ApplicationCommandOptionData[]
 
     protected constructor(options: CommandOptions) {
         this.commandName = options.name
@@ -22,7 +29,22 @@ export default abstract class Command {
         this.usage = options.usage
         this.help = options.help
         this.category = options.category
+        this.shortHelp = options.shortHelp
+        this.options = options.options
     }
 
-    abstract run(message: Discord.Message, args: string[], command: string): Promise<Discord.Message | Discord.Message[] | undefined> | undefined
+    abstract runInteraction(source: CommandInteraction, command: string): CommandResponse
+    abstract runMessage(source: Message, args: string[], command: string): CommandResponse
+    async autocomplete(source: AutocompleteInteraction, _command: string): Promise<void> {
+        await source.respond([{
+            name: source.options.getFocused().toString() || "Empty",
+            value: source.options.getFocused()
+        }])
+    }
+
+    async sendHelp(source: CommandSource): Promise<SendMessage | undefined> {
+        return sendMessage(source, `Usage: \`${this.usage}\`
+See \`${config.prefix}help ${this.commandName}\` for more info`, { ephemeral: true })
+    }
+
 }

@@ -1,6 +1,8 @@
-import { Message } from "discord.js"
+import { CommandInteraction, Message } from "discord.js"
 
 import Command from "../../utils/Command"
+import { CommandResponse, CommandSource, SendMessage } from "../../utils/Types"
+import { sendMessage } from "../../utils/Utils"
 
 export default class Resets extends Command {
     constructor(name: string) {
@@ -10,10 +12,19 @@ export default class Resets extends Command {
             help: "Get current time in a couple time zones",
             usage: "time",
             aliases: ["timezones"],
+            options: []
         })
     }
 
-    async run(message: Message): Promise<Message | Message[]> {
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source)
+    }
+
+    async runMessage(source: Message): Promise<SendMessage | undefined> {
+        return await this.run(source)
+    }
+
+    async run(source: CommandSource): Promise<CommandResponse> {
         const now = new Date()
         const timeZones = [
             "Asia/Tokyo",
@@ -23,7 +34,7 @@ export default class Resets extends Command {
             "America/Los_Angeles"
         ]
 
-        return message.channel.send(timeZones.map(timeZone => now.toLocaleString("en-UK", {
+        return sendMessage(source, timeZones.map(timeZone => now.toLocaleString("en-UK", {
             timeZone,
             timeZoneName: "long",
             hour12: false,

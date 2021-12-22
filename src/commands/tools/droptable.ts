@@ -1,8 +1,10 @@
 import fetch from "node-fetch"
-import { Message } from "discord.js"
+import { CommandInteraction, Message } from "discord.js"
 
 import Command from "../../utils/Command"
 import client from "../../main"
+import { CommandSource, SendMessage } from "../../utils/Types"
+import { sendMessage } from "../../utils/Utils"
 
 export default class DropTable extends Command {
     constructor(name: string) {
@@ -12,17 +14,31 @@ export default class DropTable extends Command {
             usage: "droptable <map>",
             aliases: ["drops"],
             category: "Tools",
+            options: [{
+                name: "map",
+                description: "Map to check",
+                type: "STRING",
+                required: true
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length != 1) return message.reply(`Usage: \`${this.usage}\``)
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return this.run(source, source.options.getString("map", true))
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length != 1) return sendMessage(source, `Usage: \`${this.usage}\``)
+        return this.run(source, args[0])
+    }
+
+    async run(source: CommandSource, arg: string): Promise<SendMessage | undefined> {
         const { data } = client
 
-        let map = args[0].toUpperCase()
+        let map = arg.toUpperCase()
         if (map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
         else if (map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
-        if (map.split("-").length != 2) return message.author.send("Invalid map!")
+        if (map.split("-").length != 2) return sendMessage(source, "Invalid map!")
 
         const isEventMap = map.split("-")[0].length > 1
 
@@ -46,10 +62,10 @@ export default class DropTable extends Command {
         table = rows.filter(k => k.length).map(k => k.trim()).join("\n")
 
         if (table.length > 1800)
-            return message.author.send("Table too long!")
+            return sendMessage(source, "Table too long!", { ephemeral: true })
         else if (table.length < 5)
-            return message.author.send("No notable drops found!")
+            return sendMessage(source, "No notable drops found!", { ephemeral: true })
 
-        return message.author.send(`Drop table of ${map}\`\`\`\n${table}\n\`\`\`\nData provided by TsunDB.`)
+        return sendMessage(source, `Drop table of ${map}\`\`\`\n${table}\n\`\`\`\nData provided by TsunDB.`, { ephemeral: true })
     }
 }

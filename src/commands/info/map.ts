@@ -1,11 +1,15 @@
-import { Message, MessageAttachment } from "discord.js"
 import { createCanvas, Image } from "canvas"
+import { CommandInteraction, Message, MessageAttachment } from "discord.js"
+import log4js from "log4js"
 import fetch from "node-fetch"
-
-import Command from "../../utils/Command"
+import emoji from "../../data/emoji.json"
 import client from "../../main"
-import { MapInfo } from "../../utils/Types"
+import Command from "../../utils/Command"
+import { CommandResponse, CommandSource, MapInfo, SendMessage } from "../../utils/Types"
+import { sendMessage, updateMessage } from "../../utils/Utils"
 
+
+const Logger = log4js.getLogger("map")
 const cachedMaps: {[key: string]: MessageAttachment} = {}
 
 export default class Map extends Command {
@@ -16,28 +20,44 @@ export default class Map extends Command {
             help: "Renders a map, with ranges.",
             usage: "map <world-map>",
             aliases: ["rangemap", "lbasmap", "ranges"],
+            options: [{
+                name: "mapid",
+                description: "ID of map",
+                type:"STRING",
+                required: true,
+            }]
         })
     }
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source, source.options.getString("mapid", true))
+    }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide a map.")
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a map.")
+
+        return await this.run(source, args[0])
+    }
+
+    async run(source: CommandSource, map: string): Promise<CommandResponse> {
         const { data } = client
 
-        let map = args[0]
         if (map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
         if (map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
-        if (map.split("-").length != 2) return message.reply("Invalid map!")
+        if (map.split("-").length != 2) return sendMessage(source, "Invalid map!")
 
-        if (map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return message.reply("Invalid map.")
+        if (map.split("-").filter(a => isNaN(parseInt(a))).length > 0) return sendMessage(source, "Invalid map.")
 
-
-        if (cachedMaps[map] !== undefined) return message.channel.send(cachedMaps[map])
+        if (cachedMaps[map] !== undefined) return sendMessage(source, `Map ${map}`, { files: [cachedMaps[map]] })
 
         const mapInfo = await data.getMapInfo(map)
-        if (Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
+        if (Object.keys(mapInfo.route).length == 0) return sendMessage(source, "Invalid/unknown map!")
+        const reply = await sendMessage(source, `${emoji.loading} Loading...`)
 
-        const attachment = await this.genMap(map, mapInfo)
-        return message.channel.send(attachment)
+        if (reply)
+            this.genMap(map, mapInfo)
+                .then(async attachment => updateMessage(reply, { content: `Map ${map}`, files: [attachment] }))
+                .catch(e => Logger.error(e))
+        return reply
     }
 
     async genMap(map: string, apiParsed: MapInfo): Promise<MessageAttachment> {
@@ -82,7 +102,7 @@ export default class Map extends Command {
             ctx.lineJoin = "round"
             ctx.lineWidth = 7
 
-            const text = lbas.result[node ?? "/"] ? `${node} (${lbas.result[node]})` : (node ?? "/")
+            const text = lbas.result[node ?? "/"] ? `${node} (${(lbas.result[node] as {distance: number}[]).map(x => x.distance).join("/")})` : (node ?? "/")
             ctx.strokeText(text, x, y - 10)
             ctx.lineWidth = 1
             ctx.fillText(text, x, y - 10)

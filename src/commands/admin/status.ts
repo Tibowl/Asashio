@@ -1,10 +1,12 @@
-import { Message } from "discord.js"
+import { CommandInteraction, Message } from "discord.js"
 import child_process from "child_process"
 
 import Command from "../../utils/Command"
 import client from "../../main"
 import config from "../../data/config.json"
 import emoji from "../../data/emoji.json"
+import { SendMessage } from "../../utils/Types"
+import { sendMessage } from "../../utils/Utils"
 
 export default class SetLink extends Command {
     constructor(name: string) {
@@ -14,11 +16,15 @@ export default class SetLink extends Command {
             help: "Get bot status. Admins only.",
             usage: "status [more]",
             aliases: ["version"],
+            options: []
         })
     }
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return sendMessage(source, "Not supported", { ephemeral: true })
+    }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!config.admins.includes(message.author.id)) return message.reply("Admins only")
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!config.admins.includes(source.author.id)) return source.reply("Admins only")
         const { data } = client
 
         const formatTime = (sec: number): string => {
@@ -44,10 +50,10 @@ export default class SetLink extends Command {
         }
 
         const stats = data.store.stats
-        if (stats == undefined) return message.reply("Stats are unavailable, try again later")
+        if (stats == undefined) return source.reply("Stats are unavailable, try again later")
 
         const totalCommands = Object.keys(stats).map(k => Object.values(stats[k]).reduce((a, b) => a+b, 0)).reduce((a, b) => a+b, 0)
-        return message.channel.send(`Running on commit ${args && args.length > 0 ? `<${getVersion()}>` : getVersion()}
+        return source.channel.send(`Running on commit ${args && args.length > 0 ? `<${getVersion()}>` : getVersion()}
 Memory heap usage: ${getMemoryUsage()}
 Current uptime: ${formatTime(process.uptime())}
 Cache: in ${client.channels.cache.size} channels on ${client.guilds.cache.size} servers, for a total of ${client.users.cache.size} users.

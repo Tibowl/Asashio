@@ -1,8 +1,10 @@
 import Command from "../../utils/Command"
-import Discord from "discord.js"
+import { AutocompleteInteraction, CommandInteraction, Message } from "discord.js"
 import client from "../../main"
 import { CommandCategory } from "../../utils/Command"
 import config from "../../data/config.json"
+import { findFuzzyBestCandidates, sendMessage } from "../../utils/Utils"
+import { CommandSource, SendMessage } from "../../utils/Types"
 
 export default class Help extends Command {
     constructor(name: string) {
@@ -11,34 +13,70 @@ export default class Help extends Command {
             category: "Hidden",
             help: "Gets help.",
             usage: "help [command]",
-            aliases: ["command", "commands"]
+            aliases: ["command", "commands"],
+            options: [{
+                name: "command",
+                description: "Command",
+                type: "STRING",
+                required: false,
+                autocomplete: true
+            }]
         })
     }
 
-    async run(message: Discord.Message, args: string[]): Promise<Discord.Message | Discord.Message[]> {
-        // if(message.channel.type !== "dm") return;
-        const { commands } = client
-        if (!args || args.length < 1) {
-            const categorized: { [a in CommandCategory]: string[] } = {
-                "Hidden": [],
-                "Information": [],
-                "Tools": [],
-                "Links": [],
-                "Links+": [],
-                "Admin": []
-            }
-            commands.forEach(cmd => {
-                const category = cmd?.category ?? "Misc"
-                categorized[category].push(cmd.commandName)
-            })
-            categorized.Links = client.linkManager.getLinks()
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = client.commands.keyArray()
 
-            return message.channel.send(`**Commands**: 
+        const search = source.options.getFocused().toString()
+
+        if (search == "") {
+            return await source.respond([
+                ...targetNames.filter((_, i) => i < 20).map(value => {
+                    return { name: value, value }
+                })
+            ])
+        }
+
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        const command = source.options.getString("command")
+        if (command == undefined)
+            return this.runList(source)
+        return this.run(source, command)
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (args.length <1)
+            return this.runList(source)
+        return this.run(source, args.join(" "))
+    }
+
+    async runList(source: CommandSource): Promise<SendMessage | undefined> {
+        const { commands } = client
+
+        const categorized: { [a in CommandCategory]: string[] } = {
+            "Hidden": [],
+            "Information": [],
+            "Tools": [],
+            "Links": [],
+            "Links+": [],
+            "Admin": []
+        }
+        commands.forEach(cmd => {
+            const category = cmd?.category ?? "Misc"
+            categorized[category].push(cmd.commandName)
+        })
+        categorized.Links = client.linkManager.getLinks()
+
+        return sendMessage(source, `**Commands**: 
 
 ${Object.entries(categorized)
         .filter(([category]) =>
-            !(category.toLowerCase() == "hidden" ||
-                (!config.admins.includes(message.author.id) && category.toLowerCase() == "admin"))
+            !(category.toLowerCase() == "hidden")
         ).map(([category, items]) => `**${category}**
     ${items.sort((a, b) => a.localeCompare(b)).map(cmd => `${config.prefix}${cmd}`).join(", ")}`)
         .join("\n")}
@@ -46,9 +84,10 @@ ${Object.entries(categorized)
 *Use \`${config.prefix}help <command name>\` for more information about a specific command.*
 *See \`${config.prefix}credits\` for how to contact the developer.*
 *You can invite this bot to your server with \`${config.prefix}invite\`.*`)
-        }
+    }
 
-        let commandName = args[0]
+    async run(source: CommandSource, commandName: string): Promise<SendMessage | undefined> {
+        const { commands } = client
 
         let command = client.commands.get(commandName)
         // Check aliases
@@ -61,12 +100,9 @@ ${Object.entries(categorized)
             command = commands.find(k => k.commandName === commandName.replace(config.prefix, "") || (k.aliases??[]).includes(commandName.replace(config.prefix, "")))
 
         if (command == null)
-            return message.reply("Command does not exist")
+            return sendMessage(source, "Command does not exist")
 
-        if (command.help == false)
-            return message.channel.send(`${command.commandName}`)
-
-        return message.channel.send(`${command.commandName} - ${command.help}
+        return sendMessage(source, `${command.commandName} - ${command.help}
 
 Usage: \`${config.prefix}${command.usage}\`${command.aliases ? `
 Aliases: ${command.aliases.map(k => `\`${k}\``).join(", ")}` : "None"}`)

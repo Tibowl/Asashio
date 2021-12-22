@@ -1,9 +1,9 @@
-import { Message } from "discord.js"
+import { AutocompleteInteraction, CommandInteraction, Message } from "discord.js"
 
 import Command from "../../utils/Command"
 import client from "../../main"
-import { calculatePostCap } from "../../utils/Utils"
-import { Ship } from "../../utils/Types"
+import { calculatePostCap, findFuzzyBestCandidates, sendMessage } from "../../utils/Utils"
+import { CommandSource, SendMessage, Ship } from "../../utils/Types"
 
 export default class HP extends Command {
     constructor(name: string) {
@@ -11,21 +11,45 @@ export default class HP extends Command {
             name,
             category: "Tools",
             help: "Gets HP values of a ship, before and after marriage, with and without modding.",
-            usage: "hp <ship>"
+            usage: "hp <ship>",
+            options: [{
+                name: "ship",
+                description: "Ship name to search",
+                type: "STRING",
+                required: true,
+                autocomplete: true
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        const { data } = client
-        if (!args || args.length < 1) return message.reply("Must provide a ship name.")
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = Object.values(client.data.ships).map(s => s.full_name)
+        const search = source.options.getFocused().toString()
 
-        const shipName = args.join(" ")
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return this.run(source, source.options.getString("ship", true))
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a ship name.")
+        return this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, shipName: string): Promise<SendMessage | undefined> {
+        const { data } = client
+
         const ship = data.getShipByName(shipName)
 
-        if (ship == undefined) return message.reply("Unknown ship")
+        if (ship == undefined) return sendMessage(source, "Unknown ship")
         // console.log(ship)
 
-        return message.channel.send(`HP values of **${ship.full_name}**:\`\`\`
+        return sendMessage(source, `HP values of **${ship.full_name}**:\`\`\`
  unmarried: ${this.generateLine(ship, false)}
 
    married: ${this.generateLine(ship, true)}

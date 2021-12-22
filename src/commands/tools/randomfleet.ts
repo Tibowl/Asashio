@@ -1,13 +1,14 @@
-import { Message, MessageAttachment } from "discord.js"
-import fetch from "node-fetch"
+import { configure, DeckBuilder, DeckBuilderFleet, DeckBuilderShip, generate } from "@tibowl/node-gkcoi"
+import { CommandInteraction, Message, MessageAttachment } from "discord.js"
 import log4js from "log4js"
+import fetch from "node-fetch"
 import { join } from "path"
-import { generate, configure, DeckBuilder, DeckBuilderFleet, DeckBuilderShip } from "@tibowl/node-gkcoi"
-
+import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
-import { aswAtLevel, evasionAtLevel, losAtLevel } from "../../utils/Utils"
-import { MapEntry, MapEntries, FleetData } from "../../utils/Types"
+import { CommandSource, FleetData, MapEntries, MapEntry, SendMessage } from "../../utils/Types"
+import { aswAtLevel, evasionAtLevel, losAtLevel, sendMessage, updateMessage } from "../../utils/Utils"
+
 
 const Logger = log4js.getLogger("randomfleet")
 
@@ -39,14 +40,29 @@ How it works:
 - Nothing can be guaranteed on these fleets on how they will route/perform
 Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gkcoi`,
             usage: "randomfleet <map> <node>",
-            aliases: ["rng", "imretardedpleasedonthelp", "imretardedplsdonthelp"]
+            aliases: ["rng", "imretardedpleasedonthelp", "imretardedplsdonthelp"],
+            options: [{
+                name: "mapnode",
+                description: "Map and node",
+                type: "STRING",
+                required: true
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1 || args.length > 2) return message.reply(`Usage: \`${this.usage}\``)
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return this.run(source, source.options.getString("mapnode", true))
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1 || args.length > 2) return sendMessage(source, `Usage: \`${this.usage}\``)
+        return this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, arg: string): Promise<SendMessage | undefined> {
         const { data } = client
 
+        let args = arg.split(/ +/)
         if (args[0].includes("-") && !args[0].match(/-\d$/))
             args[0] = args[0].replace(/-\d/, "$& ")
         else if (!args[0].match(/E\d$/))
@@ -57,34 +73,42 @@ Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gk
         let map = args[0]
         if (map.startsWith("E-")) map = map.replace("E", data.eventID().toString())
         else if (map.startsWith("E")) map = map.replace("E", data.eventID() + "-")
-        if (map.split("-").length != 2) return message.reply("Invalid map!")
+        if (map.split("-").length != 2) return sendMessage(source, "Invalid map!")
 
         if (args.length !== 2)
-            return message.reply("Missing node!")
+            return sendMessage(source, "Missing node!")
 
         const node = args[1]
         const mapInfo = await data.getMapInfo(map)
-        if (Object.keys(mapInfo.route).length == 0) return message.reply("Invalid/unknown map!")
+        if (Object.keys(mapInfo.route).length == 0) return sendMessage(source, "Invalid/unknown map!")
         if (Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).length == 0)
-            return message.reply("Invalid/unknown node!")
+            return sendMessage(source, "Invalid/unknown node!")
 
         const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
 
-        const fleetData = await this.randomFleet(map, edges, node)
-        if (fleetData == undefined) return message.channel.send("Not enough samples recently, again later")
-
-        Logger.info(`Rendering image for ${map} ${node}...`)
-        const canvas = await generate(fleetData, {
-            start2Data: {
-                api_result: 200,
-                api_result_msg: "OK",
-                api_data: client.data.api_start2
+        const reply = await sendMessage(source, `${emoji.loading} Loading...`)
+        this.randomFleet(map, edges, node).then(async fleetData => {
+            if (!reply) return
+            if (fleetData == undefined) {
+                await updateMessage(reply, "Not enough samples recently, again later")
+                return
             }
-        })
-        Logger.info(`Rendered image for ${map} ${node}`)
-        const attachment = new MessageAttachment(canvas.toBuffer(), `${map} ${node}.png`)
 
-        return message.channel.send(`Selected fleet for ${map} ${node}`, attachment)
+            Logger.info(`Rendering image for ${map} ${node}...`)
+            const canvas = await generate(fleetData, {
+                start2Data: {
+                    api_result: 200,
+                    api_result_msg: "OK",
+                    api_data: client.data.api_start2
+                }
+            })
+            Logger.info(`Rendered image for ${map} ${node}`)
+            const attachment = new MessageAttachment(canvas.toBuffer(), `${map} ${node}.png`)
+
+            return updateMessage(reply, { content: `Selected fleet for ${map} ${node}`, files: [attachment] })
+        }).catch(e => Logger.error(e))
+
+        return reply
     }
 
     getEventDescription(entry: MapEntry): string {

@@ -243,6 +243,9 @@ export default class DataManager {
         const result = this.getEquipById(name)
         if (result != undefined) return [result]
 
+        const exactResult = Object.values(this.equips).find(k => this.normalizeName(k.name) == name)
+        if (exactResult != undefined) return [exactResult]
+
         for (const alias of this.equipAliases)
             name = name.replace(alias[0], alias[1]).trim()
 

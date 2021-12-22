@@ -1,9 +1,9 @@
-import fetch from "node-fetch"
-import { Guild, Message, TextChannel, StringResolvable, MessageEmbed, MessageAttachment } from "discord.js"
+import { Guild, Message, MessageActionRow, MessageAttachment, MessageButton, MessageEmbed, Snowflake } from "discord.js"
 import log4js from "log4js"
-import client from "./../main"
-import { Rank, Cached, DBType, Cache, DropData, NameTable, padding, DamageType, Damages, Stages, Ship, ShipExtended } from "./Types"
+import fetch from "node-fetch"
 import emoji from "../data/emoji.json"
+import client from "./../main"
+import { Cache, Cached, CommandSource, Damages, DamageType, DBType, DropData, NameTable, padding, Rank, SendMessage, Ship, ShipExtended, Stages } from "./Types"
 
 const Logger = log4js.getLogger("Utils")
 
@@ -11,14 +11,11 @@ export const PAD_START = 0
 export const PAD_END = 1
 
 
-export function getWiki(page: string, guild?: Guild|null): string {
-    if (guild && guild.id == "165107190980542464")
-        return `https://en.kancollewiki.net/${page.replace(/ /g, "_")}`
-
-    return `https://kancolle.fandom.com/wiki/${page.replace(/ /g, "_")}`
+export function getWiki(page: string): string {
+    return `https://en.kancollewiki.net/${page.replace(/ /g, "_")}`
 }
 
-export function createTable(names: NameTable | undefined, rows: StringResolvable[], pads: padding[] = [PAD_END]): string {
+export function createTable(names: NameTable | undefined, rows: (string | undefined)[][], pads: padding[] = [PAD_END]): string {
     const maxColumns = Math.max(...rows.map(row => row.length))
     let title = "", currentInd = 0
 
@@ -33,7 +30,7 @@ export function createTable(names: NameTable | undefined, rows: StringResolvable
             if (row.length <= i) return
 
             const padEnd = pads.length > i ? pads[i] : pads[pads.length - 1]
-            row[i] = padEnd ? row[i].toString().padEnd(maxLength) : row[i].toString().padStart(maxLength)
+            row[i] = padEnd ? (row[i] ?? "?").toString().padEnd(maxLength) : (row[i] ?? "?").toString().padStart(maxLength)
         })
     }
 
@@ -99,12 +96,12 @@ export function handleShip(ship: ShipExtended): ShipExtended {
     return ship
 }
 
-export function displayShip(ship: ShipExtended, guild?: Guild | null): MessageEmbed {
+export function displayShip(ship: ShipExtended): MessageEmbed {
     const embed = new MessageEmbed()
         .setTitle([`No. ${ship.id} (api id: ${ship.api_id})`, ship.full_name, ship.japanese_name, /* ship.reading,*/ ship.rarity_name].filter(a => a).join(" | "))
 
     if (typeof ship.api_id == "number")
-        embed.setURL(getWiki(ship.name, guild))
+        embed.setURL(getWiki(ship.name))
             .setThumbnail(`https://raw.githubusercontent.com/KC3Kai/KC3Kai/develop/src/assets/img/ships/${ship.api_id}.png`)
     // TODO rarity color? .setColor("#")
 
@@ -251,16 +248,14 @@ export function calculatePostCap(atk: number, currenthp: number, maxhp: number, 
 }
 
 const shipDropCache: Cached = {}
-function getDisplayDropString(cached: Cache, message: Message | Message[] | undefined, db: DBType, notice = true, single = true): string {
+function getDisplayDropString(cached: Cache, db: DBType, notice = true, dmChannel = false): string {
     if (cached.error) return "An error has occurred while fetching data. Try again later, if it still fails, try to contact me (see `.credits`)."
     let drops = Object.values(cached.dropData).sort((a, b) => b.totalDrops - a.totalDrops)
     if (drops.length == 0)
         return `No ${cached.rank} rank **${cached.ship.full_name}** drops found`
 
-    if (message && !(message instanceof Message)) message = message[0]
-
     const totalCount = drops.length
-    drops = (message && message.channel.type == "dm" && single) ? drops.slice(0, 35) : drops.slice(0, 10)
+    drops = dmChannel ? drops.slice(0, 35) : drops.slice(0, 10)
 
     let dropTable = createTable(
         { 0: "Map", 4: "Rate" },
@@ -301,7 +296,7 @@ ${dropTable}\`\`\``
 
     // Add rows shown notice
     if (drops.length < totalCount) {
-        if (message && message.channel.type == "dm" && single) {
+        if (dmChannel) {
             dropString += `Shown top ${drops.length}/${totalCount} rows. `
         } else {
             dropString += `Shown top ${drops.length}/${totalCount} rows. Redo a .drop command in DM for more. `
@@ -324,25 +319,23 @@ ${dropTable}\`\`\``
     return dropString
 }
 
-function getDisplayDataString(cached: Cache, message: Message | Message[], db: DBType, notice = false, oldCache?: Cache): string {
+function getDisplayDataString(cached: Cache, db: DBType, notice = false, dmChannel = false, oldCache?: Cache): string {
     if (cached == undefined || cached.dropData == undefined || cached.loading) {
         if (!(oldCache == undefined || oldCache.dropData == undefined || oldCache.loading)) {
             return `${emoji.loading} Updating ${cached.ship.full_name} drop data... Old data:
 
-${getDisplayDropString(oldCache, message, db)}`
+${getDisplayDropString(oldCache, db, notice, dmChannel)}`
         }
 
         return `${emoji.loading} Loading ${cached.ship.full_name} drop data...`
     }
 
-    return getDisplayDropString(cached, message, db, notice)
+    return getDisplayDropString(cached, db, notice, dmChannel)
 }
 
-const displayData = async (cached: Cache, reply: Message | Message[], db: DBType): Promise<void> => {
+const displayData = async (cached: Cache, reply: SendMessage, db: DBType, dmChannel: boolean): Promise<void> => {
     try {
-        if (!(reply instanceof Message)) reply = reply[0]
-
-        await reply.edit(getDisplayDataString(cached, reply, db, true))
+        await updateMessage(reply, getDisplayDataString(cached, db, true, dmChannel))
     } catch (error) {
         Logger.error(error)
     }
@@ -440,8 +433,8 @@ const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb
     return cached.dropData
 }
 
-export async function dropTable(message: Message, args: string[], db: DBType = "tsundb"): Promise<Message | Message[]> {
-    if (!args || args.length < 1) return message.reply("Must provide a ship.")
+export function parseDropArgs(args: string[]): {rank: Rank, ship: Ship} | string {
+    if (!args || args.length < 1) return "Must provide a ship."
 
     let rank: Rank = "S"
     if (args[args.length - 1].toUpperCase() == "A") {
@@ -453,10 +446,17 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     }
 
     const shipName = args.join(" ")
-    let ship = client.data.getShipByName(shipName)
+    const ship = client.data.getShipByName(shipName)
 
-    if (ship == undefined) return message.reply("Unknown ship")
+    if (ship == undefined) return "Unknown ship"
 
+    return {
+        rank, ship
+    }
+}
+
+export async function dropTable(source: CommandSource, ship: Ship, rank: Rank, db: DBType = "tsundb"): Promise<SendMessage | undefined> {
+    const dmChannel = source.channel?.type == "DM"
     if (ship.remodel_from && typeof ship.remodel_from == "string")
         ship = client.data.getShipByName(ship.remodel_from.replace("/", "")) ?? ship
     ship = client.data.getShipByName(ship.name)
@@ -464,9 +464,9 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
     // Check if cached, if so show cached reply.
     const cached = shipDropCache[db + ship.api_id + rank]
     if (cached && cached.time + 1 * 60 * 60 * 1000 > new Date().getTime()) {
-        const reply = await message.channel.send(getDisplayDataString(cached, message, db, true))
-        if (cached.callback)
-            cached.callback.push(async () => displayData(cached, reply, db))
+        const reply = await sendMessage(source, getDisplayDataString(cached, db, true, dmChannel))
+        if (cached.callback && reply)
+            cached.callback.push(async () => displayData(cached, reply, db, dmChannel))
         return reply
     }
 
@@ -482,94 +482,189 @@ export async function dropTable(message: Message, args: string[], db: DBType = "
         loading: true,
         callback: []
     }
-    const reply = await message.channel.send(getDisplayDataString(newcached, message, db, true, cached))
-    newcached.callback?.push(async () => displayData(newcached, await reply, db))
+    const reply = await sendMessage(source, getDisplayDataString(newcached, db, true, dmChannel, cached))
+    if (reply)
+        newcached.callback?.push(async () => displayData(newcached, reply, db, dmChannel))
     queue(ship, rank, newcached, db).catch(e => Logger.error(e))
     return reply
 }
 
-export async function specialDrops(message: Message, ships: string[], db: DBType = "tsundb"): Promise<Message | Message[]> {
-    let reply = undefined
-    const caches: Cache[] = []
-    for (const name of ships) {
-        const ship = client.data.getShipByName(name)
-
-        for (const rank of (["S", "A"] as Rank[])) {
-
-            // Check if cached, if so show cached reply.
-            const cached = shipDropCache[db + ship.api_id + rank]
-            if (cached && cached.time + 2 * 60 * 60 * 1000 > new Date().getTime()) {
-                caches.push(cached)
-                if (cached.callback) {
-                    if (!reply) reply = await message.channel.send(`${emoji.loading} Loading...`)
-                    await new Promise<void>((resolve) => cached.callback?.push(async () => await resolve()))
-                }
-                continue
-            }
-
-            const startTime = new Date()
-            const dropData = {}
-
-            // Not cached, add it
-            const newcached: Cache = shipDropCache[db + ship.api_id + rank] = {
-                time: startTime.getTime(),
-                dropData,
-                ship,
-                rank,
-                loading: true,
-                callback: []
-            }
-            Logger.info(`Caching ${rank} drops for ${ship.full_name}...`)
-            if (!reply) reply = await message.channel.send(`${emoji.loading} Loading...`)
-            await queue(ship, rank, newcached, db)
-            caches.push(newcached)
-        }
-    }
-
-    const out = `${caches.filter(f => !(f.rank == "A" && Object.values(f.dropData).length == 0)).map((cached) => getDisplayDropString(cached, message, db, false, false).trim().replace(/\n+$/, "")).join("\r\n")}
-*Please note that some smaller sample size results may be inaccurate.*
-See \`.drop <ship>\` for more information.`
-
-    if (out.length > 1900) {
-        if (message.channel.type !== "dm" && reply)
-            await reply.edit("This list is too long and thus can only be used in DMs.")
-        else if (reply)
-            await reply.delete()
-        else
-            reply = []
-
-        await message.author.send(out, { split: {
-            maxLength: 1900,
-            char: "\r"
-        } })
-    } else if (reply)
-        await reply.edit(out)
-    else
-        reply = message.channel.send(out)
-
-    return reply
-}
-
-
-export async function sendToChannels(channels: string[] | undefined, content?: StringResolvable, embed?: MessageEmbed | MessageAttachment): Promise<PromiseSettledResult<Message | Message[]>[]> {
+export async function sendToChannels(channels: Snowflake[] | undefined, content?: string, embed?: MessageEmbed | MessageAttachment): Promise<PromiseSettledResult<Message | Message[]>[]> {
     const messages = []
     if (!channels) return Promise.all([])
 
     for (const channel of channels) {
         try {
             const chanObj = await client.channels.fetch(channel)
-            if (chanObj && chanObj instanceof TextChannel)
-                if (embed == undefined)
-                    messages.push(chanObj.send(content))
-                else
-                    messages.push(chanObj.send(content, embed))
+            if (!(chanObj && chanObj.isText()))
+                continue
+            if (embed && content && content.length > 0)
+                messages.push(chanObj.send({ content, embeds: [embed] }))
+            else if (embed)
+                messages.push(chanObj.send({ embeds: [embed] }))
+            else if (content)
+                messages.push(chanObj.send(content))
         } catch (error) {
-            Logger.error("An error occurred while fetching channels for sentToChannels", error)
+            Logger.error(`Failed to fetch ${channel}`)
         }
     }
 
     return Promise.allSettled(messages)
 }
+
+export async function sendMessage(source: CommandSource, response: string | MessageEmbed, options: {
+    files?: MessageAttachment[]
+    components?: (MessageActionRow)[]
+    ephemeral?: boolean
+} = {}): Promise<SendMessage | undefined> {
+    let embeds: MessageEmbed[] | undefined
+    let content: string | undefined
+
+    if (typeof response == "string")
+        content = response
+    else
+        embeds = [response]
+
+    if (!options.components && !(options.ephemeral && !(source instanceof Message)) && source.channel?.type != "DM")
+        options.components = [getDeleteButton()]
+
+    try {
+        if (source instanceof Message)
+            return await source.channel.send({ content, embeds, components: options.components, files: options.files })
+        else
+            return await source.reply({ content, embeds, components: options.components, files: options.files, fetchReply: true, ephemeral: options.ephemeral })
+    } catch (error) {
+        Logger.error("sendMessage", error)
+    }
+}
+export async function updateMessage(update: SendMessage, edit: string | {
+    content: string
+    embeds?: (MessageEmbed)[] | null
+    files?: MessageAttachment[]
+}): Promise<void> {
+    if (update instanceof Message) {
+        await update.edit(edit)
+    } else {
+        Logger.info("Unable to edit")
+    }
+}
+
+
+export function getDeleteButton(): MessageActionRow {
+    const row = new MessageActionRow()
+
+    row.addComponents(
+        new MessageButton()
+            .setCustomId("delete")
+            .setLabel("Delete")
+            .setStyle("DANGER")
+            .setEmoji("✖️"),
+    )
+    return row
+}
+export function isMessage(msg: SendMessage | CommandSource | undefined): msg is Message {
+    return msg instanceof Message
+}
+export function getUserID(source: CommandSource): string {
+    if (isMessage(source))
+        return source.author.id
+    else
+        return source.user.id
+}
+export function findFuzzy(target: string[], search: string): string | undefined {
+    const cleaned = searchClean(search)
+    const found = target.find(t => searchClean(t) == search)
+    if (found)
+        return found
+
+    const dists = target.map(e => fuzzySearchScore(searchClean(e), cleaned) + fuzzySearchScore(caps(e), caps(search)))
+    const max = Math.max(...dists)
+
+    let candidates = target.filter((_, index) => dists[index] == max)
+
+    let filteredCandidates = candidates.filter(t => searchClean(t).startsWith(cleaned.substring(0, 3)) || searchClean(t).endsWith(cleaned.substring(cleaned.length - 3)))
+    if (filteredCandidates.length != 0) candidates = filteredCandidates
+
+    filteredCandidates = candidates.filter(t => caps(t).includes(search[0].toUpperCase()))
+    if (filteredCandidates.length != 0) candidates = filteredCandidates
+
+    filteredCandidates = candidates.filter(t => caps(t) == caps(search))
+    if (filteredCandidates.length != 0) candidates = filteredCandidates
+
+    const lengths = candidates.map(t => t.length)
+    const min = Math.min(...lengths)
+    return candidates[lengths.indexOf(min)]
+}
+
+export function findFuzzyBestCandidates(target: string[], search: string, amount: number): string[] {
+    const cleaned = searchClean(search)
+    const found = target.find(t => searchClean(t) == search)
+    if (found)
+        return [found]
+
+    const dists = target.map(e => fuzzySearchScore(searchClean(e), cleaned) + fuzzySearchScore(caps(e), caps(search)) - e.length / 100 + 1)
+    const max = Math.max(...dists)
+
+    return target
+        .map((t, i) => {
+            return {
+                t,
+                d: dists[i]
+            }
+        })
+        .sort((a, b) => b.d - a.d)
+        .filter((e, i) => i < amount && e.d > max * 0.65)
+        .map(({ t, d }) => {
+            if (searchClean(t).startsWith(cleaned.substring(0, 3)) || searchClean(t).endsWith(cleaned.substring(cleaned.length - 3)))
+                d += 1
+            if (caps(t).includes(search[0]?.toUpperCase()))
+                d += 1.5
+            if (caps(t) == caps(search))
+                d += 0.5
+
+            return { t, d }
+        })
+        .sort((a, b) => b.d - a.d)
+        .map(e => e.t)
+}
+export function fuzzySearchScore(a: string, b: string): number {
+    if (a.length == 0) return 0
+    if (b.length == 0) return 0
+
+    // swap to save some memory O(min(a,b)) instead of O(a)
+    if (a.length > b.length) [a, b] = [b, a]
+
+    const row = []
+    // init the row
+    for (let i = 0; i <= a.length; i++)
+        row[i] = i
+
+
+    // fill in the rest
+    for (let i = 1; i <= b.length; i++) {
+        let prev = i
+        for (let j = 1; j <= a.length; j++) {
+            const val = (b.charAt(i - 1) == a.charAt(j - 1)) ? row[j - 1] : Math.min(row[j - 1] + 1, prev + 1, row[j] + 1)
+            row[j - 1] = prev
+            prev = val
+        }
+        row[a.length] = prev
+    }
+
+    return b.length - row[a.length]
+}
+
+function searchClean(str: string): string {
+    return str.toLowerCase().replace(/'/g, "")
+}
+function caps(str: string): string {
+    return str.split("").filter(k => k != k.toLowerCase()).join("")
+}
+
+export function displayTimestamp(time: Date, display = "R"): string {
+    return `<t:${Math.floor(time.getTime() / 1000)}:${display}>`
+}
+
 
 export async function changeName(guilds: Guild[], check: (guild: Guild) => boolean, name: string): Promise<void> {
     for (let i = 0; i < guilds.length; i++) {

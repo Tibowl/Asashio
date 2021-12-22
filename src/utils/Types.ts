@@ -1,3 +1,10 @@
+import { CommandInteraction, Message } from "discord.js"
+import { APIMessage } from "discord-api-types/v9"
+
+export type CommandSource = Message | CommandInteraction
+export type SendMessage = Message | APIMessage
+export type CommandResponse = Promise<SendMessage | undefined> | undefined
+
 export interface Ship {
     aa: number
     aa_max: false | number

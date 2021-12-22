@@ -1,9 +1,9 @@
-import { Message, MessageEmbed } from "discord.js"
+import { AutocompleteInteraction, CommandInteraction, Message, MessageEmbed } from "discord.js"
 
 import Command from "../../utils/Command"
-import { Ship } from "../../utils/Types"
+import { CommandSource, SendMessage, Ship } from "../../utils/Types"
 import client from "../../main"
-import { getWiki, aswAtLevel } from "../../utils/Utils"
+import { getWiki, aswAtLevel, sendMessage, findFuzzyBestCandidates } from "../../utils/Utils"
 
 export default class OASW extends Command {
     constructor(name: string) {
@@ -13,29 +13,74 @@ export default class OASW extends Command {
             help: "Gets levels when a ship can OASW with certain equipment.",
             usage: "oasw <ship> [+<asw mod>] [=<equipment ASW>] [@<level>]",
             aliases: ["asw"],
+            options: [{
+                name: "ship",
+                description: "Name of ship",
+                type: "STRING",
+                required: true,
+                autocomplete: true
+            }, {
+                name: "level",
+                description: "Ship level",
+                type: "NUMBER",
+                required: false
+            }, {
+                name: "equip",
+                description: "Equipment ASW modifier",
+                type: "NUMBER",
+                required: false
+            }, {
+                name: "asw",
+                description: "ASW modifier",
+                type: "NUMBER",
+                required: false
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide a ship name.")
-        const { data } = client
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = Object.values(client.data.ships).map(s => s.full_name)
+        const search = source.options.getFocused().toString()
+
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        const shipName = source.options.getString("ship", true)
+        const aswOffset = source.options.getNumber("asw") ?? 0
+        const equipmentAsw = source.options.getNumber("equip") ?? -1
+        const level = source.options.getNumber("level") ?? 0
+
+        return this.run(source, shipName, aswOffset, equipmentAsw, level)
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a ship name.")
 
         let aswOffset = 0, equipmentAsw = -1, level = 0
         for (let i = 0; i < 3; i++) {
             if (args[args.length-1].match(/@[0-9]+/)) level = parseInt(args.pop()?.slice(1) ?? "0")
             else if (args[args.length-1].match(/\+[0-9]+/)) aswOffset = parseInt(args.pop()?.slice(1) ?? "0")
             else if (args[args.length-1].match(/=[0-9]+/)) equipmentAsw = parseInt(args.pop()?.slice(1) ?? "0")
-            if (args.length == 0) return message.reply("No ship entered")
+            if (args.length == 0) return sendMessage(source, "No ship entered")
         }
-
         const shipName = args.join(" ")
+
+        return this.run(source, shipName, aswOffset, equipmentAsw, level)
+    }
+
+    async run(source: CommandSource, shipName: string, aswOffset: number, equipmentAsw: number, level: number): Promise<SendMessage | undefined> {
+        const { data } = client
+
         const ship = data.getShipByName(shipName)
 
-        if (ship == undefined) return message.reply("Unknown ship")
+        if (ship == undefined) return sendMessage(source, "Unknown ship")
 
         const embed = new MessageEmbed()
             .setTitle(`${ship.full_name} ${aswOffset > 0 ? `+${aswOffset} ASW` : ""}`)
-            .setURL(getWiki(ship.name, message.guild))
+            .setURL(getWiki(ship.name))
             .setThumbnail(`https://raw.githubusercontent.com/KC3Kai/KC3Kai/develop/src/assets/img/ships/${ship.api_id}.png`)
 
         const aswRequired = this.findAswRequired(ship)
@@ -93,7 +138,7 @@ With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipme
         ].includes(ship.class))
             embed.addField("Warning", "This ship has bonuses for certain ASW equipment. This command does **NOT** take these into account!")
 
-        return message.channel.send(embed)
+        return sendMessage(source, embed)
     }
 
     // https://github.com/KC3Kai/KC3Kai/blob/develop/src/library/objects/Ship.js#L2191

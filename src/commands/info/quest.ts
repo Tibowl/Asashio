@@ -1,19 +1,20 @@
-import { Message, MessageEmbed, Guild } from "discord.js"
+import { Message, MessageEmbed, CommandInteraction, ColorResolvable } from "discord.js"
 
 import Command from "../../utils/Command"
 import emoji from "../../data/emoji.json"
 import client from "../../main"
-import { getWiki } from "../../utils/Utils"
+import { getWiki, sendMessage } from "../../utils/Utils"
+import { CommandResponse, CommandSource, SendMessage } from "../../utils/Types"
 
 interface QuestTypes {
-    "A": string[]
-    "B": string[]
-    "C": string[]
-    "D": string[]
-    "E": string[]
-    "F": string[]
-    "G": string[]
-    "W": string[]
+    "A": [string, ColorResolvable]
+    "B": [string, ColorResolvable]
+    "C": [string, ColorResolvable]
+    "D": [string, ColorResolvable]
+    "E": [string, ColorResolvable]
+    "F": [string, ColorResolvable]
+    "G": [string, ColorResolvable]
+    "W": [string, ColorResolvable]
 }
 
 const questTypes: QuestTypes = {
@@ -35,11 +36,26 @@ export default class Quest extends Command {
             category: "Information",
             help: "Get quest information.",
             usage: "quest <quest id> OR .quest <reward/title/description>",
+            options: [{
+                name: "quest",
+                description: "Quest ID or search term",
+                type:"STRING",
+                required: true,
+            }]
         })
     }
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return await this.run(source, source.options.getString("quest", true).split(/ +/g))
+    }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.reply("Must provide a quest.")
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a map.")
+
+        return await this.run(source, args)
+    }
+
+    async run(source: CommandSource, args: string[]): Promise<CommandResponse> {
+        if (!args || args.length < 1) return sendMessage(source, "Must provide a quest.")
         const { data } = client
 
         const questId = args[0].toUpperCase()
@@ -49,25 +65,25 @@ export default class Quest extends Command {
             if (quests.length == 1)
                 quest = quests[0]
             else if (quests.length == 0)
-                return message.reply("Unknown quest")
+                return sendMessage(source, "Unknown quest")
             else if (quests.length > 30)
-                return message.reply("Too many matches")
+                return sendMessage(source, "Too many matches")
             else
-                return message.reply(`Which quest do you mean: ${quests.map(q => `**${q.label}**`).join(", ").replace(/,([^,]*)$/, " or$1")}`)
+                return sendMessage(source, `Which quest do you mean: ${quests.map(q => `**${q.label}**`).join(", ").replace(/,([^,]*)$/, " or$1")}`)
         }
 
-        if (quest == undefined) return message.reply("Unknown quest")
+        if (quest == undefined) return sendMessage(source, "Unknown quest")
 
         let tries = 0
         while (quest?.alias_of && tries++ < 20) quest = data.getQuestByName(quest.alias_of)
 
-        if (quest == undefined || quest?.alias_of) return message.reply("Unknown quest redirection")
+        if (quest == undefined || quest?.alias_of) return sendMessage(source, "Unknown quest redirection")
 
         // console.log(quest)
         const embed = new MessageEmbed()
             .setTitle([quest.label ?? questId, this.cleanText(quest.title_en ?? ""), this.cleanText(quest.title)].filter(a => a).join(" | "))
-            .setURL(getWiki(`Quests#${quest.label ?? questId}`, message.guild))
-            .setDescription(this.parseText(quest.detail_en ?? "", message.guild))
+            .setURL(getWiki(`Quests#${quest.label ?? questId}`))
+            .setDescription(this.parseText(quest.detail_en ?? ""))
 
         const type = questTypes[(quest.letter ?? quest.label ?? questId).substring(0, 1) as keyof QuestTypes]
         if (type)
@@ -79,18 +95,18 @@ export default class Quest extends Command {
             rewards = `${emoji.fuel}×${quest.reward_fuel} ${emoji.ammo}×${quest.reward_ammo} ${emoji.steel}×${quest.reward_steel} ${emoji.bauxite}×${quest.reward_bauxite}
 `
         if (quest.reward_other)
-            rewards += this.parseText(quest.reward_other, message.guild)
+            rewards += this.parseText(quest.reward_other)
 
         embed.addField("Rewards", rewards)
         if (quest.note)
-            embed.addField("Notes", this.parseText(quest.note, message.guild))
+            embed.addField("Notes", this.parseText(quest.note))
 
-        return message.channel.send(embed)
+        return sendMessage(source, embed)
     }
     cleanText(text: string | undefined): string {
         return text == undefined ? "" : text.replace(/\[\[.*?\]\]/g, "").replace(/<.*?>/g, "")
     }
-    parseText(text: string, guild?: Guild | null): string {
+    parseText(text: string): string {
     // console.log(text)
         let links = text.match(/\[\[.*?\]\]/g)
 
@@ -112,7 +128,7 @@ export default class Quest extends Command {
                 if (target.startsWith("#"))
                     target = "Quests#" + target.substring(1)
 
-                text = text.replace(match, `[${title}](${getWiki(target.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)"), guild)})`)
+                text = text.replace(match, `[${title}](${getWiki(target.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)"))})`)
             }
 
         links = text.match(/\{\{[^{]*?\}\}/g)
@@ -130,7 +146,7 @@ export default class Quest extends Command {
                         break
                     }
 
-                text = text.replace(match, `[${title.replace(/\//g, " ")}](${getWiki(title.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)"), guild)})`)
+                text = text.replace(match, `[${title.replace(/\//g, " ")}](${getWiki(title.replace(/ /g, "_").replace(/\(/g, "\\(").replace(/\)/g, "\\)"))})`)
             }
             links = text.match(/\{\{[^{]*?\}\}/g)
         }

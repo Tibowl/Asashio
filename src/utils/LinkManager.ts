@@ -1,11 +1,13 @@
 import cprocess from "child_process"
 import log4js from "log4js"
 import { join } from "path"
-import { Message } from "discord.js"
+import { AutocompleteInteraction, CommandInteraction, Message } from "discord.js"
 import { existsSync, readFileSync, writeFileSync, unlinkSync, moveSync } from "fs-extra"
 
 import Command from "./Command"
 import client from "../main"
+import { CommandResponse, CommandSource, SendMessage } from "./Types"
+import { findFuzzyBestCandidates, getUserID, sendMessage } from "./Utils"
 
 const Logger = log4js.getLogger("LinkManager")
 
@@ -18,11 +20,47 @@ const linkMap = new Map<string, string>()
 export default class LinkManager extends Command {
     constructor() {
         super({
-            name: "Links",
+            name: "link",
             category: "Links",
-            help: false,
-            usage: false
+            help: "Retrieve a link",
+            usage: "link <name>",
+            options: [{
+                name: "name",
+                description: "Name of the link",
+                type: "STRING",
+                required: true,
+                autocomplete: true
+            }]
         })
+    }
+
+    async autocomplete(source: AutocompleteInteraction): Promise<void> {
+        const targetNames = this.getLinks(true)
+
+        const search = source.options.getFocused().toString()
+
+        if (search == "") {
+            return await source.respond([
+                ...targetNames.filter((_, i) => i < 20).map(value => {
+                    return { name: value, value }
+                })
+            ])
+        }
+
+        await source.respond(findFuzzyBestCandidates(targetNames, search, 20).map(value => {
+            return { name: value, value }
+        }))
+    }
+
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        const { options } = source
+        return this.run(source, options.getString("name", true))
+    }
+
+    async runMessage(source: Message, args: string[], command: string): Promise<SendMessage | undefined> {
+        if (command == "link" && args.length > 0)
+            command = args[0]
+        return this.run(source, command)
     }
 
     loadMap(file: string): void {
@@ -49,40 +87,43 @@ export default class LinkManager extends Command {
                 Logger.error("Failed to read/parse links.json.old")
             }
 
+        client.commands.set("link", this)
         for (const link of linkMap.keys())
             client.commands.set(link, this)
 
         Logger.debug(`Registered links: ${this.getLinks(true).join(", ")}`)
     }
 
-    async setLink(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (args.length < 1) return await message.reply("Not enough arguments")
+    async setLink(source: CommandSource, args: string[]): Promise<CommandResponse> {
+        if (args.length < 1) return await sendMessage(source, "Not enough arguments", { ephemeral: true })
+        const userID = getUserID(source)
         const command = args[0]
+
         if (args.length == 1) {
             if (!linkMap.has(command))
-                return await message.reply("That is not a link!")
+                return await sendMessage(source, "That is not a link!", { ephemeral: true })
 
             client.commands.delete(command)
-            Logger.info(`${message.author.id} removed link ${command} (was ${linkMap.get(command)})`)
+            Logger.info(`${userID} removed link ${command} (was ${linkMap.get(command)})`)
             linkMap.delete(command)
-            await this.updateDb(message.author.id)
+            await this.updateDb(userID)
 
-            return await message.reply(`Deleted \`${command}\``)
+            return await sendMessage(source, `Deleted \`${command}\``, { ephemeral: true })
         }
         const link = args.slice(1).join(" ")
 
         if (client.commands.has(command) && !linkMap.has(command))
-            return await message.reply("This is another command OhNo")
+            return await sendMessage(source, "This is another command OhNo", { ephemeral: true })
 
         const oldValue = linkMap.get(command)
 
         if (oldValue == link)
-            return await message.reply("Link no changed")
+            return await sendMessage(source, "Link no changed", { ephemeral: true })
 
-        Logger.info(`${message.author.id} changed ${command} from ${oldValue} to ${link}`)
+        Logger.info(`${userID} changed ${command} from ${oldValue} to ${link}`)
         linkMap.set(command, link)
 
-        await this.updateDb(message.author.id)
+        await this.updateDb(userID)
 
         if (!client.commands.has(command))
             client.commands.set(command, this)
@@ -91,7 +132,7 @@ export default class LinkManager extends Command {
         if (reply.length > 1995)
             reply = reply.substring(1990) + " [...]"
 
-        return await message.reply(reply)
+        return await sendMessage(source, reply)
     }
 
     getLinks(all = false): string[] {
@@ -117,7 +158,7 @@ export default class LinkManager extends Command {
         cprocess.execSync(`git add ${linkLocation} && git commit -m "Link updated by ${id}" && git push`)
     }
 
-    async run(message: Message, args: string[], command: string): Promise<Message | Message[]> {
+    async run(source: CommandSource, command: string): Promise<SendMessage | undefined> {
         let toSend = linkMap.get(command)
 
         let tries = 0
@@ -127,6 +168,6 @@ export default class LinkManager extends Command {
         if (toSend == undefined)
             toSend = "Unknown link"
 
-        return message.channel.send(toSend)
+        return sendMessage(source, toSend)
     }
 }

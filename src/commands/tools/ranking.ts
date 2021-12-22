@@ -1,10 +1,11 @@
-import { Message } from "discord.js"
+import { CommandInteraction, Message } from "discord.js"
 import fetch from "node-fetch"
 
 import Command from "../../utils/Command"
-import { PAD_END, PAD_START, createTable } from "../../utils/Utils"
+import { PAD_END, PAD_START, createTable, sendMessage, updateMessage } from "../../utils/Utils"
 import emoji from "../../data/emoji.json"
 import log4js from "log4js"
+import { CommandSource, SendMessage } from "../../utils/Types"
 
 const Logger = log4js.getLogger("ranking")
 
@@ -33,27 +34,43 @@ export default class Ranking extends Command {
             category: "Tools",
             help: "Gets ranking data from https://senka.su",
             usage: "ranking [server name/id]",
-            aliases: ["senka", "points", "stonks", "rank"]
+            aliases: ["senka", "points", "stonks", "rank"],
+            options: [{
+                name: "server",
+                description: "Name of server or ID",
+                type: "STRING",
+                required: false
+            }]
         })
     }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        const cached = this.returnCached(message, args)
-        if (cached) return cached
-        const reply = message.reply(`${emoji.loading} Loading...`)
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return this.run(source, source.options.getString("server") ?? "")
+    }
+
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        return this.run(source, args.join(" "))
+    }
+
+    async run(source: CommandSource, arg: string): Promise<SendMessage | undefined> {
+        if ((cachedData?.time ?? 0) + 15 * 60 * 1000 > Date.now() && cachedData.rankingData !== undefined)
+            return sendMessage(source, this.formatData(cachedData.rankingData, arg))
+
+        const reply = await sendMessage(source, `${emoji.loading} Loading...`)
 
         fetch(`https://api.kancolle.moe/server/list?date=${Date.now()}`).then(async (fetched) => {
             const api: SenkaAPI = await fetched.json()
             cachedData.time = Date.now()
             cachedData.rankingData = api
 
-            await (await reply).edit(this.formatData(api, args))
+            if (reply)
+                await updateMessage(reply, this.formatData(api, arg))
         }).catch(e => Logger.error(e))
 
         return reply
     }
 
-    formatData(api: SenkaAPI, args: string[]): string {
+    formatData(api: SenkaAPI, arg: string): string {
         const serverData = []
 
         const low = api.data.map(k => k.cutoff && k.cutoff[500]).sort((a, b) => a-b)[2]
@@ -65,7 +82,7 @@ export default class Ranking extends Command {
                 continue
             const data = found
 
-            if (args && args.length > 0 && !(serverID == args[0] || en_names[serverID].toLowerCase().includes(args[0].toLowerCase())))
+            if (arg && arg.length > 0 && !(serverID == arg || en_names[serverID].toLowerCase().includes(arg.toLowerCase())))
                 continue
 
             const color = data.cutoff[500] <= low ? "+" : data.cutoff[500] >= high ? "-" : " "
@@ -92,9 +109,5 @@ export default class Ranking extends Command {
             ],
             [PAD_START, PAD_END, PAD_START, PAD_START, PAD_START, PAD_START, PAD_START, PAD_END]
         )}\`\`\`\nData provided by <https://senka.su>`
-    }
-    returnCached(message: Message, args: string[]): Promise<Message> | undefined {
-        if ((cachedData?.time ?? 0) + 15 * 60 * 1000 > Date.now() && cachedData.rankingData !== undefined)
-            return message.channel.send(this.formatData(cachedData.rankingData, args))
     }
 }

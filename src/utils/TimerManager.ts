@@ -38,7 +38,7 @@ export default class TimerManager {
                 minute: "2-digit"
             })), {
                 type: "LISTENING"
-            }).catch(e => Logger.error(e))
+            })
 
             const time = now.getTime() - 24 * 60 * 60 * 1000
             const midnight = new Date(time)

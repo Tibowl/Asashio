@@ -1,11 +1,11 @@
-import { Message, MessageAttachment } from "discord.js"
+import { CommandInteraction, Message, MessageAttachment } from "discord.js"
 import { createCanvas } from "canvas"
 
 import Command from "../../utils/Command"
 import client from "../../main"
 import emoji from "../../data/emoji.json"
-import { calculatePostCap } from "../../utils/Utils"
-import { ShipExtended, Stages } from "../../utils/Types"
+import { calculatePostCap, sendMessage } from "../../utils/Utils"
+import { CommandSource, SendMessage, ShipExtended, Stages } from "../../utils/Types"
 
 export default class Suffering extends Command {
     constructor(name: string) {
@@ -22,11 +22,23 @@ export default class Suffering extends Command {
             For more features, use the web version at <https://flatisjustice.moe/dmgsuffer>`,
             usage: "suffering <hp(/maxhp)> [armor] [attack] OR .suffering <ship> [attack]",
             aliases: ["overkill", "suffer"],
+            options: [{
+                name: "query",
+                description: "<hp(/maxhp)> [armor] [attack] OR .suffering <ship> [attack]",
+                type: "STRING"
+            }]
         })
     }
+    async runInteraction(source: CommandInteraction): Promise<SendMessage | undefined> {
+        return this.run(source, source.options.getString("query")?.split(/ +/))
+    }
 
-    async run(message: Message, args: string[]): Promise<Message | Message[]> {
-        if (!args || args.length < 1) return message.channel.send("Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
+    async runMessage(source: Message, args: string[]): Promise<SendMessage | undefined> {
+        return this.run(source, args)
+    }
+
+    async run(source: CommandSource, args?: string[] | null): Promise<SendMessage | undefined> {
+        if (!args || args.length < 1) return sendMessage(source, "Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
         const { data } = client
 
         // eslint-disable-next-line prefer-const
@@ -49,34 +61,34 @@ export default class Suffering extends Command {
             armor = ship.armor_max
         }
 
-        if (isNaN(hp) || hp < 1 || (hp > 1000 || (hp > 200 && armor == undefined))) return message.reply("Invalid/unrealistic hp.")
-        if (isNaN(maxhp) || maxhp <= 4 || (maxhp > 1000 || (maxhp > 200 && armor == undefined)) || hp > maxhp) return message.reply("Invalid/unrealistic maximum hp.")
+        if (isNaN(hp) || hp < 1 || (hp > 1000 || (hp > 200 && armor == undefined))) return sendMessage(source, "Invalid/unrealistic hp.")
+        if (isNaN(maxhp) || maxhp <= 4 || (maxhp > 1000 || (maxhp > 200 && armor == undefined)) || hp > maxhp) return sendMessage(source, "Invalid/unrealistic maximum hp.")
 
         // Create overkill bar
         if (armor == undefined || isNaN(armor)) {
             const calculated = calculatePostCap(9999, hp, maxhp, 1)
-            return message.channel.send(`${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
-HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, this.createBar(calculated))
+            return sendMessage(source, `${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}%
+HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp}`, { files: [this.createBar(calculated)] })
         }
 
-        if (isNaN(armor) || armor < 1 || armor > 450) return message.reply("Invalid/unrealistic armor.")
+        if (isNaN(armor) || armor < 1 || armor > 450) return sendMessage(source, "Invalid/unrealistic armor.")
 
         // Create suffering chart
         if (attackStr == undefined)
-            return message.channel.send(maxhp >= 200 ? "**Assuming abyssal**" : `${ship ? `Suffering chart for **${ship.full_name}** (unmarried)` : ""}`, this.createGraph(hp, maxhp, armor))
+            return sendMessage(source, maxhp >= 200 ? "**Assuming abyssal**" : `${ship ? `Suffering chart for **${ship.full_name}** (unmarried)` : "Suffering chart"}`, { files: [this.createGraph(hp, maxhp, armor)] })
 
         const attack = parseInt(attackStr)
 
-        if (isNaN(attack) || attack < 0 || attack > 10000) return message.reply("Invalid/unrealistic attack.")
+        if (isNaN(attack) || attack < 0 || attack > 10000) return sendMessage(source, "Invalid/unrealistic attack.")
 
         // Create attack bar
         const calculated = calculatePostCap(attack, hp, maxhp, armor)
-        return message.channel.send(`${maxhp >= 200 ? "**Assuming abyssal**\n" : `${ship ? `Suffering bar for **${ship.full_name}** (unmarried) against an attack with post-cap power of **${attack}**
+        return sendMessage(source, `${maxhp >= 200 ? "**Assuming abyssal**\n" : `${ship ? `Suffering bar for **${ship.full_name}** (unmarried) against an attack with post-cap power of **${attack}**
 ` : ""}`}${calculated.sunk ? `Sunk: ${(calculated.sunk * 100).toFixed(2)}% / `: ""}${emoji.taiha}: ${(calculated.taiha * 100).toFixed(2)}% / ${emoji.chuuha}: ${(calculated.chuuha * 100).toFixed(2)}% / ${emoji.shouha}: ${(calculated.shouha * 100).toFixed(2)}% / Green: ${(calculated.ok * 100).toFixed(2)}%
 HP remaining: ${calculated.minhp}~${calculated.maxhp} / ${maxhp} (${calculated.mindmg}~${calculated.maxdmg} dmg)
 ${calculated.overkill || calculated.scratch ? `
 ${calculated.overkill ? `Overkill: ${(calculated.overkill * 100).toFixed()}%
-` : ""}${calculated.scratch ? `Scratch: ${(calculated.scratch * 100).toFixed()}%` : ""}` : ""}`.trim(), this.createBar(calculated))
+` : ""}${calculated.scratch ? `Scratch: ${(calculated.scratch * 100).toFixed()}%` : ""}` : ""}`.trim(), { files: [this.createBar(calculated)] })
 
     }
     createBar(calculated: Stages): MessageAttachment {
