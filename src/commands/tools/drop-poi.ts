@@ -21,7 +21,7 @@ export default class DropPoi extends Command {
                 required: true
             }, {
                 name: "rank",
-                description: "Name of ship",
+                description: "Rank to check (defaults to S)",
                 type: "STRING",
                 choices: [{
                     name: "S",
@@ -29,6 +29,9 @@ export default class DropPoi extends Command {
                 }, {
                     name: "A",
                     value: "A"
+                }, {
+                    name: "B",
+                    value: "B"
                 }]
             }]
         })

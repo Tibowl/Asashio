@@ -1,9 +1,13 @@
 import { AutocompleteInteraction, CommandInteraction, Message } from "discord.js"
+import log4js from "log4js"
 import fetch from "node-fetch"
 import client from "../../main"
 import Command from "../../utils/Command"
+import emoji from "../../data/emoji.json"
 import { CommandSource, SendMessage } from "../../utils/Types"
-import { createTable, findFuzzyBestCandidates, PAD_END, percentage, sendMessage } from "../../utils/Utils"
+import { createTable, findFuzzyBestCandidates, PAD_END, percentage, sendMessage, updateMessage } from "../../utils/Utils"
+
+const Logger = log4js.getLogger("dupes")
 
 
 export default class Dupes extends Command {
@@ -57,6 +61,9 @@ export default class Dupes extends Command {
                 }, {
                     name: "A",
                     value: "A"
+                }, {
+                    name: "B",
+                    value: "B"
                 }]
             }]
         })
@@ -100,7 +107,7 @@ export default class Dupes extends Command {
                     rank = args.pop()?.toUpperCase()
                 if (args.length == i + 3) {
                     const arg = args.pop()?.toUpperCase()
-                    if (arg == "S" || arg == "A")
+                    if (arg == "S" || arg == "A"|| arg == "B")
                         rank = arg
                     else
                         difficulty = arg
@@ -141,7 +148,6 @@ export default class Dupes extends Command {
 
         if (!["S", "A", "B"].includes(rank)) return sendMessage(source, "Invalid rank!")
 
-
         let ship = data.getShipByName(shipName)
 
         if (ship == undefined) return sendMessage(source, "Unknown ship")
@@ -154,24 +160,32 @@ export default class Dupes extends Command {
         const mapInfo = await data.getMapInfo(map)
         if (Object.keys(mapInfo.route).length == 0) return sendMessage(source, "Invalid/unknown map!")
 
+        const reply = await sendMessage(source, `${emoji.loading} Loading...`)
+
         const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
-        const api = await (await fetch(`http://kc.piro.moe/api/routing/drops?map=${map}&edges=${edges.join(",")}${isEvent ? `&minDiff=${difficultyID}&maxDiff=${difficultyID}`:""}&cleared=-1&ranks=${rank}&ship=${ship.api_id}`)).json()
+        fetch(`http://kc.piro.moe/api/routing/drops?map=${map}&edges=${edges.join(",")}${isEvent ? `&minDiff=${difficultyID}&maxDiff=${difficultyID}`:""}&cleared=-1&ranks=${rank}&ship=${ship.api_id}`)
+            .then(async data => data.json())
+            .then(async api => {
+                let dupes = api.dupes.map((dupe: { owned: number, drops: number, total: number }) => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
+                let msg = ""
 
-        let dupes = api.dupes.map((dupe: { owned: number, drops: number, total: number }) => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
-        let msg = ""
+                if (source.channel?.type != "DM" && dupes.length > 5) {
+                    dupes = dupes.slice(0, 5)
+                    msg = "\nLimited to 5 entries, repeat command in DM for full table."
+                } else if (dupes.length > 25) {
+                    dupes = dupes.slice(0, 25)
+                    msg = "\nLimited to 25 entries."
+                }
 
-        if (source.channel?.type != "DM" && dupes.length > 5) {
-            dupes = dupes.slice(0, 5)
-            msg = "\nLimited to 5 entries, repeat command in DM for full table."
-        } else if (dupes.length > 25) {
-            dupes = dupes.slice(0, 25)
-            msg = "\nLimited to 25 entries."
-        }
+                if (reply)
+                    await updateMessage(reply, `${ship.full_name} dupes in ${map}${node}${isEvent ? ` on ${difficulty}`:""} with rank ${rank}\`\`\`\n${createTable(
+                        ["Dupes", "Rate", "Drops"],
+                        dupes,
+                        [PAD_END]
+                    )}\n\`\`\`\nData provided by TsunDB.${msg}`)
+            })
+            .catch(e => Logger.error(e))
 
-        return sendMessage(source, `${ship.full_name} dupes in ${map}${node}${isEvent ? ` on ${difficulty}`:""} with rank ${rank}\`\`\`\n${createTable(
-            ["Dupes", "Rate", "Drops"],
-            dupes,
-            [PAD_END]
-        )}\n\`\`\`\nData provided by TsunDB.${msg}`)
+        return reply
     }
 }

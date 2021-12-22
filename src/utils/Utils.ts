@@ -437,12 +437,15 @@ export function parseDropArgs(args: string[]): {rank: Rank, ship: Ship} | string
     if (!args || args.length < 1) return "Must provide a ship."
 
     let rank: Rank = "S"
-    if (args[args.length - 1].toUpperCase() == "A") {
-        args.pop()
-        rank = "A"
-    } else if (args[args.length - 1].toUpperCase() == "S") {
+    if (args[args.length - 1].toUpperCase() == "S") {
         args.pop()
         rank = "S"
+    } else if (args[args.length - 1].toUpperCase() == "B") {
+        args.pop()
+        rank = "B"
+    } else if (args[args.length - 1].toUpperCase() == "A") {
+        args.pop()
+        rank = "A"
     }
 
     const shipName = args.join(" ")
