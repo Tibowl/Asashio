@@ -40,6 +40,16 @@
     "builder": "Japan, Kure Naval Arsenal"
   },
   {
+    "id": 333,
+    "name": "Fuyutsuki",
+    "class": "Akizuki-08",
+    "type": "DD",
+    "day": 20,
+    "month": 1,
+    "year": 1944,
+    "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
     "id": 361,
     "name": "Samuel B. Roberts",
     "class": "John C. Butler",
@@ -150,6 +160,7 @@
   {
     "id": 408,
     "name": "Souya",
+    "class": "Minryo Maru",
     "type": "Special",
     "day": 16,
     "month": 2,
@@ -331,6 +342,7 @@
   {
     "id": 421,
     "name": "Shinshuu Maru",
+    "class": "IJA R1",
     "type": "Special",
     "day": 14,
     "month": 3,
@@ -456,6 +468,16 @@
     "month": 3,
     "year": 1921,
     "builder": "US, New York Shipbuilding"
+  },
+  {
+    "id": 435,
+    "name": "Chougei",
+    "class": "Jingei-02",
+    "type": "Special",
+    "day": 24,
+    "month": 3,
+    "year": 1924,
+    "builder": "Japan, Mitsubishi Nagasaki Shipyards"
   },
   {
     "id": 48,
@@ -588,16 +610,6 @@
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
   },
   {
-    "id": 375,
-    "name": "Maestrale",
-    "class": "Maestrale-01",
-    "type": "DD",
-    "day": 5,
-    "month": 4,
-    "year": 1934,
-    "builder": "Italy, Riva Trigoso"
-  },
-  {
     "id": 79,
     "name": "Shiratsuyu",
     "class": "Shiratsuyu-01",
@@ -718,6 +730,16 @@
     "builder": "UK, Cammell Laird and Company Ltd."
   },
   {
+    "id": 375,
+    "name": "Maestrale",
+    "class": "Maestrale-01",
+    "type": "DD",
+    "day": 15,
+    "month": 4,
+    "year": 1934,
+    "builder": "Italy, Riva Trigoso"
+  },
+  {
     "id": 55,
     "name": "Myoukou",
     "class": "Myoukou-01",
@@ -818,6 +840,16 @@
     "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
+    "id": 443,
+    "name": "Ume",
+    "class": "Matsu-03",
+    "type": "DD",
+    "day": 24,
+    "month": 4,
+    "year": 1944,
+    "builder": "Japan, Fujinagata Shipyards"
+  },
+  {
     "id": 42,
     "name": "Nagara",
     "class": "Nagara-01",
@@ -898,6 +930,16 @@
     "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
+    "id": 438,
+    "name": "Kaiboukan No.30",
+    "class": "Type D",
+    "type": "DDE",
+    "day": 10,
+    "month": 5,
+    "year": 1944,
+    "builder": "Japan, Mitsubishi Nagasaki Shipyards"
+  },
+  {
     "id": 59,
     "name": "Takao",
     "class": "Takao-01",
@@ -946,6 +988,16 @@
     "month": 5,
     "year": 1935,
     "builder": "Japan, Uraga Dock Company"
+  },
+  {
+    "id": 495,
+    "name": "Shounan",
+    "class": "Type D-02",
+    "type": "DDE",
+    "day": 19,
+    "month": 5,
+    "year": 1944,
+    "builder": "Japan, Sakurajima Hitachi Shipyard"
   },
   {
     "id": 281,
@@ -1418,6 +1470,16 @@
     "builder": "Japan, Kobe Kawasaki Shipyard"
   },
   {
+    "id": 493,
+    "name": "Scamp",
+    "class": "Gato SS-277",
+    "type": "SS",
+    "day": 20,
+    "month": 7,
+    "year": 1942,
+    "builder": "US, Portsmouth Naval Shipyard"
+  },
+  {
     "id": 31,
     "name": "Mutsuki",
     "class": "Mutsuki-01",
@@ -1477,6 +1539,16 @@
     "month": 8,
     "year": 1940,
     "builder": "Japan, Kure Naval Arsenal"
+  },
+  {
+    "id": 477,
+    "name": "Conte di Cavour",
+    "class": "Conte di Cavour-01",
+    "type": "BB",
+    "day": 10,
+    "month": 8,
+    "year": 1911,
+    "builder": "Italy, Arsenale di La Spezia, La Spezia"
   },
   {
     "id": 174,
@@ -1607,6 +1679,16 @@
     "month": 9,
     "year": 1933,
     "builder": "Sweden, Götaverken"
+  },
+  {
+    "id": 485,
+    "name": "Victorious",
+    "class": "Illustrious-03",
+    "type": "CV",
+    "day": 14,
+    "month": 9,
+    "year": 1939,
+    "builder": "UK, Vickers-Armstrong"
   },
   {
     "id": 385,
@@ -1950,6 +2032,16 @@
     "builder": "Japan, Uraga Dock Company"
   },
   {
+    "id": 274,
+    "name": "Matsukaze",
+    "class": "Kamikaze-04",
+    "type": "DD",
+    "day": 30,
+    "month": 10,
+    "year": 1923,
+    "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
     "id": 46,
     "name": "Sendai",
     "class": "Sendai-01",
@@ -1960,14 +2052,14 @@
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
   },
   {
-    "id": 274,
-    "name": "Matsukaze",
-    "class": "Kamikaze-04",
-    "type": "DD",
-    "day": 30,
+    "id": 322,
+    "name": "Unyou",
+    "class": "Taiyou-02",
+    "type": "CVL",
+    "day": 31,
     "month": 10,
-    "year": 1923,
-    "builder": "Japan, Maizuru Naval Arsenal"
+    "year": 1939,
+    "builder": "Japan, Nagasaki Mitsubishi Shipyard"
   },
   {
     "id": 162,
@@ -1990,16 +2082,6 @@
     "builder": "Japan, Fujinagata Shipyards"
   },
   {
-    "id": 143,
-    "name": "Musashi",
-    "class": "Yamato-02",
-    "type": "BB",
-    "day": 1,
-    "month": 11,
-    "year": 1940,
-    "builder": "Japan, Nagasaki Mitsubishi Shipyard"
-  },
-  {
     "id": 169,
     "name": "Tanikaze",
     "class": "Kagerou-14",
@@ -2008,6 +2090,16 @@
     "month": 11,
     "year": 1940,
     "builder": "Japan, Fujinagata Shipyards"
+  },
+  {
+    "id": 143,
+    "name": "Musashi",
+    "class": "Yamato-02",
+    "type": "BB",
+    "day": 1,
+    "month": 11,
+    "year": 1940,
+    "builder": "Japan, Nagasaki Mitsubishi Shipyard"
   },
   {
     "id": 27,
@@ -2070,16 +2162,6 @@
     "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
-    "id": 61,
-    "name": "Maya",
-    "class": "Takao-03",
-    "type": "CA",
-    "day": 8,
-    "month": 11,
-    "year": 1930,
-    "builder": "Japan, Kobe Kawasaki Shipyard"
-  },
-  {
     "id": 67,
     "name": "Oboro",
     "class": "Ayanami-07",
@@ -2088,6 +2170,16 @@
     "month": 11,
     "year": 1930,
     "builder": "Japan, Sasebo Naval Arsenal"
+  },
+  {
+    "id": 61,
+    "name": "Maya",
+    "class": "Takao-03",
+    "type": "CA",
+    "day": 8,
+    "month": 11,
+    "year": 1930,
+    "builder": "Japan, Kobe Kawasaki Shipyard"
   },
   {
     "id": 1,
@@ -2150,6 +2242,16 @@
     "builder": "Japan, Tamano Mitsui Shipyard"
   },
   {
+    "id": 500,
+    "name": "Yamashio Maru",
+    "class": "2TL",
+    "type": "Special",
+    "day": 14,
+    "month": 11,
+    "year": 1944,
+    "builder": "Japan, Yokohama Mitsubishi Shipyard"
+  },
+  {
     "id": 11,
     "name": "Fubuki",
     "class": "Fubuki-01",
@@ -2171,16 +2273,6 @@
     "note": "renamed to Ryuuhou"
   },
   {
-    "id": 9,
-    "name": "Hiryuu",
-    "class": "Hiryuu-01",
-    "type": "CV",
-    "day": 16,
-    "month": 11,
-    "year": 1937,
-    "builder": "Japan, Yokosuka Naval Arsenal"
-  },
-  {
     "id": 89,
     "name": "Arare",
     "class": "Asashio-09",
@@ -2189,6 +2281,16 @@
     "month": 11,
     "year": 1937,
     "builder": "Japan, Maizuru Naval Arsenal"
+  },
+  {
+    "id": 9,
+    "name": "Hiryuu",
+    "class": "Hiryuu-01",
+    "type": "CV",
+    "day": 16,
+    "month": 11,
+    "year": 1937,
+    "builder": "Japan, Yokosuka Naval Arsenal"
   },
   {
     "id": 7,
@@ -2590,6 +2692,16 @@
     "month": 12,
     "year": 1927,
     "builder": "Japan, Ishikawajima Shipyard"
+  },
+  {
+    "id": 474,
+    "name": "Tamanami",
+    "class": "Yuugumo-09",
+    "type": "DD",
+    "day": 26,
+    "month": 12,
+    "year": 1942,
+    "builder": "Japan, Fujinagata Shipyards"
   },
   {
     "id": 471,
