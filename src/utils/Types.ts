@@ -125,6 +125,10 @@ export interface ShipDB {
     [key: string]: ShipExtended
 }
 
+export interface ShipListDB {
+    [key: string]: string[]
+}
+
 export interface Improvements {
     _ammo: number
     _bauxite: number

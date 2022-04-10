@@ -4,7 +4,7 @@ import { exists, unlink, move, writeFile, existsSync, readFileSync } from "fs-ex
 import { join } from "path"
 
 import client from "../main"
-import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended } from "./Types"
+import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended, ShipListDB } from "./Types"
 
 const Logger = log4js.getLogger("DataManager")
 const existsP = async (path: string): Promise<boolean> => new Promise((resolve) => exists(path, resolve))
@@ -101,6 +101,7 @@ const oldstore = join(path, "store.json.old")
 
 export default class DataManager {
     ships: ShipDB = {}
+    shiplist: ShipListDB = {}
     quests: QuestDB = {}
     misc: MiscDB = defaultMisc
     equips: EquipmentDB = {}
@@ -447,6 +448,9 @@ export default class DataManager {
 
         this.expeds = require("../../src/data/exped.json")
         Logger.info(`Loaded expeds! ${this.expeds.length} expeds!`)
+
+        this.shiplist = require("../../src/data/shipcategory.json")
+        Logger.info(`Loaded expeds! ${Object.keys(this.shiplist).length} ship categories!`)
 
         this.levels_exp = require("../../src/data/levels.json")
         Logger.info(`Loaded level <-> xp! ${this.levels_exp.length} levels!`)
