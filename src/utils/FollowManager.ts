@@ -1,5 +1,5 @@
 import SQLite from "better-sqlite3"
-import { Channel, Guild, Message, MessageAttachment, MessageEmbed, Snowflake } from "discord.js"
+import { Channel, Guild, Message, MessageEmbed, Snowflake } from "discord.js"
 import { ensureDirSync } from "fs-extra"
 import log4js from "log4js"
 import { FollowCategory, Follower } from "./Types"
@@ -120,7 +120,7 @@ export default class FollowManager {
         })
     }
 
-    async send(category: FollowCategory, content?: Snowflake, embed?: MessageEmbed | MessageAttachment, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {
+    async send(category: FollowCategory, content?: Snowflake, embed?: MessageEmbed, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {
         if (!filters.includes("*")) filters = [...filters, "*"]
         let channels: string[] = []
         filters.forEach(filter => channels.push(...this.getFollowers(category, filter).map(k => k.channelID)))

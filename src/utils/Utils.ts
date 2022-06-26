@@ -492,7 +492,7 @@ export async function dropTable(source: CommandSource, ship: Ship, rank: Rank, d
     return reply
 }
 
-export async function sendToChannels(channels: Snowflake[] | undefined, content?: string, embed?: MessageEmbed | MessageAttachment): Promise<PromiseSettledResult<Message | Message[]>[]> {
+export async function sendToChannels(channels: Snowflake[] | undefined, content?: string, embed?: MessageEmbed): Promise<PromiseSettledResult<Message | Message[]>[]> {
     const messages = []
     if (!channels) return Promise.all([])
 
