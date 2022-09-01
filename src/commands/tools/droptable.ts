@@ -4,13 +4,13 @@ import { CommandInteraction, Message } from "discord.js"
 import Command from "../../utils/Command"
 import client from "../../main"
 import { CommandSource, SendMessage } from "../../utils/Types"
-import { sendMessage } from "../../utils/Utils"
+import { fetchKcnav, sendMessage } from "../../utils/Utils"
 
 export default class DropTable extends Command {
     constructor(name: string) {
         super({
             name,
-            help: "Gets drop table of a map. Replies only in DM. Uses <http://kc.piro.moe> API",
+            help: "Gets drop table of a map. Replies only in DM. Uses <https://tsunkit.net> API",
             usage: "droptable <map>",
             aliases: ["drops"],
             category: "Tools",
@@ -42,7 +42,7 @@ export default class DropTable extends Command {
 
         const isEventMap = map.split("-")[0].length > 1
 
-        let table = (await (await fetch(`http://kc.piro.moe/api/routing/droptable/${map}`)).text())
+        let table = (await (await fetchKcnav(`/api/routing/maps/${map}/droptable`)).text())
             .replace(/^\| /gm, "")
             .replace(/\|$/gm, "")
             .replace(/\| ([A-Z0-9]) +/g, isEventMap ? "|  $1  " : "| $1 ")

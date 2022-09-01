@@ -5,6 +5,12 @@ export type CommandSource = Message | CommandInteraction
 export type SendMessage = Message | APIMessage
 export type CommandResponse = Promise<SendMessage | undefined> | undefined
 
+export interface WebResult<T> {
+    result: T
+    error: string
+    retrieved: string
+}
+
 export interface Ship {
     aa: number
     aa_max: false | number

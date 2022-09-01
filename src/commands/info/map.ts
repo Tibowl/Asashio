@@ -6,7 +6,7 @@ import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
 import { CommandResponse, CommandSource, MapInfo, SendMessage } from "../../utils/Types"
-import { sendMessage, updateMessage } from "../../utils/Utils"
+import { sendMessage, updateMessage, fetchKcnav } from "../../utils/Utils"
 
 
 const Logger = log4js.getLogger("map")
@@ -62,12 +62,12 @@ export default class Map extends Command {
 
     async genMap(map: string, apiParsed: MapInfo): Promise<MessageAttachment> {
         const img = new Image
-        img.src = `http://kc.piro.moe/api/assets/images/backgrounds/${map}`
+        img.src = `https://tsunkit.net/api/assets/images/maps/${map}/background`
         await new Promise((resolve) => {
             img.onload = (): void => resolve(null)
         })
 
-        const lbas = await (await fetch(`http://kc.piro.moe/api/routing/lbasdistance/${map}`)).json()
+        const lbas = await (await fetchKcnav(`/api/routing/maps/${map}/lbasdistance`)).json()
 
         const canvas = createCanvas(1200, 720)
         const ctx = canvas.getContext("2d")

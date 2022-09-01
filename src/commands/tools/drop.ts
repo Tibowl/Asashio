@@ -9,7 +9,7 @@ export default class Drop extends Command {
         super({
             name,
             category: "Tools",
-            help: "Gets drop list of a ship. Data from TsunDB, bot will cache results up to 6 hours. Uses <http://kc.piro.moe> API",
+            help: "Gets drop list of a ship. Data from TsunDB, bot will cache results up to 6 hours. Uses <https://tsunkit.net> API",
             shortHelp: "Gets drop list of a ship. Data from TsunDB.",
             usage: "drop <ship> [rank: S/A]",
             aliases: ["locate", "droprate", "droprates"],

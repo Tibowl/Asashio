@@ -4,7 +4,8 @@ import { exists, unlink, move, writeFile, existsSync, readFileSync } from "fs-ex
 import { join } from "path"
 
 import client from "../main"
-import { QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended, ShipListDB } from "./Types"
+import { WebResult, QuestDB, ShipDB, EquipmentDB, MiscDB, Expedition, Birthday, Store, APIStart2, MapInfoDB, Alias, Quest, AssetCategory, AssetType, Extension, Equipment, MapInfo, ShipExtended, ShipListDB } from "./Types"
+import { fetchKcnav } from "./Utils"
 
 const Logger = log4js.getLogger("DataManager")
 const existsP = async (path: string): Promise<boolean> => new Promise((resolve) => exists(path, resolve))
@@ -266,7 +267,9 @@ export default class DataManager {
     getMapInfo = async (map: string): Promise<MapInfo> => {
         if (!this.mapInfoCache[map]) {
             Logger.info(`Map data for ${map} not cached. Loading...`)
-            this.mapInfoCache[map] = await (await fetch(`http://kc.piro.moe/api/routing/maps/${map}`)).json()
+            const response: WebResult<MapInfo> = await (await fetchKcnav(`/api/routing/maps/${map}`)).json()
+            if (response.error) throw new Error("Error fetching map info: " + response.error);
+            this.mapInfoCache[map] = response.result;
         }
         return this.mapInfoCache[map]
     }

@@ -1,7 +1,8 @@
 import { Guild, Message, MessageActionRow, MessageAttachment, MessageButton, MessageEmbed, Snowflake } from "discord.js"
 import log4js from "log4js"
-import fetch from "node-fetch"
+import fetch, { Response } from "node-fetch"
 import emoji from "../data/emoji.json"
+import config from "../data/config.json"
 import client from "./../main"
 import { Cache, Cached, CommandSource, Damages, DamageType, DBType, DropData, NameTable, padding, Rank, SendMessage, Ship, ShipExtended, Stages } from "./Types"
 
@@ -13,6 +14,13 @@ export const PAD_END = 1
 
 export function getWiki(page: string): string {
     return `https://en.kancollewiki.net/${page.replace(/ /g, "_")}`
+}
+
+export function fetchKcnav(endpoint: string): Promise<Response> {
+    let headers = {};
+    if (config.kcnav.auth_token)
+        headers = {Authorization: 'Bearer ' + config.kcnav.auth_token};
+    return fetch("https://tsunkit.net" + endpoint, {headers})
 }
 
 export function createTable(names: NameTable | undefined, rows: (string | undefined)[][], pads: padding[] = [PAD_END]): string {
@@ -341,23 +349,15 @@ const displayData = async (cached: Cache, reply: SendMessage, db: DBType, dmChan
     }
 }
 
-const getDropBaseLink = (ship: Ship, rank: string, db: DBType): string => {
-    switch (db) {
-        case "tsundb":
-            return `http://kc.piro.moe/api/routing/quickdrops?shipId=${ship.api_id}&ranks=${rank}&includeOldEvents=false`
-
-        case "poi":
-            return `https://db.kcwiki.org/drop/ship/${ship.api_id}/${rank}.json`
-    }
-}
-
 export function percentage(count: number, total: number): string {
     if (total === 0) return "?.???%"
     return (count / total * 100).toFixed(3) + "%"
 }
 
 const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<{ [key: string]: DropData }> => {
-    const api = await (await fetch(getDropBaseLink(ship, rank, db))).json()
+    const api = db === "tsundb"
+        ? await (await fetchKcnav(`/api/routing/quickdrops?shipId=${ship.api_id}&ranks=${rank}&includeOldEvents=false`)).json()
+        : await (await fetch(`https://db.kcwiki.org/drop/ship/${ship.api_id}/${rank}.json`)).json()
     if (api.error) {
         Logger.error(`An error has occurred while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
         delete cached.loading

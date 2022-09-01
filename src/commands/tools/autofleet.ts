@@ -5,7 +5,7 @@ import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
 import { CommandSource, SendMessage } from "../../utils/Types"
-import { sendMessage, updateMessage } from "../../utils/Utils"
+import { fetchKcnav, sendMessage, updateMessage } from "../../utils/Utils"
 
 
 const Logger = log4js.getLogger("autofleet")
@@ -52,7 +52,7 @@ How it works:
 - First fills main fleet FS, then escort fleet FS, then randomly fills the remaining slots
 
 - Nothing can be guaranteed on these fleets on how they will route/perform
-Uses <http://kc.piro.moe> API`,
+Uses <https://tsunkit.net> API`,
             usage: "autofleet <map-boss node>",
             aliases: ["spoonfeed", "imretardedpleasehelp", "imretardedplshelp"],
             options: [{
@@ -196,7 +196,7 @@ Ships to use:
         const allComps: CompCandidate[] = []
         for (const edge of edges) {
             try {
-                const comps = await (await fetch(`http://kc.piro.moe/api/routing/comps/${map}/${edge}?${constants}&mainComp=&escortComp=&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()
+                const comps = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}/comps?${constants}&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()
                 if (comps.result)
                     for (const result of comps.result) {
                         const found = allComps.find(k =>
@@ -229,13 +229,13 @@ Ships to use:
         const allShips: ShipCandidates = { "main": [], "escort": [] }
         for (const edge of edges) {
             try {
-                const fetched = await fetch(`http://kc.piro.moe/api/routing/edges/${map}/${edge}?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)
+                const fetched = await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}/topships?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)
                 if (fetched.status == 204) continue
                 const ships = await fetched.json()
-                if (!ships.topships) continue
+                if (ships.error) continue
                 const check = (fleet: FleetNum): void => {
-                    if (!ships.topships[fleet]) return
-                    for (const result of ships.topships[fleet]) {
+                    if (!ships.result[fleet]) return
+                    for (const result of ships.result[fleet]) {
                         const found = allShips[fleet].find(k => k.id == result.id)
                         if (found)
                             found.count += result.count

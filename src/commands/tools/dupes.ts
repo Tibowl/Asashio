@@ -5,7 +5,7 @@ import client from "../../main"
 import Command from "../../utils/Command"
 import emoji from "../../data/emoji.json"
 import { CommandSource, SendMessage } from "../../utils/Types"
-import { createTable, findFuzzyBestCandidates, PAD_END, percentage, sendMessage, updateMessage } from "../../utils/Utils"
+import { createTable, fetchKcnav, findFuzzyBestCandidates, PAD_END, percentage, sendMessage, updateMessage } from "../../utils/Utils"
 
 const Logger = log4js.getLogger("dupes")
 
@@ -15,7 +15,7 @@ export default class Dupes extends Command {
         super({
             name,
             category: "Tools",
-            help: "Gets dupes list of a drop. Uses <http://kc.piro.moe> API",
+            help: "Gets dupes list of a drop. Uses <https://tsunkit.net> API",
             usage: "dupes <ship> <map> <node> [difficulty: H/M/E/C] [rank: S/A]",
             aliases: ["dupe"],
             options: [{
@@ -163,10 +163,12 @@ export default class Dupes extends Command {
         const reply = await sendMessage(source, `${emoji.loading} Loading...`)
 
         const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
-        fetch(`http://kc.piro.moe/api/routing/drops?map=${map}&edges=${edges.join(",")}${isEvent ? `&minDiff=${difficultyID}&maxDiff=${difficultyID}`:""}&cleared=-1&ranks=${rank}&ship=${ship.api_id}`)
+        fetchKcnav(`/api/routing/maps/${map}/edges/${edges.join(",")}/drops?${isEvent ? `minDiff=${difficultyID}&maxDiff=${difficultyID}&`:""}cleared=-1&ranks=${rank}&ship=${ship.api_id}`)
             .then(async data => data.json())
             .then(async api => {
-                let dupes = api.dupes.map((dupe: { owned: number, drops: number, total: number }) => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
+                if (api.error)
+                    throw new Error("Error occurred while fetching dupe data.")
+                let dupes = api.result.dupes.map((dupe: { owned: number, drops: number, total: number }) => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
                 let msg = ""
 
                 if (source.channel?.type != "DM" && dupes.length > 5) {

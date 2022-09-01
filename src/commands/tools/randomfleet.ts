@@ -7,7 +7,7 @@ import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
 import { CommandSource, FleetData, MapEntries, MapEntry, SendMessage } from "../../utils/Types"
-import { aswAtLevel, evasionAtLevel, losAtLevel, sendMessage, updateMessage } from "../../utils/Utils"
+import { aswAtLevel, evasionAtLevel, fetchKcnav, losAtLevel, sendMessage, updateMessage } from "../../utils/Utils"
 
 
 const Logger = log4js.getLogger("randomfleet")
@@ -38,7 +38,7 @@ How it works:
 - Generates an image out of that fleet
 
 - Nothing can be guaranteed on these fleets on how they will route/perform
-Uses <http://kc.piro.moe> API, images rendered using a fork of にしくま's gkcoi`,
+Uses <https://tsunkit.net> API, images rendered using a fork of にしくま's gkcoi`,
             usage: "randomfleet <map> <node>",
             aliases: ["rng", "imretardedpleasedonthelp", "imretardedplsdonthelp"],
             options: [{
@@ -176,13 +176,13 @@ ${new Date(entry.datetime + "Z").toLocaleString("ja-JP", {
         const cached = entriesCache[map + edges.join(",")]
         if (cached) return cached
 
-        const dateFilter = (+map.split("-")[0]) < 10 ? `&start=${this.recent()}` : ""
+        const dateFilter = (+map.split("-")[0]) < 10 ? `start=${this.recent()}&` : ""
 
         const entries: MapEntry[][] = []
         const edgeCounts: number[] = []
         for (const edge of edges) {
             Logger.info(`Caching entries of ${map} / ${edge}`)
-            const comps: MapEntries = await (await fetch(`http://kc.piro.moe/api/routing/entries/${map}?edgeId=${edge}${dateFilter}&perPage=50`)).json()
+            const comps: MapEntries = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}$/entries?${dateFilter}perPage=50`)).json()
             entries.push(comps.entries ?? [])
             edgeCounts.push(comps.entryCount ?? 0)
         }
