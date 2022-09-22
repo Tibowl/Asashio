@@ -22,7 +22,7 @@
   {
     "id": 293,
     "name": "I-400",
-    "class": "Sen Toku-01",
+    "class": "Sentoku-01",
     "type": "SS",
     "day": 18,
     "month": 1,
@@ -208,6 +208,16 @@
     "builder": "Japan, Fujinagata Shipyards"
   },
   {
+    "id": 531,
+    "name": "Ranger",
+    "class": "Ranger-01",
+    "type": "CV",
+    "day": 25,
+    "month": 2,
+    "year": 1933,
+    "builder": "US, Newport News Shipbuilding"
+  },
+  {
     "id": 244,
     "name": "Aquila",
     "class": "Aquila-01",
@@ -279,6 +289,16 @@
     "builder": "Japan, Fujinagata Shipyards"
   },
   {
+    "id": 535,
+    "name": "Jean Bart",
+    "class": "Richelieu-02",
+    "type": "BB",
+    "day": 6,
+    "month": 3,
+    "year": 1940,
+    "builder": "France, Ateliers et Chantiers de la Loire"
+  },
+  {
     "id": 28,
     "name": "Tenryuu",
     "class": "Tenryuu-01",
@@ -312,7 +332,7 @@
   {
     "id": 155,
     "name": "I-401",
-    "class": "Sen Toku-02",
+    "class": "Sentoku-02",
     "type": "SS",
     "day": 11,
     "month": 3,
@@ -330,16 +350,6 @@
     "builder": "Japan, Uraga Dock Company"
   },
   {
-    "id": 101,
-    "name": "Mogami",
-    "class": "Mogami-01",
-    "type": "CAV",
-    "day": 14,
-    "month": 3,
-    "year": 1934,
-    "builder": "Japan, Kure Naval Arsenal"
-  },
-  {
     "id": 421,
     "name": "Shinshuu Maru",
     "class": "IJA R1",
@@ -348,6 +358,16 @@
     "month": 3,
     "year": 1934,
     "builder": "Japan, Ishikawajima Shipyard"
+  },
+  {
+    "id": 101,
+    "name": "Mogami",
+    "class": "Mogami-01",
+    "type": "CAV",
+    "day": 14,
+    "month": 3,
+    "year": 1934,
+    "builder": "Japan, Kure Naval Arsenal"
   },
   {
     "id": 295,
@@ -438,6 +458,16 @@
     "month": 3,
     "year": 1938,
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
+  },
+  {
+    "id": 513,
+    "name": "Maryland",
+    "class": "Colorado-02",
+    "type": "BB",
+    "day": 20,
+    "month": 3,
+    "year": 1920,
+    "builder": "US, Newport News Shipbuilding"
   },
   {
     "id": 12,
@@ -770,6 +800,16 @@
     "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
+    "id": 486,
+    "name": "Hayashio",
+    "class": "Kagerou-05",
+    "type": "DD",
+    "day": 19,
+    "month": 4,
+    "year": 1939,
+    "builder": "Japan, Uraga Dock Company"
+  },
+  {
     "id": 285,
     "name": "Fujinami",
     "class": "Yuugumo-11",
@@ -960,6 +1000,16 @@
     "builder": "Japan, Maizuru Naval Arsenal"
   },
   {
+    "id": 521,
+    "name": "Ukuru",
+    "class": "Ukuru-class",
+    "type": "DDE",
+    "day": 15,
+    "month": 5,
+    "year": 1944,
+    "builder": "Japan, Nippon Kokan Tsurumi Shipyard"
+  },
+  {
     "id": 251,
     "name": "Mizuho",
     "class": "Mizuho-01",
@@ -1000,6 +1050,16 @@
     "builder": "Japan, Sakurajima Hitachi Shipyard"
   },
   {
+    "id": 525,
+    "name": "Langley",
+    "class": "Independence CVL-27",
+    "type": "CVL",
+    "day": 22,
+    "month": 5,
+    "year": 1943,
+    "builder": "US, New York Shipbuilding"
+  },
+  {
     "id": 281,
     "name": "Minazuki",
     "class": "Mutsuki-06",
@@ -1018,6 +1078,16 @@
     "month": 5,
     "year": 1937,
     "builder": "Japan, Kobe Kawasaki Shipyard"
+  },
+  {
+    "id": 382,
+    "name": "Natsugumo",
+    "class": "Asashio-07",
+    "type": "DD",
+    "day": 26,
+    "month": 5,
+    "year": 1937,
+    "builder": "Japan, Sasebo Naval Arsenal"
   },
   {
     "id": 29,
@@ -1480,6 +1550,16 @@
     "builder": "US, Portsmouth Naval Shipyard"
   },
   {
+    "id": 481,
+    "name": "I-201",
+    "class": "I-201 class-01",
+    "type": "SS",
+    "day": 22,
+    "month": 7,
+    "year": 1944,
+    "builder": "Japan, Kure Naval Arsenal"
+  },
+  {
     "id": 31,
     "name": "Mutsuki",
     "class": "Mutsuki-01",
@@ -1598,7 +1678,7 @@
     "day": 26,
     "month": 8,
     "year": 1937,
-    "builder": "US, New York Naval Yard, Brooklyn, New York"
+    "builder": "US, New York Naval Yard"
   },
   {
     "id": 415,
@@ -1763,6 +1843,16 @@
     "builder": "Japan, Kobe Kawasaki Shipyard"
   },
   {
+    "id": 533,
+    "name": "Massachusetts",
+    "class": "South Dakota-03",
+    "type": "BB",
+    "day": 23,
+    "month": 9,
+    "year": 1941,
+    "builder": "US, Fore River Shipyard"
+  },
+  {
     "id": 161,
     "name": "Akitsu Maru",
     "class": "Hei-01",
@@ -1911,6 +2001,16 @@
     "month": 10,
     "year": 1936,
     "builder": "Japan, Kobe Kawasaki Shipyard"
+  },
+  {
+    "id": 505,
+    "name": "Kurahashi",
+    "class": "Mikura-05",
+    "type": "DDE",
+    "day": 15,
+    "month": 10,
+    "year": 1943,
+    "builder": "Japan, Nippon Kokan Tsurumi Shipyard"
   },
   {
     "id": 202,
@@ -2481,6 +2581,16 @@
     "month": 11,
     "year": 1935,
     "builder": "Germany, Deutsche Werke Kiel"
+  },
+  {
+    "id": 497,
+    "name": "Brooklyn",
+    "class": "Brooklyn CL-40",
+    "type": "CL",
+    "day": 30,
+    "month": 11,
+    "year": 1936,
+    "builder": "US, Brooklyn Navy Yard"
   },
   {
     "id": 381,
