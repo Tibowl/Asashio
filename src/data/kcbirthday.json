@@ -52,7 +52,7 @@
   {
     "id": 361,
     "name": "Samuel B. Roberts",
-    "class": "John C. Butler",
+    "class": "John C. Butler DE-413",
     "type": "DD",
     "day": 20,
     "month": 1,
@@ -210,7 +210,7 @@
   {
     "id": 531,
     "name": "Ranger",
-    "class": "Ranger-01",
+    "class": "Ranger CV-4",
     "type": "CV",
     "day": 25,
     "month": 2,
@@ -307,17 +307,6 @@
     "month": 3,
     "year": 1918,
     "builder": "Japan, Yokosuka Naval Arsenal"
-  },
-  {
-    "id": 399,
-    "name": "De Ruyter",
-    "class": "De Ruyter-01",
-    "type": "CL",
-    "day": 11,
-    "month": 3,
-    "year": 1935,
-    "builder": "Netherlands, Schiedam, Wilton-Fijenoord",
-    "note": "other date? 11 may"
   },
   {
     "id": 84,
@@ -462,7 +451,7 @@
   {
     "id": 513,
     "name": "Maryland",
-    "class": "Colorado-02",
+    "class": "Colorado BB-46",
     "type": "BB",
     "day": 20,
     "month": 3,
@@ -492,7 +481,7 @@
   {
     "id": 401,
     "name": "Colorado",
-    "class": "Colorado-01",
+    "class": "Colorado BB-45",
     "type": "BB",
     "day": 22,
     "month": 3,
@@ -552,7 +541,7 @@
   {
     "id": 362,
     "name": "Johnston",
-    "class": "Fletcher (DD-557)",
+    "class": "Fletcher DD-557",
     "type": "DD",
     "day": 25,
     "month": 3,
@@ -652,7 +641,7 @@
   {
     "id": 233,
     "name": "Saratoga",
-    "class": "Lexington-02",
+    "class": "Lexington CV-3",
     "type": "CV",
     "day": 7,
     "month": 4,
@@ -902,7 +891,7 @@
   {
     "id": 349,
     "name": "Intrepid",
-    "class": "Essex-03",
+    "class": "Essex CV-11",
     "type": "CV",
     "day": 26,
     "month": 4,
@@ -932,7 +921,7 @@
   {
     "id": 396,
     "name": "Fletcher",
-    "class": "Fletcher (DD-445)",
+    "class": "Fletcher DD-445",
     "type": "DD",
     "day": 3,
     "month": 5,
@@ -978,6 +967,16 @@
     "month": 5,
     "year": 1944,
     "builder": "Japan, Mitsubishi Nagasaki Shipyards"
+  },
+  {
+    "id": 399,
+    "name": "De Ruyter",
+    "class": "De Ruyter-01",
+    "type": "CL",
+    "day": 11,
+    "month": 5,
+    "year": 1935,
+    "builder": "Netherlands, Schiedam, Wilton-Fijenoord"
   },
   {
     "id": 59,
@@ -1152,7 +1151,7 @@
   {
     "id": 454,
     "name": "Washington",
-    "class": "North Carolina-02",
+    "class": "North Carolina BB-56",
     "type": "BB",
     "day": 1,
     "month": 6,
@@ -1182,7 +1181,7 @@
   {
     "id": 402,
     "name": "South Dakota",
-    "class": "South Dakota-01",
+    "class": "South Dakota BB-57",
     "type": "BB",
     "day": 7,
     "month": 6,
@@ -1683,7 +1682,7 @@
   {
     "id": 415,
     "name": "Helena",
-    "class": "St.Louis-02",
+    "class": "St.Louis CL-50",
     "type": "CL",
     "day": 27,
     "month": 8,
@@ -1693,7 +1692,7 @@
   {
     "id": 240,
     "name": "Iowa",
-    "class": "Iowa-01",
+    "class": "Iowa BB-61",
     "type": "BB",
     "day": 27,
     "month": 8,
@@ -1845,7 +1844,7 @@
   {
     "id": 533,
     "name": "Massachusetts",
-    "class": "South Dakota-03",
+    "class": "South Dakota BB-59",
     "type": "BB",
     "day": 23,
     "month": 9,
@@ -1881,6 +1880,17 @@
     "month": 9,
     "year": 1926,
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
+  },
+  {
+    "id": 139,
+    "name": "Yahagi",
+    "class": "Agano-03",
+    "type": "CL",
+    "day": 25,
+    "month": 9,
+    "year": 1942,
+    "builder": "Japan, Sasebo Naval Arsenal",
+    "note": "Takamatsumiya Diary Volume 4, page 627 “September 25th (Friday) Sunny. Yahagi launching ceremony."
   },
   {
     "id": 265,
@@ -2023,6 +2033,16 @@
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
   },
   {
+    "id": 162,
+    "name": "Maruyu",
+    "class": "Type 3 S.T.V.",
+    "type": "SS",
+    "day": 15,
+    "month": 10,
+    "year": 1943,
+    "builder": "Japan, ..."
+  },
+  {
     "id": 180,
     "name": "Amatsukaze",
     "class": "Kagerou-09",
@@ -2104,16 +2124,6 @@
     "builder": "Japan, Fujinagata Shipyards"
   },
   {
-    "id": 139,
-    "name": "Yahagi",
-    "class": "Agano-03",
-    "type": "CL",
-    "day": 25,
-    "month": 10,
-    "year": 1942,
-    "builder": "Japan, Sasebo Naval Arsenal"
-  },
-  {
     "name": "Mamiya",
     "day": 26,
     "month": 10,
@@ -2160,16 +2170,6 @@
     "month": 10,
     "year": 1939,
     "builder": "Japan, Nagasaki Mitsubishi Shipyard"
-  },
-  {
-    "id": 162,
-    "name": "Maruyu",
-    "class": "Type 3 S.T.V.",
-    "type": "SS",
-    "day": 31,
-    "month": 10,
-    "year": 1943,
-    "builder": "Japan, ..."
   },
   {
     "id": 259,
@@ -2475,7 +2475,7 @@
   {
     "id": 344,
     "name": "Gambier Bay",
-    "class": "Casablanca-19",
+    "class": "Casablanca CVE-73",
     "type": "CVL",
     "day": 22,
     "month": 11,
@@ -2705,7 +2705,7 @@
   {
     "id": 403,
     "name": "Hornet",
-    "class": "Yorktown-03",
+    "class": "Yorktown CV-8",
     "type": "CV",
     "day": 14,
     "month": 12,
