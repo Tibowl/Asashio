@@ -1,4 +1,4 @@
-import Twit from "twit"
+import { ETwitterStreamEvent, TweetStream, TwitterApi, ETwitterApiError, TweetSearchV2StreamParams } from 'twitter-api-v2';
 import Discord, { TextChannel } from "discord.js"
 import log4js from "log4js"
 
@@ -6,6 +6,7 @@ import config from "../data/config.json"
 import client from "../main"
 
 const Logger = log4js.getLogger("TweetManager")
+const twitter = new TwitterApi(config.twitter.v2.bearerToken)
 
 interface Tweet {
     created_at: string
@@ -50,60 +51,94 @@ interface User {
 }
 
 export default class Tweetmanager {
-    stream: Twit.Stream | undefined = undefined
+    stream: TweetStream | undefined = undefined
     toFollow = config.toTweet
 
-    init(): void {
-        const T = new Twit(config.twitter)
+    async init(): Promise<void> {
 
-        this.stream = T.stream("statuses/filter", { follow: this.toFollow })
-        this.stream.on("tweet", this.handleTweet)
+        // Get and delete old rules if needed
+        const rules = await twitter.v2.streamRules();
+        if (rules.data?.length) {
+            await twitter.v2.updateStreamRules({
+                delete: { ids: rules.data.map(rule => rule.id) },
+            })
+        }
 
-        T.get("search/tweets", { q: "お題は (from:kancolle_1draw OR from:kancolle_1draw2)", result_type: "recent", count: 1 }, (err, data: { statuses?: Tweet[] }) => {
-            if (err || !data.statuses || data.statuses.length == 0) return
-
-            this.set1hrDrawTweet(data.statuses[0])
+        await twitter.v2.updateStreamRules({
+            add: [{ value: this.toFollow.map(u=>`from:${u}`).join(' OR ') }]
         })
 
+
+        const searchOpts: Partial<TweetSearchV2StreamParams> = {
+            'tweet.fields': ['referenced_tweets', 'author_id', 'created_at', 'entities'],
+            'user.fields': ['username', 'profile_image_url'],
+            'media.fields': ['url'],
+            expansions: ['referenced_tweets.id', 'author_id', 'attachments.media_keys'],
+          }
+
+        this.stream = await twitter.v2.searchStream(searchOpts)
+          
+        this.stream.autoReconnect = true
+
+        this.stream.on(ETwitterStreamEvent.Data, this.handleTweet)
+
+        const kc1drawTweets = await twitter.v2.search("お題は (from:kancolle_1draw2)", searchOpts)
+        for await (const tweet of kc1drawTweets) {
+            Logger.info("Setting 1hdraw:\n" + tweet.text)
+            this.set1hrDrawTweet(tweet, 'kancolle_1draw2', tweet.text)
+            break
+        }
+
         Logger.info(`Following ${this.toFollow.length} twitter account(s)!`)
+
     }
 
-    handleTweet = (tweet: Tweet): void => {
-        if (!this.toFollow.includes(tweet.user.id_str)) return
-        const tweetLink = `https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}`
-        if (tweet.retweeted_status && this.toFollow.includes(tweet.retweeted_status.user.id_str)) return Logger.debug(`Skipping RT ${tweetLink}`)
+    getAuthor = (tweet: any): any => {
+        return tweet.includes.users.find((user: any) => user.id == tweet.data.author_id)
+    }
 
-        let text = (tweet.extended_tweet?.full_text ?? tweet.text).replace("&gt;", ">").replace("&lt;", "<")
+    handleTweet = async (tweet: any): Promise<void> => {
+        let author = this.getAuthor(tweet)
+        if (!this.toFollow.includes(author.username)) return
+        const tweetLink = `https://twitter.com/${author.username}/status/${tweet.data.id}`
+        let retweet: any
+        if (tweet.referenced_tweets && tweet.referenced_tweets.length > 0 && tweet.referenced_tweets[0].type === "retweeted")
+        {
+            retweet = tweet.tweets.find((t: any) => t.id === tweet.referenced_tweets[0].id)
+            author = tweet.includes.users.find((user: any) => user.id == retweet.author_id)
+            if (this.toFollow.includes(author.username))
+            return Logger.debug(`Skipping RT ${tweetLink}`)
+        }
 
-        // @kancolle_1draw || @kancolle_1draw2
-        if (tweet.user.id_str == "3098155465" || tweet.user.id_str == "1242879824445624320") {
+        let text = (retweet || tweet.data).text.replace("&gt;", ">").replace("&lt;", "<")
+
+        if (author.username == "kancolle_1draw2") {
             if (text.includes("お題は"))
-                this.set1hrDrawTweet(tweet)
-
+                this.set1hrDrawTweet(tweet, author.username, text)
             return
         }
 
         Logger.info(`Sending tweet to channels: ${tweetLink}`)
 
-        if (tweet.retweeted_status)
-            tweet = tweet.retweeted_status
+        //if (tweet.retweeted_status)
+            //tweet = tweet.retweeted_status
 
         const embed = new Discord.MessageEmbed()
-            .setAuthor(tweet.user.name as string, tweet.user.profile_image_url_https, `https://twitter.com/${tweet.user.screen_name}`)
-            .setColor(`#${tweet.user.profile_background_color}`)
+            .setAuthor(author.username as string, author.profile_image_url, `https://twitter.com/${author.username}`)
+            //.setColor(`#${tweet.user.profile_background_color}`)
 
         // Tweet has media, don't embed it
-        if (tweet.extended_entities?.media) {
-            if (tweet.extended_entities.media[0].type != "photo") {
+        if (tweet.includes.media?.length > 0) {
+            if (tweet.includes.media[0].type != "photo") {
                 client.followManager.send("twitter", tweetLink).catch(e => Logger.error(e))
                 return
             } else
-                embed.setImage(tweet.extended_entities.media[0].media_url_https)
+                embed.setImage(tweet.includes.media[0].url)
         }
 
 
-        if (tweet.extended_tweet?.entities) {
-            const entities = tweet.extended_tweet.entities
+        if (tweet.data.entities) {
+            const entities = tweet.data.entities
 
             if (entities.urls)
                 for (const url of entities.urls)
@@ -115,12 +150,9 @@ export default class Tweetmanager {
                     client.followManager.send("twitter", tweetLink).catch(e => Logger.error(e))
                     return
                 } else
-                    embed.setImage(entities.media[0].media_url_https)
+                    embed.setImage(entities.media[0].url)
             }
 
-        } else if (tweet.entities?.urls) {
-            for (const url of tweet.entities.urls)
-                text = text.replace(url.url, url.expanded_url)
         }
 
         embed.setDescription(text)
@@ -130,16 +162,13 @@ export default class Tweetmanager {
 
     shutdown = (): void => {
         if (this.stream !== undefined)
-            this.stream.stop()
+            this.stream.close()
     }
 
-    set1hrDrawTweet(tweet: Tweet): void {
-        const text = tweet.extended_tweet?.full_text ?? tweet.text
-
-        Logger.info(`Received new tweet: ${text}`)
+    set1hrDrawTweet(tweet: any, username: string, text: string): void {
         const match = text.match(/お題は(.*)(になります|となります)/)
-        if (match) {
-            const ships = match[1].trim().replace(" (龍鳳)", "").split(" ").map((name) => {
+        if (match?.length) {
+            const ships = match![1].trim().replace(" (龍鳳)", "").split(" ").map((name) => {
                 const candidate = client.data.get1HrDrawName(name)
                 if (candidate)
                     return candidate
@@ -164,7 +193,7 @@ export default class Tweetmanager {
                 ).catch(e => Logger.error(e))
             }
 
-            const date = new Date(tweet.created_at).toLocaleString("en-UK", {
+            const date = new Date(tweet.data?.created_at || tweet.created_at).toLocaleString("en-UK", {
                 timeZone: "Asia/Tokyo",
                 timeZoneName: "short",
                 hour12: false,
@@ -176,7 +205,7 @@ export default class Tweetmanager {
             })
 
             client.data.store.cachedShips = {
-                screen_name: tweet.user.screen_name,
+                screen_name: username,
                 ships,
                 date
             }
