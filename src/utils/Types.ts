@@ -347,7 +347,7 @@ export interface Expedition {
     misc_req?: string
 }
 
-export type FollowCategory = "birthday" | "1hrdraw" | "maint" | "twitter" | "timers"
+export type FollowCategory = "birthday" | "1hrdraw" | "maint" | "twitter" | "timers" | "twitter_replies"
 export interface Follower {
     channelID: string
     category: FollowCategory

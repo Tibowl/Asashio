@@ -4,6 +4,8 @@ import log4js from "log4js"
 
 import config from "../data/config.json"
 import client from "../main"
+import Follow from '../commands/misc/follow';
+import { FollowCategory } from './Types';
 
 const Logger = log4js.getLogger("TweetManager")
 const twitter = new TwitterApi(config.twitter.v2.bearerToken)
@@ -157,7 +159,8 @@ export default class Tweetmanager {
 
         embed.setDescription(text)
 
-        client.followManager.send("twitter", `<${tweetLink}>`, embed).catch(e => Logger.error(e))
+        let category = text.startsWith('@') ? 'twitter_replies' : 'twitter' as FollowCategory;
+        client.followManager.send(category, `<${tweetLink}>`, embed).catch(e => Logger.error(e))
     }
 
     shutdown = (): void => {
