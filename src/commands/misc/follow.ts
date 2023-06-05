@@ -39,6 +39,7 @@ export default class Follow extends Command {
             },
             maint: true,
             twitter: true,
+            twitter_replies: true,
             timers: true
         }
         this.options = [{
