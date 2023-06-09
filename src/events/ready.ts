@@ -14,7 +14,7 @@ export async function handle(): Promise<void> {
     alreadyLoaded = true
     await client.data.reloadShipData()
     client.linkManager.loadLinks()
-    client.tweetManager.init()
+    //client.tweetManager.init()
     client.timerManager.init()
     await client.maintManager.init()
 

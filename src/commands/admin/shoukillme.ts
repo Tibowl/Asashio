@@ -40,7 +40,7 @@ export default class ShouKillMe extends Command {
         }
         const reply = await source.reply(`Shutting down after cleanup. ${toRemove.length ? `Removing ${toRemove.length} reactions...` : ""}`)
 
-        client.tweetManager.shutdown()
+        //client.tweetManager.shutdown()
         await client.timerManager.update()
         try {
             await Promise.all(toRemove)
