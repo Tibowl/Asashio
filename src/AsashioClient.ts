@@ -5,7 +5,7 @@ import { join } from "path"
 
 import LinkManager from "./utils/LinkManager"
 import TimerManager from "./utils/TimerManager"
-import TweetManager from "./utils/TweetManager"
+//import TweetManager from "./utils/TweetManager"
 import MaintManager from "./utils/MaintManager"
 import DataManager from "./utils/DataManager"
 
@@ -29,7 +29,7 @@ export default class AsashioClient extends Discord.Client {
     data: DataManager = new DataManager()
     linkManager: LinkManager = new LinkManager()
     timerManager: TimerManager = new TimerManager()
-    tweetManager: TweetManager = new TweetManager()
+    //tweetManager: TweetManager = new TweetManager()
     maintManager: MaintManager = new MaintManager()
     followManager: FollowManager = new FollowManager()
 
