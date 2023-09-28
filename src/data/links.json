@@ -24,7 +24,7 @@
     "development": "@dev",
     "install": "@installation",
     "fit": "@gunfits",
-    "lbaa": "@lb",
+    "lbaa": "LBAS info has been split into fighter, bomber, and ASW info:\n`/link lbas.fighters`\n`/link lbas.bombers`\n`/link lbas.asw`",
     "aa": "@aaresist",
     "dlc": "https://i.imgur.com/1oshGy5.png",
     "cache": "@kccp",
