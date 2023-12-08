@@ -6,7 +6,7 @@ import { join } from "path"
 import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
-import { CommandSource, FleetData, MapEntries, MapEntry, SendMessage } from "../../utils/Types"
+import { CommandSource, FleetData, MapEntries, MapEntry, SendMessage, WebResult } from "../../utils/Types"
 import { aswAtLevel, evasionAtLevel, fetchKcnav, losAtLevel, sendMessage, updateMessage } from "../../utils/Utils"
 
 
@@ -182,9 +182,9 @@ ${new Date(entry.datetime + "Z").toLocaleString("ja-JP", {
         const edgeCounts: number[] = []
         for (const edge of edges) {
             Logger.info(`Caching entries of ${map} / ${edge}`)
-            const comps: MapEntries = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}$/entries?${dateFilter}perPage=50`)).json()
-            entries.push(comps.entries ?? [])
-            edgeCounts.push(comps.entryCount ?? 0)
+            const comps: WebResult<MapEntries> = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}$/entries?${dateFilter}perPage=50`)).json()
+            entries.push(comps.result.entries ?? [])
+            edgeCounts.push(comps.result.entryCount ?? 0)
         }
         entriesCache[map + edges.join(",")] = { entries, edgeCounts }
         setTimeout(() => {
