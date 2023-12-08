@@ -47,7 +47,7 @@ export default class MaintManager {
             Logger.error("Unable to fetch maint updates (403)")
             return
         }
-        const line = htmlToText.fromString(html)
+        const line = htmlToText.convert(html)
         if (maintInfo.lastLine == line) return
 
         Logger.info(line)
@@ -108,7 +108,7 @@ export default class MaintManager {
         }
 
         try {
-            const kca = await (await fetch("http://203.104.209.7/kca/version.json")).json()
+            const kca = await (await fetch("http://203.104.209.7/kca/version.json")).json() as { api: { api_start2: string } }
             const newKCAVersion = kca?.api?.api_start2 ?? "?.?.?.?"
             if (newKCAVersion !== versionInfo.lastKCAVersion) {
                 output += `Metadata version changed from ${versionInfo.lastKCAVersion} -> ${newKCAVersion}\n`

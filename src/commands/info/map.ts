@@ -5,7 +5,7 @@ import fetch from "node-fetch"
 import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
-import { CommandResponse, CommandSource, MapInfo, SendMessage } from "../../utils/Types"
+import { CommandResponse, CommandSource, MapInfo, SendMessage, WebResult } from "../../utils/Types"
 import { sendMessage, updateMessage, fetchKcnav } from "../../utils/Utils"
 
 
@@ -67,7 +67,7 @@ export default class Map extends Command {
             img.onload = (): void => resolve(null)
         })
 
-        const lbas = await (await fetchKcnav(`/api/routing/maps/${map}/lbasdistance`)).json()
+        const lbas = await (await fetchKcnav(`/api/routing/maps/${map}/lbasdistance`)).json() as WebResult<{[key: string]: {unlockedEdges: number, distance: number}[]}>
 
         const canvas = createCanvas(1200, 720)
         const ctx = canvas.getContext("2d")
@@ -102,7 +102,7 @@ export default class Map extends Command {
             ctx.lineJoin = "round"
             ctx.lineWidth = 7
 
-            const text = lbas.result[node ?? "/"] ? `${node} (${(lbas.result[node] as {distance: number}[]).map(x => x.distance).join("/")})` : (node ?? "/")
+            const text = lbas.result[node ?? "/"] ? `${node} (${lbas.result[node].map(x => x.distance).join("/")})` : (node ?? "/")
             ctx.strokeText(text, x, y - 10)
             ctx.lineWidth = 1
             ctx.fillText(text, x, y - 10)

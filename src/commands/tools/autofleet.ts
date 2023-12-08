@@ -4,7 +4,7 @@ import fetch from "node-fetch"
 import emoji from "../../data/emoji.json"
 import client from "../../main"
 import Command from "../../utils/Command"
-import { CommandSource, SendMessage } from "../../utils/Types"
+import { CommandSource, MapEntries, SendMessage, WebResult } from "../../utils/Types"
 import { fetchKcnav, sendMessage, updateMessage } from "../../utils/Utils"
 
 
@@ -196,7 +196,7 @@ Ships to use:
         const allComps: CompCandidate[] = []
         for (const edge of edges) {
             try {
-                const comps = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}/comps?${constants}&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json()
+                const comps = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}/comps?${constants}&compsLimit=50&keepCompMainFlagships=true&keepCompEscortFlagships=true&keepCompFleetTypes=true`)).json() as WebResult<CompCandidate[]>
                 if (comps.result)
                     for (const result of comps.result) {
                         const found = allComps.find(k =>
@@ -231,7 +231,7 @@ Ships to use:
             try {
                 const fetched = await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}/topships?${constants}&mainComp=${fleet1Comp.join("%20")}&escortComp=${fleet2Comp.join("%20")}`)
                 if (fetched.status == 204) continue
-                const ships = await fetched.json()
+                const ships = await fetched.json() as WebResult<ShipCandidates>
                 if (ships.error) continue
                 const check = (fleet: FleetNum): void => {
                     if (!ships.result[fleet]) return

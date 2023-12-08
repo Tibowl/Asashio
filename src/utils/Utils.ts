@@ -4,7 +4,7 @@ import fetch, { Response } from "node-fetch"
 import emoji from "../data/emoji.json"
 import config from "../data/config.json"
 import client from "./../main"
-import { Cache, Cached, CommandSource, Damages, DamageType, DBType, DropData, NameTable, padding, Rank, SendMessage, Ship, ShipExtended, Stages } from "./Types"
+import { Cache, Cached, CommandSource, Damages, DamageType, DBType, DropData, NameTable, padding, Rank, SendMessage, Ship, ShipExtended, Stages, WebResult } from "./Types"
 
 const Logger = log4js.getLogger("Utils")
 
@@ -355,9 +355,9 @@ export function percentage(count: number, total: number): string {
 }
 
 const queue = async (ship: Ship, rank: Rank, cached: Cache, db: DBType = "tsundb"): Promise<{ [key: string]: DropData }> => {
-    const api = db === "tsundb"
+    const api = (db === "tsundb"
         ? await (await fetchKcnav(`/api/routing/quickdrops?shipId=${ship.api_id}&ranks=${rank}&includeOldEvents=false`)).json()
-        : await (await fetch(`https://db.kcwiki.org/drop/ship/${ship.api_id}/${rank}.json`)).json()
+        : await (await fetch(`https://db.kcwiki.org/drop/ship/${ship.api_id}/${rank}.json`)).json()) as any
     if (api.error) {
         Logger.error(`An error has occurred while fetching drop ${ship.api_id}/${rank} @ ${db}: ${api.error}`)
         delete cached.loading

@@ -18,7 +18,7 @@ export class GuestToken {
             }),
         });
 
-        const json = await res.json();
+        const json = await res.json() as { guest_token: string };
 
         return new GuestToken(json.guest_token);
     }

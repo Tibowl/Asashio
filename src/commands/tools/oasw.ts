@@ -215,7 +215,7 @@ With +${equipmentAsw} equipment: ${aswAtLevel(ship, level) + aswOffset + equipme
         const equipmentAsw = equipAsw.reduce((a, b) => a+b)
         const level = this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw)
 
-        if (this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw + 2) <= ship.remodel_level && !force)
+        if (ship.remodel_level && this.levelAtAsw(ship, aswRequired - aswOffset - equipmentAsw + 2) <= ship.remodel_level && !force)
             return ""
 
         return `${equipAsw.map(val => {

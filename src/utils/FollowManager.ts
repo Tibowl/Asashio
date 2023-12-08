@@ -50,22 +50,22 @@ export default class FollowManager {
 
     private getFollowsStatement: SQLite.Statement
     private getFollowsInChannelStatement: SQLite.Statement
-    getFollows(channel: Channel, category?: FollowCategory): Follower[] {
+    getFollows(channel: Channel, category?: FollowCategory) {
         if (category == undefined) {
-            return this.getFollowsInChannelStatement.all({ channelID: channel.id })
+            return this.getFollowsInChannelStatement.all({ channelID: channel.id }) as Follower[]
         }
         return this.getFollowsStatement.all({
             channelID: channel.id,
             category
-        })
+        }) as Follower[]
     }
 
     private getFollowersStatement: SQLite.Statement
-    getFollowers(category: string, filter = "*"): { channelID: string }[] {
+    getFollowers(category: string, filter = "*") {
         return this.getFollowersStatement.all({
             category,
             filter
-        })
+        }) as { channelID: string }[]
     }
 
     private followsStatement: SQLite.Statement
@@ -114,10 +114,10 @@ export default class FollowManager {
     }
 
     private followingStatement: SQLite.Statement
-    following(guild: Guild): { category: FollowCategory, channelID: string, amount: number }[] {
+    following(guild: Guild) {
         return this.followingStatement.all({
             guildID: guild.id
-        })
+        }) as { category: FollowCategory, channelID: string, amount: number }[]
     }
 
     async send(category: FollowCategory, content?: Snowflake, embed?: MessageEmbed, filters: string[] = ["*"]): Promise<(Message | Message[])[]> {

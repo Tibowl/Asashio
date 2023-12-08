@@ -1,7 +1,6 @@
 import { configure, DeckBuilder, DeckBuilderFleet, DeckBuilderShip, generate } from "@tibowl/node-gkcoi"
 import { CommandInteraction, Message, MessageAttachment } from "discord.js"
 import log4js from "log4js"
-import fetch from "node-fetch"
 import { join } from "path"
 import emoji from "../../data/emoji.json"
 import client from "../../main"
@@ -182,7 +181,7 @@ ${new Date(entry.datetime + "Z").toLocaleString("ja-JP", {
         const edgeCounts: number[] = []
         for (const edge of edges) {
             Logger.info(`Caching entries of ${map} / ${edge}`)
-            const comps: WebResult<MapEntries> = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}$/entries?${dateFilter}perPage=50`)).json()
+            const comps = await (await fetchKcnav(`/api/routing/maps/${map}/edges/${edge}/entries?${dateFilter}perPage=50`)).json() as WebResult<MapEntries>
             entries.push(comps.result.entries ?? [])
             edgeCounts.push(comps.result.entryCount ?? 0)
         }
@@ -226,9 +225,9 @@ ${new Date(entry.datetime + "Z").toLocaleString("ja-JP", {
             for (i = 0; i < ((shipData?.equipment) ? shipData?.equipment.length : ship.equip.length); i++) {
                 if (ship.equip[i] < 0) continue
                 t.items[keys[i]] = {
-                    id: ship.equip[i],
-                    rf: ship.stars[i] <= 0 ? undefined : ship.stars[i],
-                    mas: ship.ace[i] <= 0 ? undefined : ship.ace[i]
+                    id: ship.equip?.[i],
+                    rf: ship.stars?.[i] <= 0 ? undefined : ship.stars?.[i],
+                    mas: ship.ace?.[i] <= 0 ? undefined : ship.ace?.[i]
                 }
             }
 

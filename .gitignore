@@ -93,3 +93,4 @@ dist/
 **/store.json
 *.old
 /data/
+cache/

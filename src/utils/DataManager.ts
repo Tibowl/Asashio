@@ -267,7 +267,7 @@ export default class DataManager {
     getMapInfo = async (map: string): Promise<MapInfo> => {
         if (!this.mapInfoCache[map]) {
             Logger.info(`Map data for ${map} not cached. Loading...`)
-            const response: WebResult<MapInfo> = await (await fetchKcnav(`/api/routing/maps/${map}`)).json()
+            const response = await (await fetchKcnav(`/api/routing/maps/${map}`)).json() as WebResult<MapInfo>
             if (response.error) throw new Error("Error fetching map info: " + response.error);
             this.mapInfoCache[map] = response.result;
         }
@@ -396,7 +396,7 @@ export default class DataManager {
     }
 
     reloadShipData = async (): Promise<void> => {
-        const shipData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/ship.json")).json()
+        const shipData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/ship.json")).json() as any
 
         this.ships = {}
         Object.keys(shipData).forEach(shipName => {
@@ -408,7 +408,7 @@ export default class DataManager {
         })
         Logger.info(`Loaded ship data! ${Object.keys(this.ships).length} ships loaded`)// , this.ships[95])
 
-        const questData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/quest.json")).json()
+        const questData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/quest.json")).json() as any
 
         this.quests = {}
         Object.keys(questData).forEach(questId => {
@@ -416,10 +416,10 @@ export default class DataManager {
         })
         Logger.info(`Loaded quest data! ${Object.keys(this.quests).length} quests loaded`)// , this.quests["B100"])
 
-        this.misc = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/misc.json")).json()
+        this.misc = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/misc.json")).json() as any
         Logger.info(`Loaded misc ${Object.keys(this.misc).join(", ")} data`)
 
-        const equipmentData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/equipment.json")).json()
+        const equipmentData = await (await fetch("https://raw.githubusercontent.com/kcwiki/kancolle-data/master/wiki/equipment.json")).json() as any
 
         this.equips = {}
         Object.keys(equipmentData).forEach(equipName => {
@@ -432,7 +432,7 @@ export default class DataManager {
         })
         Logger.info(`Loaded equipment data! ${Object.keys(this.equips).length} equips loaded`)// , this.equips[1])
 
-        this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json()
+        this.api_start2 = await (await fetch("https://raw.githubusercontent.com/Tibowl/api_start2/master/start2.json")).json() as any
         if (this.api_start2 && this.api_start2.api_mst_maparea) {
             const eventID = Math.max(...this.api_start2.api_mst_maparea.map(area => area.api_id))
             if (eventID > 10 && this.store.eventID != eventID) {

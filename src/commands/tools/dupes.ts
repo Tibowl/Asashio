@@ -4,7 +4,7 @@ import fetch from "node-fetch"
 import client from "../../main"
 import Command from "../../utils/Command"
 import emoji from "../../data/emoji.json"
-import { CommandSource, SendMessage } from "../../utils/Types"
+import { CommandSource, SendMessage, WebResult } from "../../utils/Types"
 import { createTable, fetchKcnav, findFuzzyBestCandidates, PAD_END, percentage, sendMessage, updateMessage } from "../../utils/Utils"
 
 const Logger = log4js.getLogger("dupes")
@@ -164,11 +164,11 @@ export default class Dupes extends Command {
 
         const edges = Object.entries(mapInfo.route).filter(e => e[1][1].toUpperCase() == node).map(e => e[0])
         fetchKcnav(`/api/routing/maps/${map}/edges/${edges.join(",")}/drops?${isEvent ? `minDiff=${difficultyID}&maxDiff=${difficultyID}&`:""}cleared=-1&ranks=${rank}&ship=${ship.api_id}`)
-            .then(async data => data.json())
+            .then(async data => data.json() as Promise<WebResult<{dupes: {owned: number, drops: number, total: number}[]}>>)
             .then(async api => {
                 if (api.error)
                     throw new Error("Error occurred while fetching dupe data.")
-                let dupes = api.result.dupes.map((dupe: { owned: number, drops: number, total: number }) => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
+                let dupes = api.result.dupes.map(dupe => [`${dupe.owned}→${dupe.owned+1}`, percentage(dupe.drops, dupe.total), `[${dupe.drops}/${dupe.total}]`])
                 let msg = ""
 
                 if (source.channel?.type != "DM" && dupes.length > 5) {

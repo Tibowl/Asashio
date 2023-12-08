@@ -59,7 +59,7 @@ export default class Ranking extends Command {
         const reply = await sendMessage(source, `${emoji.loading} Loading...`)
 
         fetch(`https://api.kancolle.moe/server/list?date=${Date.now()}`).then(async (fetched) => {
-            const api: SenkaAPI = await fetched.json()
+            const api = await fetched.json() as SenkaAPI
             cachedData.time = Date.now()
             cachedData.rankingData = api
 

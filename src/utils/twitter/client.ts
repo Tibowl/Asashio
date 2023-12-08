@@ -183,7 +183,7 @@ export class TwitterAPI {
 
     async getUserByScreenName(screenName: string) : Promise<TwitterUser> {
         const res = await this.getUserByScreenNameGql(screenName);
-        const json = await res.json();
+        const json = await res.json() as any;
         const userGql = json.data.user.result;
         return this.formatUser(userGql);
     }
@@ -234,7 +234,7 @@ export class TwitterAPI {
 
     async getUserTweets(userId: string, lastTweetId: string = '0'): Promise<Array<Tweet>> {
         const res = await this.getUserTweetsGql(userId);
-        const json = await res.json();
+        const json = await res.json() as any;
         let tweetsGql = json.data.user.result.timeline_v2.timeline.instructions[1].entries;
         const tweets = this.formatTweets(tweetsGql, lastTweetId);
         return tweets;
