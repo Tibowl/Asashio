@@ -38,7 +38,7 @@ export default class Suffering extends Command {
     }
 
     async run(source: CommandSource, args?: string[] | null): Promise<SendMessage | undefined> {
-        if (!args || args.length < 1) return sendMessage(source, "Overkill HP chart: https://i.imgur.com/hVwdRbo.png")
+        if (!args || args.length < 1) return sendMessage(source, "Overkill HP chart: https://tsunkit.net/images/resources/overkill.png")
         const { data } = client
 
         // eslint-disable-next-line prefer-const
