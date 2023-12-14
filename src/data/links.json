@@ -18,7 +18,7 @@
     "shipxp": "https://i.imgur.com/cibdGaf.jpg",
     "tp": "http://i.imgur.com/oqgwQLy.png",
     "ui": "https://i.imgur.com/h41VOMF.png",
-    "kcnav": "<https://tsunkit.net/nav>",
+    "kcnav": "https://tsunkit.net/nav",
     "eventlist": "<https://flatisjustice.moe/eventlist>\nGeneral: Enter ship levels/export to kanmusu list -> Copy the code in the box at top (starts with `.2|`) -> Paste in text box on site linked above -> Press enter/select wanted image\nFor KC3: Strategy room -> Ship list -> Click on `Export to: kanmusu_list` at bottom of filter box -> See general\nFor EO: Right click fleet name in fleet panel -> Click on `Copy Ship List (kancolle-calc)` -> See general",
     "lbas": "LBAS info has been split into fighter, bomber, and ASW info:\n`/link lbas.fighters`\n`/link lbas.bombers`\n`/link lbas.asw`",
     "development": "@dev",
