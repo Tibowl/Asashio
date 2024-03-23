@@ -5,6 +5,11 @@ import { SendMessage } from "../../utils/Types"
 import { sendMessage } from "../../utils/Utils"
 
 const baseLink = "https://kc3kai.github.io/kancolle-replay/battleplayer.html"
+
+function createBattlePlayerLinkFromImg(url: string): string {
+    return `${baseLink}?fromImg=${encodeURIComponent(url)}`
+}
+
 export default class Replay extends Command {
     constructor(name: string) {
         super({
@@ -25,7 +30,7 @@ export default class Replay extends Command {
         let link = baseLink
         const arg = source.options.getString("url")
         if (arg && arg.length > 0 && (arg.startsWith("http") || arg.startsWith("<http")))
-            link = `${baseLink}?fromImg=${arg.replace(/^</, "").replace(/>$/, "")}`
+            link = createBattlePlayerLinkFromImg(arg.replace(/^</, "").replace(/>$/, ""))
 
         return sendMessage(source, `<${link}>`)
     }
@@ -34,9 +39,9 @@ export default class Replay extends Command {
         const found = source.attachments?.find(k => !!k.url)
         let link = baseLink
         if (args && args.length > 0 && (args[0].startsWith("http") || args[0].startsWith("<http")))
-            link = `${baseLink}?fromImg=${args[0].replace(/^</, "").replace(/>$/, "")}`
+            link = createBattlePlayerLinkFromImg(args[0].replace(/^</, "").replace(/>$/, ""))
         else if (found)
-            link = `${baseLink}?fromImg=${found.url}`
+            link = createBattlePlayerLinkFromImg(found.url)
         return sendMessage(source, `<${link}>`)
     }
 }
