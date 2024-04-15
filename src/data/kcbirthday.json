@@ -799,6 +799,16 @@
         "builder": "Italy, Riva Trigoso"
     },
     {
+        "id": 544,
+        "name": "Heian Maru",
+        "class": "Hikawa Maru-03",
+        "type": "Special",
+        "day": 16,
+        "month": 4,
+        "year": 1930,
+        "builder": "Japan, Osaka Iron Works"
+    },
+    {
         "id": 55,
         "name": "Myoukou",
         "class": "Myoukou-01",
@@ -1027,6 +1037,16 @@
         "month": 5,
         "year": 1935,
         "builder": "Netherlands, Schiedam, Wilton-Fijenoord"
+    },
+    {
+        "id": 492,
+        "name": "Drum",
+        "class": "Gato SS-228",
+        "type": "SS",
+        "day": 12,
+        "month": 5,
+        "year": 1941,
+        "builder": "US, Portsmouth Naval Shipyard, Kittery, Maine"
     },
     {
         "id": 59,
@@ -1727,7 +1747,7 @@
         "day": 19,
         "month": 8,
         "year": 1943,
-        "builder": "Japan, Maizuru Naval Arsenal"
+        "builder": "Japan, Uraga Dock Company"
     },
     {
         "id": 241,
@@ -2272,6 +2292,16 @@
         "builder": "Japan, Nagasaki Mitsubishi Shipyard"
     },
     {
+        "id": 571,
+        "name": "I-36",
+        "class": "I-15-class-17",
+        "type": "SS",
+        "day": 1,
+        "month": 11,
+        "year": 1941,
+        "builder": "Japan, Yokosuka Naval Arsenal"
+    },
+    {
         "id": 259,
         "name": "Kawakaze",
         "class": "Shiratsuyu-09",
@@ -2389,6 +2419,16 @@
         "day": 9,
         "month": 11,
         "year": 1919,
+        "builder": "Japan, Kure Naval Arsenal"
+    },
+    {
+        "id": 572,
+        "name": "I-41",
+        "class": "I-40-class-02",
+        "type": "SS",
+        "day": 10,
+        "month": 11,
+        "year": 1942,
         "builder": "Japan, Kure Naval Arsenal"
     },
     {
