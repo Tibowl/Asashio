@@ -1289,6 +1289,16 @@
         "builder": "Italy, Trieste, Cantieri Riuniti dell'Adriatico"
     },
     {
+        "id": 562,
+        "name": "Mogador",
+        "class": "Mogador-01",
+        "type": "DD",
+        "day": 9,
+        "month": 6,
+        "year": 1937,
+        "builder": "France, Arsenal de Lorient"
+    },
+    {
         "id": 491,
         "name": "Salmon",
         "class": "Salmon SS-182",
@@ -2053,6 +2063,16 @@
         "builder": "Japan, Maizuru Naval Arsenal"
     },
     {
+        "id": 565,
+        "name": "Gloire",
+        "class": "La Galissionaire-05",
+        "type": "CL",
+        "day": 28,
+        "month": 9,
+        "year": 1935,
+        "builder": "France, Forges et Chantiers de la Gironde, Lormont"
+    },
+    {
         "id": 13,
         "name": "Hatsuyuki",
         "class": "Fubuki-03",
@@ -2360,6 +2380,16 @@
         "month": 11,
         "year": 1937,
         "builder": "Japan, Fujinagata Shipyards"
+    },
+    {
+        "id": 527,
+        "name": "Valiant",
+        "class": "Queen Elizabeth-03",
+        "type": "BB",
+        "day": 4,
+        "month": 11,
+        "year": 1915,
+        "builder": "UK, John Brown & Company, Clydebank"
     },
     {
         "id": 213,
