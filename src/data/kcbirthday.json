@@ -369,6 +369,16 @@
         "builder": "Japan, Uraga Dock Company"
     },
     {
+        "id": 552,
+        "name": "Phoenix",
+        "class": "Brooklyn CL-46",
+        "type": "CL",
+        "day": 12,
+        "month": 3,
+        "year": 1938,
+        "builder": "US, New York Shipbuilding"
+    },
+    {
         "id": 553,
         "name": "Asahi",
         "class": "Asahi-01",
@@ -2091,6 +2101,16 @@
         "month": 9,
         "year": 1943,
         "builder": "Japan, Sasebo Naval Arsenal"
+    },
+    {
+        "id": 556,
+        "name": "Lexington",
+        "class": "Lexington CV-2",
+        "type": "CV",
+        "day": 3,
+        "month": 10,
+        "year": 1925,
+        "builder": "US, Fore River Shipbuilding Company"
     },
     {
         "id": 17,
