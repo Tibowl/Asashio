@@ -158,6 +158,16 @@
         "note": "NPC"
     },
     {
+        "id": 584,
+        "name": "Wahoo",
+        "class": "Gato SS-238",
+        "type": "SS",
+        "day": 14,
+        "month": 2,
+        "year": 1942,
+        "builder": "US, Mare Island Navy Yard"
+    },
+    {
         "id": 45,
         "name": "Yura",
         "class": "Nagara-04",
@@ -1529,6 +1539,16 @@
         "builder": "Japan, Sasebo Naval Arsenal"
     },
     {
+        "id": 592,
+        "name": "Sugi",
+        "class": "Matsu-09",
+        "type": "DD",
+        "day": 3,
+        "month": 7,
+        "year": 1944,
+        "builder": "Japan, Fujinagata Shipyards"
+    },
+    {
         "id": 243,
         "name": "Libeccio",
         "class": "Maestrale-03",
@@ -1730,6 +1750,16 @@
         "note": "built as HMS Amphion"
     },
     {
+        "id": 594,
+        "name": "Kaya",
+        "class": "Matsu-13",
+        "type": "DD",
+        "day": 30,
+        "month": 7,
+        "year": 1944,
+        "builder": "Japan, Maizuru Naval Arsenal"
+    },
+    {
         "id": 131,
         "name": "Yamato",
         "class": "Yamato-01",
@@ -1849,6 +1879,16 @@
         "year": 1941,
         "builder": "US, Kearney New Jersey"
     },
+    {
+        "id": 605,
+        "name": "Minneapolis",
+        "class": "New Orleans CA-36",
+        "type": "CA",
+        "day": 6,
+        "month": 9,
+        "year": 1933,
+        "builder": "US, Philadelphia Naval Shipyard"
+    },    
     {
         "id": 395,
         "name": "Houston",
@@ -2102,6 +2142,16 @@
         "year": 1943,
         "builder": "Japan, Sasebo Naval Arsenal"
     },
+    {
+        "id": 595,
+        "name": "Ootomari",
+        "class": "Ootomari-01",
+        "type": "AO",
+        "day": 3,
+        "month": 10,
+        "year": 1921,
+        "builder": "Japan, Kobe Kawasaki Shipyard"
+    },  
     {
         "id": 556,
         "name": "Lexington",
@@ -2813,6 +2863,16 @@
         "builder": "Japan, Kobe Kawasaki Shipyard"
     },
     {
+        "id": 601,
+        "name": "Kirov",
+        "class": "Kirov-01",
+        "type": "CL",
+        "day": 30,
+        "month": 11,
+        "year": 1936,
+        "builder": "Russia, Leningrad, Ordzhonikidze Yard"
+    },
+    {
         "id": 24,
         "name": "Kirishima",
         "class": "Kongou-04",
@@ -2952,6 +3012,16 @@
         "month": 12,
         "year": 1925,
         "builder": "UK, Cammell Laird, Birkenhead"
+    },
+    {
+        "id": 603,
+        "name": "Shimane Maru",
+        "class": "1TL",
+        "type": "AO",
+        "day": 17,
+        "month": 12,
+        "year": 1944,
+        "builder": "Japan, Kobe Kawasaki Shipyard"
     },
     {
         "id": 273,
