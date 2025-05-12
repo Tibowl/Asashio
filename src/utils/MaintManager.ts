@@ -1,5 +1,5 @@
 import log4js from "log4js"
-import htmlToText from "html-to-text"
+import { htmlToText } from "html-to-text"
 import fetch from "node-fetch"
 
 import client from "../main"
@@ -49,7 +49,7 @@ export default class MaintManager {
             Logger.error("Unable to fetch maint updates (403)")
             return
         }
-        const line = htmlToText.convert(html)
+        const line = htmlToText(html)
         if (maintInfo.lastLine == line) return
 
         Logger.info(line)
