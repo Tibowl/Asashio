@@ -151,7 +151,7 @@ export default class DataManager {
     shipAliases: Alias[] = []
     equipAliases: Alias[] = []
     getMaxLevel = (): number => this.levels_exp.length
-    getServerIP = (): string => "http://203.104.209.23"
+    getServerIP = (): string => "http://w15p.kancolle-server.com"
     eventID = (): number => this.store.eventID ?? 46
 
     getShipByName(name: string): ShipExtended {

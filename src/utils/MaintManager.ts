@@ -4,6 +4,8 @@ import fetch from "node-fetch"
 
 import client from "../main"
 
+const gadgetServer = "w00g.kancolle-server.com"
+
 const Logger = log4js.getLogger("MaintManager")
 export default class MaintManager {
     async init(): Promise<void> {
@@ -42,7 +44,7 @@ export default class MaintManager {
 
     async checkNews(): Promise<void> {
         const { maintInfo } = client.data.store
-        const html = await (await fetch("http://203.104.209.7/kcscontents/news/post.html")).text()
+        const html = await (await fetch(`http://${gadgetServer}/kcscontents/news/post.html`)).text()
         if (html.includes("403 Forbidden")) {
             Logger.error("Unable to fetch maint updates (403)")
             return
@@ -68,7 +70,7 @@ export default class MaintManager {
         let output = ""
         let isDoing = false, isEmergency = false, endDateTime = "", newMainVersion = ""
 
-        const html = await (await fetch("http://203.104.209.7/gadget_html5/js/kcs_const.js")).text()
+        const html = await (await fetch(`http://${gadgetServer}/gadget_html5/js/kcs_const.js`)).text()
         if (html.includes("403 Forbidden")) {
             Logger.error("Unable to fetch maint updates (403)")
             return
@@ -108,7 +110,7 @@ export default class MaintManager {
         }
 
         try {
-            const kca = await (await fetch("http://203.104.209.7/kca/version.json")).json() as { api: { api_start2: string } }
+            const kca = await (await fetch(`http://${gadgetServer}/kca/version.json`)).json() as { api: { api_start2: string } }
             const newKCAVersion = kca?.api?.api_start2 ?? "?.?.?.?"
             if (newKCAVersion !== versionInfo.lastKCAVersion) {
                 output += `Metadata version changed from ${versionInfo.lastKCAVersion} -> ${newKCAVersion}\n`
