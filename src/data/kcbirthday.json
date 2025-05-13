@@ -2193,6 +2193,16 @@
         "builder": "US, Boston Navy Yard"
     },
     {
+        "id": 542,
+        "name": "Richard P Leary",
+        "class": "Fletcher DD-664",
+        "type": "DD",
+        "day": 6,
+        "month": 10,
+        "year": 1943,
+        "builder": "US, Boston Navy Yard"
+    },
+    {
         "id": 127,
         "name": "I-58",
         "class": "I-54 class-03",
