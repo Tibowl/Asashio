@@ -639,6 +639,16 @@
         "builder": "Japan, Yokosuka Naval Arsenal"
     },
     {
+        "id": 598,
+        "name": "Norge",
+        "class": "Norge-01",
+        "type": "DE",
+        "day": 31,
+        "month": 3,
+        "year": 1900,
+        "builder": "UK, Armstrong-Whitworth"
+    },
+    {
         "id": 30,
         "name": "Ryuujou",
         "class": "Ryuujou-01",
@@ -877,6 +887,16 @@
         "month": 4,
         "year": 1943,
         "builder": "Japan, Fujinagata Shipyards"
+    },
+    {
+        "id": 612,
+        "name": "Glorious",
+        "class": "Courageous-02",
+        "type": "FBB",
+        "day": 20,
+        "month": 4,
+        "year": 1916,
+        "builder": "UK, Harland and Wolff"
     },
     {
         "id": 389,
@@ -1327,6 +1347,16 @@
         "month": 6,
         "year": 1937,
         "builder": "US, Electric Boat Company, Groton, Connecticut"
+    },
+    {
+        "id": 599,
+        "name": "Eidsvol",
+        "class": "Norge-02",
+        "type": "DE",
+        "day": 14,
+        "month": 6,
+        "year": 1900,
+        "builder": "UK, Armstrong-Whitworth"
     },
     {
         "id": 56,
