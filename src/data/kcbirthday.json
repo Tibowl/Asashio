@@ -969,6 +969,16 @@
         "builder": "Japan, Fujinagata Shipyards"
     },
     {
+        "id": 585,
+        "name": "Dace",
+        "class": "Gato SS-247",
+        "type": "SS",
+        "day": 25,
+        "month": 4,
+        "year": 1943,
+        "builder": "US, Electric Boat Company, Groton, Connecticut"
+    },
+    {
         "id": 42,
         "name": "Nagara",
         "class": "Nagara-01",
@@ -1719,6 +1729,16 @@
         "builder": "US, Portsmouth Naval Shipyard"
     },
     {
+        "id": 596,
+        "name": "Nosaki",
+        "class": "Nosaki-01",
+        "type": "AO",
+        "day": 22,
+        "month": 7,
+        "year": 1940,
+        "builder": "Japan, Shimonoseki Mitsubishi Shipyard"
+    },
+    {
         "id": 481,
         "name": "I-201",
         "class": "I-201 class-01",
@@ -1808,6 +1828,26 @@
         "month": 8,
         "year": 1911,
         "builder": "Italy, Arsenale di La Spezia, La Spezia"
+    },
+    {
+        "id": 593,
+        "name": "Kashi",
+        "class": "Matsu-10",
+        "type": "DD",
+        "day": 13,
+        "month": 8,
+        "year": 1944,
+        "builder": "Japan, Fujinagata Shipyards"
+    },
+    {
+        "id": 615,
+        "name": "Wasp",
+        "class": "Essex CV-18",
+        "type": "CV",
+        "day": 17,
+        "month": 8,
+        "year": 1943,
+        "builder": "US, Fore River Shipyard"
     },
     {
         "id": 174,
