@@ -1810,6 +1810,16 @@
         "builder": "Japan, Maizuru Naval Arsenal"
     },
     {
+        "id": 973,
+        "name": "Thonburi",
+        "class": "Thonburi-01",
+        "type": "DE",
+        "day": 31,
+        "month": 7,
+        "year": 1937,
+        "builder": "Japan, Kobe Kawasaki Shipyard"
+    },
+    {
         "id": 131,
         "name": "Yamato",
         "class": "Yamato-01",
