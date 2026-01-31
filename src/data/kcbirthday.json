@@ -120,6 +120,16 @@
         "builder": "Japan, Sakurajima Hitachi Shipyard"
     },
     {
+        "id": 973,
+        "name": "Thonburi",
+        "class": "Thonburi-01",
+        "type": "DE",
+        "day": 31,
+        "month": 1,
+        "year": 1938,
+        "builder": "Japan, Kobe Kawasaki Shipyard"
+    },
+    {
         "id": 441,
         "name": "Matsu",
         "class": "Matsu-01",
@@ -1360,7 +1370,7 @@
     },
     {
         "id": 599,
-        "name": "Eidsvol",
+        "name": "Eidsvold",
         "class": "Norge-02",
         "type": "DE",
         "day": 14,
@@ -1808,16 +1818,6 @@
         "month": 7,
         "year": 1944,
         "builder": "Japan, Maizuru Naval Arsenal"
-    },
-    {
-        "id": 973,
-        "name": "Thonburi",
-        "class": "Thonburi-01",
-        "type": "DE",
-        "day": 31,
-        "month": 7,
-        "year": 1937,
-        "builder": "Japan, Kobe Kawasaki Shipyard"
     },
     {
         "id": 131,
