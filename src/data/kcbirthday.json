@@ -150,6 +150,16 @@
         "builder": "Japan, Nagasaki Mitsubishi Shipyard"
     },
     {
+        "id": 655,
+        "name": "Hie Maru",
+        "class": "Hikawa Maru-02",
+        "type": "AS",
+        "day": 12,
+        "month": 2,
+        "year": 1930,
+        "builder": "Japan, Yokohama Dock Company"
+    },
+    {
         "id": 171,
         "name": "Bismarck",
         "class": "Bismarck-01",
@@ -829,6 +839,16 @@
         "builder": "UK, Cammell Laird and Company Ltd."
     },
     {
+        "id": 645,
+        "name": "Béarn",
+        "class": "Béarn",
+        "type": "CV",
+        "day": 15,
+        "month": 4,
+        "year": 1920,
+        "builder": "France, Forges et Chantiers de la Mediterranée, La Seyne"
+    },
+    {
         "id": 375,
         "name": "Maestrale",
         "class": "Maestrale-01",
@@ -1189,6 +1209,16 @@
         "builder": "Japan, Sakurajima Hitachi Shipyard"
     },
     {
+        "id": 641,
+        "name": "Algerie",
+        "class": "Algerie-01",
+        "type": "CA",
+        "day": 21,
+        "month": 5,
+        "year": 1932,
+        "builder": "France, Brest, Arsenal de Brest"
+    },
+    {
         "id": 525,
         "name": "Langley",
         "class": "Independence CVL-27",
@@ -1227,6 +1257,16 @@
         "month": 5,
         "year": 1937,
         "builder": "Japan, Sasebo Naval Arsenal"
+    },
+    {
+        "id": 634,
+        "name": "Kiri",
+        "class": "Matsu-06",
+        "type": "DD",
+        "day": 27,
+        "month": 5,
+        "year": 1944,
+        "builder": "Japan, Yokosuka Naval Arsenal"
     },
     {
         "id": 29,
@@ -1880,6 +1920,16 @@
         "builder": "Japan, Uraga Dock Company"
     },
     {
+        "id": 613,
+        "name": "Independence",
+        "class": "Independence CVL-22",
+        "type": "CVL",
+        "day": 22,
+        "month": 8,
+        "year": 1942,
+        "builder": "US, New York Shipbuilding"
+    },
+    {
         "id": 241,
         "name": "Littorio",
         "class": "Vittorio Veneto-02",
@@ -1898,6 +1948,16 @@
         "month": 8,
         "year": 1938,
         "builder": "Germany, Germaniawerft"
+    },
+    {
+        "id": 643,
+        "name": "Vautour",
+        "class": "Aigle-03",
+        "type": "DD",
+        "day": 26,
+        "month": 8,
+        "year": 1930,
+        "builder": "France, Forges et Chantiers de la Mediterranée, La Seyne"
     },
     {
         "id": 398,
@@ -2293,6 +2353,16 @@
         "builder": "Japan, Yokosuka Naval Arsenal"
     },
     {
+        "id": 631,
+        "name": "Hanazuki",
+        "class": "Akizuki-13",
+        "type": "DD",
+        "day": 10,
+        "month": 10,
+        "year": 1944,
+        "builder": "Japan, Maizuru Naval Arsenal"
+    },
+    {
         "id": 164,
         "name": "Uzuki",
         "class": "Mutsuki-04",
@@ -2341,6 +2411,16 @@
         "month": 10,
         "year": 1943,
         "builder": "Japan, Nagasaki Mitsubishi Shipyard"
+    },
+    {
+        "id": 652,
+        "name": "Visby",
+        "class": "Visby-01",
+        "type": "DD",
+        "day": 16,
+        "month": 10,
+        "year": 1942,
+        "builder": "Sweden, Götaverken"
     },
     {
         "id": 180,
@@ -2813,6 +2893,16 @@
         "builder": "Japan, Nagasaki Mitsubishi Shipyard"
     },
     {
+        "id": 532,
+        "name": "Indiana",
+        "class": "South Dakota BB-58",
+        "type": "FBB",
+        "day": 21,
+        "month": 11,
+        "year": 1941,
+        "builder": "US, Newport News Shipbuilding Company"
+    },
+    {
         "id": 344,
         "name": "Gambier Bay",
         "class": "Casablanca CVE-73",
@@ -3172,6 +3262,16 @@
         "month": 12,
         "year": 1935,
         "builder": "Japan, Kure Naval Arsenal"
+    },
+        {
+        "id": 591,
+        "name": "Reno",
+        "class": "Atlanta CL-96",
+        "type": "CL",
+        "day": 23,
+        "month": 12,
+        "year": 1942,
+        "builder": "US, Bethlehem Shipbuilding Corporation, San Francisco"
     },
     {
         "id": 260,
